@@ -1,0 +1,57 @@
+/***
+Name: Dev
+Author: Stephen Kennedy
+Website: https://stephenkennedy.dev
+***/
+*{
+	box-sizing: border-box;
+	padding: 0;
+	margin: 0;
+}
+body{
+	font-size: 18px;
+	font-family: helvetica;
+}
+header{
+	min-height: 10vh;
+	background-color: #ececec;
+}
+nav{
+	padding: 10px;
+}
+#content{
+	min-height: 80vh;
+	max-width: 1366px;
+	margin: 0 auto;
+	padding-top: 20px;
+	padding-bottom: 20px;
+}
+footer{
+	min-height: 10vh;
+	background-color: #ececec;
+}
+.row{
+	max-width: 1440px;
+	margin: 0 auto;
+	padding: 10px;
+	background-color: #cecece;
+}
+input, textarea, select{
+	width: 100%;
+	padding: 5px;
+	margin-bottom: 10px;
+}
+button{
+	padding: 5px;
+	cursor: pointer;
+}
+table{
+	width: 100%;
+}
+table th{
+	text-align: left;
+}
+table th, table td{
+	padding: 5px;
+	border: 1px solid #222;
+}

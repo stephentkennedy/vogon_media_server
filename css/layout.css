@@ -1,0 +1,233 @@
+/***
+Name: Dev
+Author: Stephen Kennedy
+Website: https://stephenkennedy.dev
+***/
+*{
+	box-sizing: border-box;
+	padding: 0;
+	margin: 0;
+}
+html{
+	font-size: 18px;
+}
+nav a{
+	display: inline-block;
+	text-decoration: none;
+}
+#content{
+	max-width: 1440px;
+	margin: 0 auto;
+}
+.row{
+	max-width: 1440px;
+	margin: 0 auto;
+	font-size: 0;
+}
+.row > *{
+	font-size: 1rem;
+}
+/* Layout system */
+.col{
+	display: inline-block;
+	vertical-align: top;
+}
+.col-one{
+	width: 10%;
+}
+.col-two{
+	width: 20%;
+}
+.col-three{
+	width: 30%;
+}
+.col-four{
+	width: 40%;
+}
+.col-five{
+	width: 50%;
+}
+.col-six{
+	width: 60%;
+}
+.col-seven{
+	width: 70%;
+}
+.col-eight{
+	width: 80%;
+}
+.col-nine{
+	width: 90%;
+}
+.col-full, .col-ten{
+	width: 100%;
+}
+input, textarea, select{
+	width: 100%;
+	padding: 5px;
+	margin-bottom: 10px;
+}
+input[type="radio"], input[type="checkbox"]{
+	width: auto;
+}
+button, a, input[type="submit"], .button, .button.toggle_switch{
+	cursor: pointer;
+	display: inline-block !important;
+}
+table{
+	width: 100%;
+}
+table thead{
+	position: sticky;
+	top: 0;
+	background-color: #fff;
+}
+#search + table thead{
+	top:50px;
+}
+table th{
+	text-align: left;
+}
+/*
+Popup styles
+*/
+#popup{
+	width: 100vw;
+	height: 100vh;
+	position: fixed;
+	top: 0;
+	left: 0;
+	pointer-events: none;
+	z-index: 100;
+}
+#popup > *{
+	pointer-events: all;
+}
+.popup{
+	width: 500px;
+	height: auto;
+	min-height: 300px;
+	position: absolute;
+	z-index: 100;
+}
+.popup .handle{
+	padding: 5px;
+	min-height: 10px;
+	width: 100%;
+	position: relative;
+	cursor: grab;
+}
+.popup .handle.dragging{
+	cursor: grabbing;
+}
+.popup .content{
+	padding: 5px;
+}
+.popup .handle > div{
+	display: inline-block;
+	vertical-align: top;
+}
+.popup .handle > div:first-of-type{
+	width: 75%;
+}
+.popup .handle > div:last-of-type{
+	width: 25%;
+	text-align: right;
+}
+.popup .closePop .fa.fa-times:before{
+	content: 'X';
+}
+.popup .content{
+	overflow: auto;
+}
+.right{
+	float: right;
+}
+.left{
+	float: left;
+}
+.inline{
+	display: inline !important;
+}
+notification{
+	position: fixed;
+	bottom: 0;
+	left: 0;
+	width: 100vw;
+	padding: 5px;
+}
+input.issue, textarea.issue, select.issue{
+	border: 1px solid red;
+}
+input, button, select, textarea{
+	transition: all 0.2s linear;
+	opacity: 1;
+	background-color: inherit;
+}
+input[disabled], button[disabled], select[disabled], textarea[disabled]{
+	opacity: 0.5;
+}
+fieldset{
+	padding: 20px;
+}
+fieldset + input, fieldset + button, fieldset + textarea, fieldset + select{
+	margin-top: 20px;
+}
+fieldset legend{
+	font-weight: bold;
+	text-style: italic;
+}
+.variable-section{
+	max-height: 0px;
+	padding: 0px;
+	opacity: 0;
+	overflow: hidden;
+}
+.variable-section.active{
+	max-height: 100vh;
+	opacity: 1;
+	padding: 10px;
+}
+label.required:after{
+	content: ' *';
+	color: red;
+}
+#searchbar{
+	width: calc(100% - 57px);
+	display: inline-block;
+}
+#searchsubmit{
+	display: inline-block;
+}
+#searchbar, #searchsubmit{
+	vertical-align: top;
+	margin-bottom: 0 !important;
+}
+#search{
+	margin-bottom: 10px;
+}
+.toggle{
+	display: none;
+}
+.toggle.active{
+	display: block;
+}
+@media only screen and (max-width: 1440px){
+	#content{
+		padding-left: 20px;
+		padding-right: 20px;
+	}
+}
+@media only screen and (max-width: 768px){
+	.popup{
+		width: 100vw;
+		height: 100vh;
+		min-height: 300px;
+		position: absolute;
+		left: 0 !important;
+		top: 0 !important;
+	}
+	.col, .col-one, .col-two, .col-three, .col-four, .col-five, .col-six, .col-seven, .col-eight, .col-nine, .col-ten{
+		width: 100% !important;
+	}
+}

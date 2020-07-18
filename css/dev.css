@@ -1,0 +1,97 @@
+/***
+Name: Dev
+Author: Stephen Kennedy
+Website: https://stephenkennedy.dev
+***/
+
+body{
+	font-size: 18px;
+	font-family: helvetica;
+}
+header{
+	background-color: #ececec;
+}
+nav{
+	padding: 10px;
+}
+nav a{
+	padding: 10px;
+	color: #222;
+}
+#content{
+	padding-top: 20px;
+	padding-bottom: 20px;
+}
+footer{
+	background-color: #ececec;
+}
+.row{
+	padding: 10px;
+	background-color: #cecece;
+}
+button{
+	padding: 5px;
+	background-color: #fff;
+	transition: all 0.2s linear;
+	color: #222;
+	border: 1px solid #222;
+}
+button:hover{
+	background-color: #CECECE;
+}
+table th, table td{
+	padding: 5px;
+	border: 1px solid #222;
+}
+table th{
+	background-color: #222;
+	color: #fff;
+}
+/*
+Popup styles
+*/
+.popup{
+	background-color: #fff;
+	border: 1px solid #222;
+	top: 35%;
+	left: 35%;
+}
+.popup .handle{
+	background-color: #222;
+	color: #fff;
+}
+a:not(.drag), a.open-popup, .open-popup{
+	color: #222;
+	cursor: pointer;
+	display: inline-block;
+	padding: 5px 7px;
+	border: 1px solid #222;
+	background-color: #fff;
+	transition: background-color 0.2s linear;
+	text-decoration: none;
+	vertical-align: middle;
+}
+a:hover, a.open-popup:hover, .open-popup:hover{
+	background-color: #CECECE;
+}
+.right{
+	float: right;
+}
+.left{
+	float: left;
+}
+p, label, table{
+	margin-bottom: 10px;
+}
+label{
+	display: block;
+}
+h1, h2, h3, h4, h5, h6{
+	margin-top: 20px;
+	margin-bottom: 10px;
+}
+form{
+	padding: 10px;
+	border: 1px solid #222;
+	box-shadow: 2px 2px 4px 0px rgba(0,0,0,0.4);
+}
