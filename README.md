@@ -15,3 +15,10 @@ I wrote it. Other than that I can only tell you the project goals.
 The point of the project is to make a lean, easily editable, web interface for a dlna media server. Between both approaches, it should support most devices in a home that will want to access networked media. Other projects were large, did convenient but expensive transcoding, abstracted a lot of the customization away, and sometimes you just want to build something from scratch.
 
 The prototype is running successfully on a Raspberry Pi 3 with 2 simultaneous 1080p video streams. More than that and the RAM fills up and buffering becomes constant.
+
+## Installation
+You will need Apache, PHP, and MySQL installed. After creating an appropriate virtual host, or running this project as the root, you can simply navigate to the project in a web browser.
+
+You will need to setup a database and database user that can create tables, that done, the installer.php will install the needed database information.
+
+As mentioned above, this is not in anything close to a release state, so expect things not to work completely, or for hard-coded variables to need to be changed. This will be addressed in the future.
