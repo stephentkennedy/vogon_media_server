@@ -74,7 +74,7 @@ switch($action){
 		break;
 	default:
 
-		load_controller('header');
+		load_controller('header', ['title' => 'Audio Library']);
 		echo load_view('main_ajax', [], 'audio');
 		load_controller('footer');
 		break;

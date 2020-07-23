@@ -39,21 +39,23 @@ if(isset($_POST['action'])){
 
 switch($location){
 	case 'edit':
-		load_controller('header');
 		if(!isset($id)){
 			$id = get_slug_part(2);
 		}
 		if(!empty($id)){
 			$clerk = new clerk;
 			$record = $clerk->getRecord(['id' => $id], true);
+			$title = $record['data_name'];
 			$view_data = load_model('format_video_data', $record, 'media');
 		}else{
 			$sql = 'SELECT * FROM `data` WHERE `data_type` = "genre" ORDER BY `data_name` ASC';
 			$genres = $db->query($sql, [])->fetchAll();
+			$title = 'New Video';
 			$view_data = [
 				'genres' => $genres
 			];
 		}
+		load_controller('header', ['title' => 'Edit: '.$title]);
 		echo load_view('video_edit', $view_data, 'media');
 		load_controller('footer');
 		break;
@@ -66,7 +68,7 @@ switch($location){
 		$clerk = new clerk;
 		$record = $clerk->getRecord(['id' => $id], true);
 		$view_data = load_model('format_video_data', $record, 'media');
-		load_controller('header');
+		load_controller('header', ['title' => 'Details: '.$record['data_name']]);
 		if($record['data_type'] == 'video' || $record['data_type'] == 'tv'){
 			echo load_view('view_video', $view_data, 'media');
 		}else if($record['data_type'] == 'series'){
@@ -85,12 +87,12 @@ switch($location){
 		$record = $clerk->getRecord(['id' => $id], true);
 		$view_data = load_model('format_video_data', $record, 'media');
 		$view_data['members'] = load_model('get_series_members', ['id' => $id], 'media');
-		load_controller('header');
+		load_controller('header', ['title' => 'Season Editor: '.$record['data_name']]);
 		echo load_view('season_editor', $view_data, 'media');
 		load_controller('footer');
 		break;
 	case 'watch':
-		load_controller('header', ['view' => 'mini']);
+		load_controller('header', ['view' => 'mini']); //We control the title inside the view because it's manipulated with JavaScript
 		$id = get_slug_part(2);
 		if(empty($id) || !is_numeric($id)){
 			header('Location: '.URI);
@@ -103,7 +105,7 @@ switch($location){
 		load_controller('footer', ['view' => 'mini']);
 		break;
 	default:
-		load_controller('header');
+		load_controller('header', ['title' => 'Video Library']);
 		//$video_data = load_model('get_videos', [], 'media');
 	
 		//echo load_view('main', $video_data, 'media');

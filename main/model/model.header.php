@@ -4,6 +4,10 @@
 	
 	//$sql = '';
 	global $user;
+	
+	if(empty($title)){
+		$title = '';
+	}
 	$menu = json_decode($_SESSION['header_menu'], true);
 	if($menu != false){
 		if(!empty($user) && $user['user_role'] != 0){
@@ -39,6 +43,7 @@
 			'<link rel="stylesheet" href="'.URI.'/js/jquery-ui.min.css" type="text/css">',
 			'<link rel="stylesheet" href="'.URI.'/css/layout.css" type="text/css">'
 		],
-		'header_nav' => $print_menu
+		'header_nav' => $print_menu,
+		'title' => $title
 	];
 ?>

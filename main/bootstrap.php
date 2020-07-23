@@ -59,6 +59,9 @@ $_SESSION['loaded_extensions'] = $exts;
 $user = [];
 //load_controller('session', [], 'user');
 
+//Comment this out if you don't want local_storage based user management
+load_controller('nonsecure_session', [], 'user');
+
 //Default logic for search system
 if(empty($_REQUEST['search'])){
 	$_REQUEST['search'] = '';

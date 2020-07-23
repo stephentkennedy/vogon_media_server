@@ -8,6 +8,9 @@
 		'var' => true,
 		'user' => false,
 		'session' => false,
+		'contact' => false,
+		'contact_meta' => false,
+		'history' => false
 	];
 	$table_struct = [];
 	$table_data = [];
