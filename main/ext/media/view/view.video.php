@@ -166,9 +166,14 @@
 		controls: false,
 		title: false,
 		duration: 0,
+		time: <?php echo $time; ?>,
 		fallbackVolume: 0,
 		inactive_timeout: false,
 		play_started: false,
+		playing: false,
+		id: <?php echo $id; ?>,
+		h_loop: false,
+		h_freq: 60000,
 		init: function(){
 			player.video = $('video');
 			player.controls = $('#controls');
@@ -176,13 +181,19 @@
 			
 			player.video.find('.seek').attr('max', player.video[0].duration);
 			player.duration = player.timeFormat(player.video[0].duration);
+			player.video[0].currentTime = player.time;
 			player.controls.find('#time').html('0:00 / ' + player.duration);
 			
 			player.video.on('play', function(){
 				player.controls.find('.play').removeClass('fa-play').addClass('fa-pause');
+				player.playing = true;
+				clearTimeout(player.h_loop);
+				player.h_loop = setTimeout(player.updateHistory, player.h_freq);
 			});
 			player.video.on('pause', function(){
+				player.playing = false;
 				player.controls.find('.play').removeClass('fa-pause').addClass('fa-play');
+				clearTimeout(player.h_loop);
 			});
 			
 			player.controls.find('.play').click(function(){
@@ -234,7 +245,8 @@
 			player.video.on('loadedmetadata', function(){
 				player.video.find('.seek').attr('max', player.video[0].duration);
 				player.duration = player.timeFormat(player.video[0].duration);
-				player.controls.find('#time').html('0:00 / ' + player.duration);
+				var display_time = player.timeFormat(player.time);
+				player.controls.find('#time').html(display_time + ' / ' + player.duration);
 			});
 			player.video.on('timeupdate', function(){
 				var seek = player.controls.find('.seek');
@@ -285,6 +297,19 @@
 					player.controls.removeClass('active');
 					player.title.removeClass('active');
 				}, 5000);
+		},
+		updateHistory: function(){
+			var data = {
+				'id': player.id,
+				'time': Number(player.video[0].currentTime)
+			};
+			$.get('/ajax/ajax_save_history/media', data, function(content){
+				if(content == 'saved' && player.playing == true){
+					player.h_loop = setTimeout(player.updateHistory, player.h_freq);
+				}else if (content != 'saved'){
+					alert(content);
+				}
+			});
 		}
 	};
 	
@@ -384,6 +409,7 @@ if($series != ''){
 				player.title.find('.title-text').html(title);
 				autoplay.video.prop('poster', poster);
 				history.pushState({}, '', autoplay.url_seed + '/' + id);
+				player.id = id;
 			}else if(autoplay.next_season != false){
 				/*var data = {
 					id: autoplay.next_season['episode_id']

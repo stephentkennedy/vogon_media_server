@@ -12,6 +12,8 @@
 		<link rel="icon" type="image/png" href="<?php echo URI; ?>/upload/favicon.png">
 		<link rel="stylesheet" href="<?php echo URI . '/' . $stylesheet; ?>" type="text/css">
 		<link rel="stylesheet" href="<?php echo URI; ?>/fonts/font-awesome.min.css" type="text/css">
-		<title><?php if(!empty($title)){ echo $title; } ?></title>
+		<?php if(!empty($title)){ ?>
+		<title><?php echo $title; ?></title>
+		<?php } ?>
 	</head>
 	<body>

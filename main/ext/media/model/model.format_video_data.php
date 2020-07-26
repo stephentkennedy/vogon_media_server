@@ -23,6 +23,28 @@ if($series != false && count($series) > 0){
 	$series_id = 0;
 }
 
+/*
+Name: Stephen Kennedy
+Date: 7/25/20
+Comment: Fetch the history for this user and this item
+*/
+global $user;
+$sql = 'SELECT * FROM  `history` WHERE `user_key` = :user AND `data_id` = :id';
+$params = [
+	':user' => $user['user_key'],
+	':id' => $data_id
+];
+$query = $db->query($sql, $params);
+$result = false;
+if($query != false){
+	$result = $query->fetch();
+}
+if(empty($result)){
+	$time = 0;
+}else{
+	$time = $result['history_val'];
+}
+
 $thumb_dir = ROOT . DIRECTORY_SEPARATOR . 'upload' . DIRECTORY_SEPARATOR . 'thumbs' . DIRECTORY_SEPARATOR;
 
 if(file_exists($thumb_dir.$temp)){
@@ -43,6 +65,9 @@ if(empty($meta['starring'])){
 if(empty($meta['desc'])){
 	$meta['desc'] = '';
 }
+if(empty($meta['length'])){
+	$meta['length'] = 0;
+}
 $meta['poster'] = str_replace(ROOT, '', $meta['poster']);
 
 return [
@@ -58,5 +83,7 @@ return [
 	'poster' => $meta['poster'],
 	'thumb' => $thumb,
 	'series' => $series,
-	'series_id' => $series_id
+	'series_id' => $series_id,
+	'time' => $time,
+	'length' => $meta['length']
 ];

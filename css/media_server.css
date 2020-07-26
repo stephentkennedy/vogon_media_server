@@ -349,6 +349,28 @@ footer{
 	margin-left: 10px;
 	margin-bottom: 10px;
 }
+.series_poster, .series_poster_loaded{
+	height: 150px;
+	width: auto;
+	display: inline-block;
+	margin-top: 5px;
+	margin-bototm: 5px;
+}
+.episode_progress{
+	height: 20px;
+	width: 100%;
+	position: relative;
+	background: var(--black);
+	border: 1px solid var(--secondary-accent);
+	border-radius: var(--border-radius);
+	overflow: hidden;
+	padding: 0px;
+}
+.progress_bar{
+	position: relative;
+	height: 20px;
+	background: var(--secondary-accent);
+}
 .float.right{
 	float: right;
 }

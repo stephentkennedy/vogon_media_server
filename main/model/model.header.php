@@ -40,6 +40,7 @@
 			'<script type="text/javascript" src="'.URI.'/js/jquery.min.js"></script>',
 			'<script type="text/javascript" src="'.URI.'/js/jquery-ui.min.js"></script>',
 			'<script type="text/javascript" src="'.URI.'/js/aPopup.js"></script>',
+			'<script type="text/javascript" src="'.URI.'/js/lazy.js"></script>',
 			'<link rel="stylesheet" href="'.URI.'/js/jquery-ui.min.css" type="text/css">',
 			'<link rel="stylesheet" href="'.URI.'/css/layout.css" type="text/css">'
 		],
