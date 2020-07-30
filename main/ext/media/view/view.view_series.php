@@ -2,6 +2,9 @@
 	<h1><?php echo $title; ?></h1>
 </header>
 <div class="row">
+	<div class="col col-ten">
+		<a data-id="<?php echo $id; ?>" id="next_series"><i class="fa fa-spin fa-cog"></i> Checking ...</a>
+	</div>
 <?php
 //debug_d($data);
 if(!empty($members['seasons'])){
@@ -160,10 +163,26 @@ if(!empty($members['movies'])){?>
 			});
 			$(window).off('scroll.history').on('scroll.history', vogon_history.loop);
 			vogon_history.loop();
+		},
+		getNext: function(){
+			var id = $('#next_series').data('id');
+			$.get('/ajax/ajax_get_next/media', {id: id}).done(function(returned){
+				if(returned.result == true){
+					var link = $('#next_series');
+					link.html(returned.text);
+					link.attr('href', '<?php echo build_slug("watch/", [], "media"); ?>'+returned.id);
+				}else{
+					var parent = $('#next_series').parent();
+					$('#next_series').remove();
+					parent.append('<p>You haven&#39;t watched this series yet.</p>');
+					console.log(returned);
+				}
+			});
 		}
 	};
 	$(document).ready(function(){
 		lazy.init('.series_poster');
 		vogon_history.init();
+		vogon_history.getNext();
 	});
 </script>
