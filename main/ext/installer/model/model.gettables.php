@@ -10,7 +10,8 @@
 		'session' => false,
 		'contact' => false,
 		'contact_meta' => false,
-		'history' => false
+		'history' => false,
+		'cache' => false,
 	];
 	$table_struct = [];
 	$table_data = [];

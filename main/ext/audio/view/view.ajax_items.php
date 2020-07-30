@@ -80,12 +80,17 @@ switch($format){
 			}
 			$table .= '<tr>';
 			$table .= '<td>'.$r['data_name'].'</td>';
-			$table .= '<td>'.$r['album'].'</td>';
+			if(!empty($r['album'])){
+				$table .= '<td><a href="'.build_slug('album/'.$r['data_parent'],[],'audio').'">'.$r['album'].'</a></td>';
+			}else{
+				$table .= '<td>[Unknown]</td>';
+			}
 			$table .= '<td>'.$artist.'</td>';
 			$table .= '<td>'.$length.'</td>';
 			$table .= '<td>';
 			$table .= '<a class="button miniplayer-play" data-id="'.$r['data_id'].'"><i class="fa fa-play"></i></a>';
 			$table .= '<a class="button playlist-add" data-id="'.$r['data_id'].'"><i class="fa fa-plus"></i></a>';
+			$table .= '<a class="button" href="'.build_slug('edit/'.$r['data_id'], [], 'audio').'"><i class="fa fa-pencil"></i></a>';
 			$table .= '</td>';
 			$table .= '</tr>';
 		}

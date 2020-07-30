@@ -3,6 +3,7 @@
 </header>
 <div class="row">
 <?php
+//debug_d($data);
 if(!empty($members['seasons'])){
 	foreach($members['seasons'] as $s){?>
 		<div class="col col-five">
@@ -30,13 +31,13 @@ if(!empty($members['seasons'])){
 				$r['meta']['poster'] = str_replace(ROOT, '', $r['meta']['poster']);
 				echo '<li>'.$r['data_name'].' ('.formatLength($r['meta']['length']).')<br><img class="series_poster" data-src="'.$r['meta']['poster'].'">';
 				
-				if($r['time'] == false){
+				//if($r['time'] == false){
 					$percent = 0;
-				}else{
-					$percent = ceil(($r['time'] / $r['meta']['length']) * 100);
-				}
+				//}else{
+				//	$percent = ceil(($r['time'] / $r['meta']['length']) * 100);
+				//}
 				
-				echo '<div class="episode_progress"><div style="width: '.$percent.'%" class="progress_bar"></div></div>';
+				echo '<div data-id="'.$r['data_id'].'" data-length="'.$r['meta']['length'].'" class="episode_progress"><div style="width: '.$percent.'%" class="progress_bar"></div></div>';
 				echo '<a href="'.build_slug('watch/'.$r['data_id'], [], 'media').'"><i class="fa fa-play"></i> Play</a><a href="'.build_slug('view/'.$r['data_id'], [], 'media').'" class="video-link '.$class.'" ><i class="fa fa-info"></i> Details</a></li>';
 			}else{
 				echo '<li>'.$r['data_name'].'<br>Test<a href="'.build_slug('view/'.$r['data_id'], [], 'media').'" class="video-link '.$class.'" ><i class="fa fa-info"></i> Details</a><a href="'.build_slug('watch/'.$r['data_id'], [], 'media').'"><i class="fa fa-play"></i> Play</a></li>';
@@ -73,13 +74,13 @@ if(!empty($members['tv'])){
 			$r['meta']['poster'] = str_replace(ROOT, '', $r['meta']['poster']);
 			echo '<li>'.$r['data_name'].' ('.formatLength($r['meta']['length']).')<br><img class="series_poster" data-src="'.$r['meta']['poster'].'">';
 			
-			if($r['time'] == false){
+			//if($r['time'] == false){
 				$percent = 0;
-			}else{
-				$percent = ceil(($r['time'] / $r['meta']['length']) * 100);
-			}
+			//}else{
+			//	$percent = ceil(($r['time'] / $r['meta']['length']) * 100);
+			//}
 			
-			echo '<div class="episode_progress"><div style="width: '.$percent.'%" class="progress_bar"></div></div>';
+			echo '<div data-id="'.$r['data_id'].'" data-length="'.$r['meta']['length'].'" class="episode_progress"><div style="width: '.$percent.'%" class="progress_bar"></div></div>';
 			echo '<a href="'.build_slug('watch/'.$r['data_id'], [], 'media').'"><i class="fa fa-play"></i> Play</a><a href="'.build_slug('view/'.$r['data_id'], [], 'media').'" class="video-link '.$class.'" ><i class="fa fa-info"></i> Details</a></li>';
 		}else{
 			echo '<li>'.$r['data_name'].'<br><a href="'.build_slug('view/'.$r['data_id'], [], 'media').'" class="video-link '.$class.'" ><i class="fa fa-info"></i> Details</a><a href="'.build_slug('watch/'.$r['data_id'], [], 'media').'"><i class="fa fa-play"></i> Play</a></li>';
@@ -112,13 +113,13 @@ if(!empty($members['movies'])){?>
 			$r['meta']['poster'] = str_replace(ROOT, '', $r['meta']['poster']);
 			echo '<li>'.$r['data_name'].' ('.formatLength($r['meta']['length']).')<br><img class="series_poster" data-src="'.$r['meta']['poster'].'">';
 			
-			if($r['time'] == false){
+			//if($r['time'] == false){
 				$percent = 0;
-			}else{
-				$percent = ceil(($r['time'] / $r['meta']['length']) * 100);
-			}
+			//}else{
+			//	$percent = ceil(($r['time'] / $r['meta']['length']) * 100);
+			//}
 			
-			echo '<div class="episode_progress"><div style="width: '.$percent.'%" class="progress_bar"></div></div>';
+			echo '<div data-id="'.$r['data_id'].'" data-length="'.$r['meta']['length'].'" class="episode_progress"><div style="width: '.$percent.'%" class="progress_bar"></div></div>';
 			echo '<a href="'.build_slug('watch/'.$r['data_id'], [], 'media').'"><i class="fa fa-play"></i> Play</a><a href="'.build_slug('view/'.$r['data_id'], [], 'media').'" class="video-link '.$class.'" ><i class="fa fa-info"></i> Details</a></li>';
 
 		}else{
@@ -129,7 +130,40 @@ if(!empty($members['movies'])){?>
 <?php }?>
 </div>
 <script type="text/javascript">
+	var vogon_history = {
+		ident: '.episode_progress',
+		loop: function(){
+			var items = $(vogon_history.ident+':not(.loaded)');
+			items.each(function(i){
+				var dom = items[i];
+				if(lazy.check(dom)){
+					vogon_history.load(dom);
+				}else{
+				}
+			});
+		},
+		load: function(dom){
+			var id = $(dom).data('id');
+			$.get('/ajax/ajax_history/media', {'id': id}).done(function(returned){
+				var watched = returned['watched'];
+				var total = Number($(dom).data('length'));
+				var percent = watched / total;
+				percent = percent * 100;
+				percent = Math.ceil(percent);
+				$(dom).find('.progress_bar').css('width', percent + '%');
+				$(dom).addClass('loaded');
+			});
+		},
+		init: function(){
+			$(window).off('resize.history').on('resize.history', function(){
+				vogon_history.init();
+			});
+			$(window).off('scroll.history').on('scroll.history', vogon_history.loop);
+			vogon_history.loop();
+		}
+	};
 	$(document).ready(function(){
 		lazy.init('.series_poster');
+		vogon_history.init();
 	});
 </script>

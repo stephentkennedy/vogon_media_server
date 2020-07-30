@@ -6,7 +6,8 @@ $getID3 = new getID3;
 $getID3->setOption(['encoding' => 'UTF-8']);
 $clerk = new clerk;
 
-$sql = 'SELECT * FROM data WHERE data_type = "video" OR data_type = "tv"';
+//$sql = 'SELECT * FROM data WHERE data_type = "video" OR data_type = "tv"';
+$sql = 'SELECT * FROM data WHERE data_parent = 11835';
 $query = $db->query($sql, []);
 $items = $query->fetchAll();
 foreach($items as $item){
@@ -15,6 +16,9 @@ foreach($items as $item){
 	$meta = $clerk->getMetas($item['data_id']);
 	if(empty($meta['length'])){
 		$file = $item['data_content'];
+		if(stristr($file, ROOT) === false){
+			$file = ROOT . $file;
+		}
 		$file_info = $getID3->analyze($file);
 		$length = $file_info['playtime_seconds'];
 		$clerk->addMetas($item['data_id'], ['length' => $length]);

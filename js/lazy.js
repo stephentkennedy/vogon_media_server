@@ -23,12 +23,12 @@ var lazy = {
 		});
 	},
 	init: function(ident){
-		lazy.ident= ident;
+		lazy.ident = ident;
 		lazy.screen_b = window.innerHeight;
-		$(window).on('resize', function(){
+		$(window).off('resize.lazy').on('resize.lazy', function(){
 			lazy.init(ident);
 		});
-		$(window).scroll(lazy.loop);
+		$(window).off('scroll.lazy').on('scroll.lazy', lazy.loop);
 		lazy.loop();
 	},
 };

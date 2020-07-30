@@ -370,6 +370,7 @@ footer{
 	position: relative;
 	height: 20px;
 	background: var(--secondary-accent);
+	transition: width 1s ease;
 }
 .float.right{
 	float: right;

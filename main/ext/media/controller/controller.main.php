@@ -72,6 +72,13 @@ switch($location){
 		if($record['data_type'] == 'video' || $record['data_type'] == 'tv'){
 			echo load_view('view_video', $view_data, 'media');
 		}else if($record['data_type'] == 'series'){
+			/*
+			Name: Stephen Kennedy
+			Date: 7/29/20 
+			Comment: We're having a lot of slowdown on the first load of this page. After that first load, the built in MySQL caching is speeding it up significantly, but that only lasts for around 12 hours. We need something that work similarly, but for longer.
+			
+			Ideally, it will also update when we make changes to series members, but we can start with just triggering that manually.
+			*/
 			$view_data['members'] = load_model('get_series_members', ['id' => $id], 'media');
 			echo load_view('view_series', $view_data, 'media');
 		}

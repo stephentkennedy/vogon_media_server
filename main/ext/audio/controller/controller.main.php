@@ -1,5 +1,11 @@
 <?php
-
+if(isset($_POST['action'])){
+	switch($_POST['action']){
+		case 'edit':
+			load_model('edit_item', $_POST, 'audio');
+			break;
+	}
+}
 $action = get_slug_part(1);
 $clerk = new clerk;
 switch($action){
@@ -71,6 +77,30 @@ switch($action){
 		echo load_view('main', $view_data, 'audio');
 		load_controller('footer');
 	
+		break;
+	case 'edit':
+		
+		//This is going to be a dedicated screen for now, but for easy editing, it would probably make more sense to have it be a ajax form via the apopup api.
+		
+		$id = get_slug_part(2);
+		$audio = $clerk->getRecord(['id' => $id], true);
+		if(!empty($audio['data_parent'])){
+			$album = $clerk->getRecord(['id' => $audio['data_parent']]);
+			$audio['album'] = $album['data_name'];
+		}else{
+			$audio['album'] = '';
+		}
+		load_controller('header', ['title' => 'Edit: '.$audio['data_name']]);
+		echo load_view('edit', $audio, 'audio');
+		load_controller('footer');
+	
+		break;
+	case 'album':
+		$id = get_slug_part(2);
+		$view_data = load_model('get_album', ['album' => $id], 'audio');
+		load_controller('header', ['title' => $view_data['album']['data_name']]);
+		echo load_view('album', $view_data, 'audio');
+		load_controller('footer');
 		break;
 	default:
 
