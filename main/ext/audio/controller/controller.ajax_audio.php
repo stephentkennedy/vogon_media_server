@@ -14,11 +14,21 @@ if(empty($title)){
 }
 $return = [
 	'title' => $title,
+	'id' => $track['data_id'],
 	'src' => $src,
 	'mime' => $mime,
 	'duration' => $track['meta']['length'],
 	'artist' => $track['meta']['artist']
 ];
+if(!empty($track['meta']['history'])){
+	//This means that audio and media are linked together and you can't have audio without media.
+	//Honestly should look into making them one extension and supporting more routes via build_slug
+	$history_data = load_controller('ajax_history', ['id' => $track['data_id']], 'media');
+	$return['time'] = $history_data['watched'];
+	if(empty($return['time'])){
+		$return['time'] = 0;
+	}
+}
 $return = json_encode($return);
 header('Content-Type: application/json;charset=utf-8');
 echo $return;

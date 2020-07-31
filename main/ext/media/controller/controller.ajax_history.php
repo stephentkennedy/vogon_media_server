@@ -1,5 +1,7 @@
 <?php
-$id = $_GET['id'];
+if(isset($_GET['id'])){
+	$id = $_GET['id'];
+}
 global $user;
 
 $sql = 'SELECT * FROM `history` WHERE `user_key` = :user AND `data_id` = :id';
@@ -24,5 +26,9 @@ if($query != false){
 		'watched' => 0
 	];
 }
-header('Content-Type: application/json;charset=utf-8');
-echo json_encode($return);
+if(isset($_GET['id'])){
+	header('Content-Type: application/json;charset=utf-8');
+	echo json_encode($return);
+}else{
+	return $return;
+}

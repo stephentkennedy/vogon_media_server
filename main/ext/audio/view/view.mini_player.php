@@ -6,10 +6,15 @@ $(document).ready(function(){
 	miniplayer = {
 		instance: {},
 		audio: {},
+		id: {},
 		src: {},
 		header: {},
 		angle: 0,
-		animation: miniplayer.spectro,
+		track: false,
+		playing: false,
+		h_loop: false,
+		h_freq: 10000,
+		animation: miniplayer.cleanCircle,
 		seed: '<div class="mini-player"><header class="mini-player-header"><span class="shadow"></span><span class="title">Mini-Player</span><span class="controls"><i class="fa fa-window-maximize toggle"></i><i class="fa fa-cog option"></i><i class="fa fa-expand fullscreen"></i><i class="fa fa-times close"></i></span></header><canvas></canvas><audio class="current-track"><source class="current-source"></source></audio><div class="mini-player-audio-controls"><i class="fa fa-step-backward fa-fw  mini-player-prev disable"></i><i class="fa fa-play fa-fw  mini-player-play"></i><i class="fa fa-step-forward fa-fw  mini-player-next disable"></i><i class="fa fa-random  fa-fw mini-player-shuffle disable"></i><i class="fa fa-retweet fa-fw  mini-player-loop disable"></i><span class="mini-one">1</span><input type="range" class="seek" value="0" max="" /><i class="fa fa-fw fa-volume-up mini-player-volume"></i></div><i class="fa fa-list playlist-toggle"></i><div class="mini-player-playlist"></div></div>',
 		load: function(id){
 			if(miniplayer.instance == false){
@@ -18,14 +23,32 @@ $(document).ready(function(){
 			$.get('<?php echo URI; ?>/ajax/ajax_audio/audio/' + id, function( returned ){
 				data = returned;
 				miniplayer.audio[0].pause();
-				miniplayer.currentTime = 0.0;
 				miniplayer.src.prop('src', data['src']);
 				miniplayer.src.prop('type', data['mime']);
+				miniplayer.id = data['id'];
 				miniplayer.header.html('<span>'+data['title']+'</span>');
 				if(miniplayer.header.find('span').width() > miniplayer.header.width()){
 					miniplayer.header.find('span').addClass('marquee');
 				}
 				miniplayer.audio[0].load();
+				if(data['time'] == undefined || data['time'] == 0){
+					miniplayer.currentTime = 0.0;
+					miniplayer.audio[0].currentTime = 0.0;
+				}else{
+					var min = 60;
+					if($data['time'] <= (data['duration'] - .5 * min)){
+						miniplayer.currentTime = data['time'];
+						miniplayer.audio[0].currentTime = data['time'];
+					}else{
+						miniplayer.currentTime = 0.0;
+						miniplayer.audio[0].currentTime = 0.0;
+					}					
+				}
+				if(data['time'] == undefined){
+					miniplayer.track = false;
+				}else{
+					miniplayer.track = true;
+				}
 				miniplayer.audio[0].play();
 				$('.mini-player-audio-controls .mini-player-play').removeClass('fa-play').addClass('fa-pause');
 			});			
@@ -46,7 +69,7 @@ $(document).ready(function(){
 					$('.mini-player .mini-player-playlist').addClass('open');
 				}
 			});
-			
+			//This needs to be rewritten to be audio DOM event driven rather than click event driven.
 			$('.mini-player-audio-controls .mini-player-play').click(function(){
 				if(miniplayer.src.prop('src') != ''){
 					if($(this).hasClass('fa-play')){
@@ -120,6 +143,20 @@ $(document).ready(function(){
 					playlist.next();
 				}
 			});
+			
+			//Update these functions with the class changes when you come back to this.
+			miniplayer.audio.on('play', function(){
+				miniplayer.playing = true;
+				clearTimeout(miniplayer.h_loop);
+				miniplayer.h_loop = setTimeout(miniplayer.updateHistory, miniplayer.h_freq);
+			});
+			
+			miniplayer.audio.on('pause', function(){
+				miniplayer.playing = false;
+				clearTimeout(miniplayer.h_loop);
+				//Because the first thing I do before changing devices is pause
+				miniplayer.updateHistory();
+			});
 		},
 		toggle: function(){
 			if(miniplayer.instance.hasClass('open')){
@@ -141,6 +178,21 @@ $(document).ready(function(){
 			}{
 				miniplayer.instance.find('.fa.play').removeClass('fa-pause').addClass('fa-play');
 			}
+		},
+		updateHistory: function(){
+			if(miniplayer.track == true){
+				var data = {
+					'id': miniplayer.id,
+					'time': Number(miniplayer.audio[0].currentTime)
+				};
+				$.get('/ajax/ajax_save_history/media', data, function(content){
+					if(content == 'saved' && miniplayer.playing == true){
+						miniplayer.h_loop = setTimeout(miniplayer.updateHistory, miniplayer.h_freq);
+					}else if (content != 'saved'){
+						alert(content);
+					}
+				});
+			}
 		}
 	};
 	miniplayer.init();
@@ -159,22 +211,18 @@ bar_width = 2;
  
 function initPage(){
     
-	miniplayer.animation = miniplayer.spectro;
+	miniplayer.animation = miniplayer.cleanCircle;
 	
-    //audio = new Audio();
     context = new (window.AudioContext || window.webkitAudioContext)();
     analyser = context.createAnalyser();
     
-    //audio.src = $('.player source').attr('src'); // the source path
     source = context.createMediaElementSource(miniplayer.audio[0]);
-	//source.connect(processor);
     source.connect(analyser);
     analyser.connect(context.destination);
-	//console.log(analyser.frequencyBinCount);
     
     frequency_array = new Uint8Array(analyser.frequencyBinCount);
 
-    window['miniplayer']['animation']();
+    window['miniplayer']['animation'](); //Variable variables in JavaScript the jank way.
 }
 
 miniplayer.cleanCircle = function(){

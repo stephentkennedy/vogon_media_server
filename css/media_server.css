@@ -695,6 +695,28 @@ input[type=range]:focus::-ms-fill-upper {
 div + table{
 	margin-top: 10px;
 }
+#profile_container .col > *{
+	vertical-align: middle;
+	font-size: 1.5rem;
+	margin-bottom: 0;
+	min-height: 48px;
+}
+#profile_container .col input{
+	width: 1.5rem;
+}
+#profile_container .col label{
+	position: relative;
+	display: inline-block;
+	width: calc(100% - 1.8rem);
+	padding-top: .5rem;
+}
+#profile_container .col{
+	transition: background 0.2s linear;
+}
+#profile_container .col:hover{
+	background-color: rgba(var(--rgb-secondary-accent), 0.7);
+	cursor: pointer;
+}
 @media (max-width: 1690px){
 	#content{
 		border: none;

@@ -267,4 +267,12 @@ function formatLength($seconds){
 	}
 	return $string;
 }
+
+function redirect($loc){
+	if(headers_sent()){
+		echo '<script type="text/javascript"> window.location = "'.$loc.'"; </script>';
+	}else{
+		header('Location: '.$loc);
+	}
+}
 ?>

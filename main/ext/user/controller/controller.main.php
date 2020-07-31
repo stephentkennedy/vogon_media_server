@@ -7,7 +7,7 @@
 		}else{
 			$new_user = [
 				'email' => $_POST['user_email'],
-				'password' => $_POST['user_password'],
+				'password' => '***',
 				'role' => 0,
 				'role_mods' => ''
 			];
@@ -26,13 +26,17 @@
 	}else if($action == 'edit'){
 		global $user;
 		$user_email = get_slug_part(2);
-		$user_data = load_model('get_by_email', ['email' => $user_email], 'user');
+		if(is_numeric($user_email)){
+			$user_data = load_model('get', ['user_key' => $user_email], 'user');
+		}else{
+			$user_data = load_model('get_by_email', ['email' => $user_email], 'user');
+		}
 		
-		if(isset($_POST['user_email']) && $user['user_key'] == $user_data['user_key'] && $_POST['user_password'] == $_POST['user_password_confirm']){
+		if(isset($_POST['user_email']) && $user_data['user_key'] == $user_data['user_key']){
 			$new_data = [
 				'user_key' => $_POST['user_key'],
 				'user_email' => $_POST['user_email'],
-				'user_pass' => $_POST['user_password']
+				'user_pass' => '***'
 			];
 			load_model('update', $new_data, 'user');
 			header('Location:' . build_slug('', [], 'user'));
@@ -61,6 +65,9 @@
 		
 		echo load_view('edit_user', $user_data, 'user');
 		load_controller('footer');	
+	}else if($action == 'logout'){
+		redirect( build_slug('', []) );
+		load_model('logout', [], 'user');
 	}else{
 		load_controller('header', ['title' => 'Profiles']);
 		if(empty($_REQUEST['action']) || $_REQUEST['action'] != 'search' || empty($_REQUEST['search'])){

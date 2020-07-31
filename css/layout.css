@@ -24,6 +24,9 @@ nav a{
 	margin: 0 auto;
 	font-size: 0;
 }
+.row.wide{
+	max-width: 100vw;
+}
 .row > *{
 	font-size: 1rem;
 }
@@ -60,6 +63,9 @@ nav a{
 	width: 90%;
 }
 .col-full, .col-ten{
+	width: 100%;
+}
+form{
 	width: 100%;
 }
 input, textarea, select{

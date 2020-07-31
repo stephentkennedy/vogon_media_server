@@ -194,6 +194,8 @@
 				player.playing = false;
 				player.controls.find('.play').removeClass('fa-pause').addClass('fa-play');
 				clearTimeout(player.h_loop);
+				//Because the first thing I do before changing devices is pause
+				player.updateHistory();
 			});
 			
 			player.controls.find('.play').click(function(){
