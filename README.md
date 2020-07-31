@@ -22,3 +22,8 @@ You will need Apache, PHP, and MySQL installed. After creating an appropriate vi
 You will need to setup a database and database user that can create tables, that done, the installer.php will install the needed database information.
 
 As mentioned above, this is not in anything close to a release state, so expect things not to work completely, or for hard-coded variables to need to be changed. This will be addressed in the future.
+
+## Building
+Since this is primarily a PHP project nothing needs to be compiled, but in an effort to make it easier to deploy there is a build process in place, though it does not currently install anything it might need outside its own directory. Additionally, it needs access to the PHP zip module to function, and does not currently build the .zip correctly on Windows machines.
+
+There is a pre-established route at "\/build". Simply navigate there in your browser, and the server will build you a zip file that contains a "fresh install", basically everything the system needs to run, minus the contents of your media server and your database connection information. It does carry over routes and var data. You can find this file in the root directory when it is finished building.
