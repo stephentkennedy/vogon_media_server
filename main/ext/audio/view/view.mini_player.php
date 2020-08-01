@@ -36,7 +36,7 @@ $(document).ready(function(){
 					miniplayer.audio[0].currentTime = 0.0;
 				}else{
 					var min = 60;
-					if($data['time'] <= (data['duration'] - .5 * min)){
+					if(data['time'] <= (data['duration'] - .5 * min)){
 						miniplayer.currentTime = data['time'];
 						miniplayer.audio[0].currentTime = data['time'];
 					}else{
