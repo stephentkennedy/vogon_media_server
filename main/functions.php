@@ -35,6 +35,9 @@ function loader($file, $data = []){
 }
 
 function load_view($view, $data = [], $ext = false){
+	if($view === 'null'){
+		return null;
+	}
 	ob_start();
 	if($ext == false){
 		loader(ROOT.DIRECTORY_SEPARATOR.'main'.DIRECTORY_SEPARATOR.'view'.DIRECTORY_SEPARATOR.'view.'.$view.'.php', $data);
@@ -44,6 +47,9 @@ function load_view($view, $data = [], $ext = false){
 	return ob_get_clean();
 }
 function load_model($model, $data = [], $ext = false){
+	if($model === 'null'){
+		return null;
+	}
 	if($ext == false){
 		return loader(ROOT.DIRECTORY_SEPARATOR.'main'.DIRECTORY_SEPARATOR.'model'.DIRECTORY_SEPARATOR.'model.'.$model.'.php', $data);
 	}else{
@@ -51,6 +57,9 @@ function load_model($model, $data = [], $ext = false){
 	}
 }
 function load_controller($controller, $data = [], $ext = false){
+	if($controller === 'null'){
+		return null;
+	}
 	if($ext == false){
 		return loader(ROOT.DIRECTORY_SEPARATOR.'main'.DIRECTORY_SEPARATOR.'controller'.DIRECTORY_SEPARATOR.'controller.'.$controller.'.php', $data);
 	}else{

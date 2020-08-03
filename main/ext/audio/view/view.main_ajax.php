@@ -46,7 +46,17 @@
 			if(push == true){
 				history.pushState(data, '', url);
 			}
-			$.get('/ajax/ajax_search/audio', data , function(content){
+			$.get('<?php switch($type){
+							case 'artists':
+								echo '/ajax/ajax_search_artist/audio';
+								break;
+							case 'albums':
+								echo '/ajax/ajax_search_album/audio';
+								break;
+							default: 
+								echo '/ajax/ajax_search/audio'; 
+								break; 
+						} ?>', data , function(content){
 				controller.load(content);
 			});
 		}

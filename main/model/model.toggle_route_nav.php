@@ -14,28 +14,6 @@ switch($type){
 		}
 		$db->query($sql, $params);
 		
-		$sql = 'SELECT * FROM route WHERE in_h_nav = 1';
-		$query = $db->query($sql);
-		$nav_routes = $query->fetchAll();
-		$array = [];
-		$string = '';
-		foreach($nav_routes as $r){
-			$string .= '<a href="'.URI.'/'.$r['route_slug'].'">';
-			if(empty($r['nav_display'])){
-				$string .= $r['route_ext'];
-			}else{
-				$string .= $r['nav_display'];
-			}
-			$string .= '</a> ';
-			$array[$r['route_id']] = $string;
-			$string = '';
-		}
-		$string = json_encode($array);
-		$sql = 'UPDATE var SET var_content = :content WHERE var_name = "header_menu"';
-		$params = [
-			':content' => $string
-		];
-		$db->query($sql, $params);
 		break;
 	case 'foot':
 		$sql = 'SELECT in_f_nav FROM route WHERE route_id = :id';
@@ -51,28 +29,7 @@ switch($type){
 		}
 		$db->query($sql, $params);
 		
-		$sql = 'SELECT * FROM route WHERE in_f_nav = 1';
-		$query = $db->query($sql);
-		$nav_routes = $query->fetchAll();
-		$array = [];
-		$string = '';
-		foreach($nav_routes as $r){
-			$string .= '<a href="'.URI.'/'.$r['route_slug'].'">';
-			if(empty($r['nav_display'])){
-				$string .= $r['route_ext'];
-			}else{
-				$string .= $r['nav_display'];
-			}
-			$string .= '</a> ';
-			$array[$r['route_id']] = $string;
-			$string = '';
-		}
-		$string = json_encode($array);
-		$sql = 'UPDATE var SET var_content = :content WHERE var_name = "footer_menu"';
-		$params = [
-			':content' => $string
-		];
-		$db->query($sql, $params);
 		break;
 }
+load_model('rebuild_nav', ['type' => $type]);
 ?>

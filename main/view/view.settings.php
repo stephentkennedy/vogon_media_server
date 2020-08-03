@@ -32,6 +32,7 @@
 			<th>Display</th>
 			<th>In Header</th>
 			<th>In Footer</th>
+			<th>Primary</th>
 			<th>Actions</th>
 		</tr>
 	</thead>
@@ -56,15 +57,24 @@
 					echo 'No';
 				}
 			echo '</td>
+				<td>';
+				if($r['ext_primary']){
+					echo 'Yes';
+				}else{
+					echo 'No';
+				}
+			echo '</td>
 				<td>
 					<a class="action toggle" href="?ext=&form=route_toggle_h&route_id='.$r['route_id'].'&force_reload=true">[Toggle Header]</a>
 					<a class="action toggle" href="?ext=&form=route_toggle_f&route_id='.$r['route_id'].'&force_reload=true">[Toggle Footer]</a>
-					<a class="action remove" href="?ext=&form=route_remove&route_id='.$r['route_id'].'">[Remove Route]</a>
+					<a class="action toggle" href="?ext=&form=route_toggle_m&route_id='.$r['route_id'].'&force_reload=true">[Toggle Main]</a>
+					<a class="action remove" href="?ext=&form=route_remove&route_id='.$r['route_id'].'&force_reload=true">[Remove Route]</a>
 				</td></tr>';
 		}
 	?>
 </table>
 <?php echo $_SESSION['pagination']; ?>
+<br><a href="?ext=&form=rebuild_nav&force_reload=true">[Rebuild Navigation]</a>
 </div>
 <h3>Active Theme</h3>
 <form action="?ext=&form=theme&force_reload=true" method="post">

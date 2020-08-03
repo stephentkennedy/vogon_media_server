@@ -48,6 +48,9 @@
 							'type' => 'foot'
 						]);
 						break;
+					case 'route_toggle_m':
+						load_model('toggle_route_main', ['id' => $_GET['route_id']]);
+						break;
 					case 'route':
 						load_model('add_route', [
 							'slug' => $_POST['slug'],
@@ -65,6 +68,10 @@
 							'id' => $_POST['id'],
 							'display_name' => $_POST['display_name']
 						]);
+						break;
+					case 'rebuild_nav':
+						load_model('rebuild_nav', ['type' => 'head']);
+						load_model('rebuild_nav', ['type' => 'foot']);
 						break;
 				}
 				break;

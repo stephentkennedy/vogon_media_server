@@ -116,10 +116,17 @@ switch($action){
 		echo load_view('album', $view_data, 'audio');
 		load_controller('footer');
 		break;
+	case 'artist':
+		$id = get_slug_part(2);
+		$view_data = load_model('get_artist', ['artist' => $id], 'audio');
+		load_controller('header', ['title' => $view_data['artist']]);
+		echo load_view('artist', $view_data, 'audio');
+		load_controller('footer');
 	default:
-
+		$type = get_slug_part(1);
+		
 		load_controller('header', ['title' => 'Audio Library']);
-		echo load_view('main_ajax', [], 'audio');
+		echo load_view('main_ajax', ['type' => $type], 'audio');
 		load_controller('footer');
 		break;
 }

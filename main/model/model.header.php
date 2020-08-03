@@ -24,7 +24,7 @@
 			}
 		}
 		$print_menu = '';
-		foreach($menu as $line){
+		foreach($menu as $route => $line){
 			$print_menu .= $line;
 		}
 	}else{
