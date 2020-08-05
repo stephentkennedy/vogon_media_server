@@ -13,23 +13,7 @@ if($return == false){
 	];
 	$query = $db->query($sql, $params);
 	$tv = $query->fetchAll();
-	foreach($tv as $key => $v){
-		
-		//Get history data
-		//$sql = 'SELECT * FROM history WHERE data_id = :id AND user_key = :user';
-		//$params = [
-		//	':id' => $v['data_id'],
-		//	':user' => $user['user_key']
-		//];
-		//$query = $db->query($sql, $params);
-		//$history = $query->fetch();
-		//if(!empty($history)){
-		//	$tv[$key]['time'] = $history['history_val'];
-		//}else{
-		//	$tv[$key]['time'] = false;
-		//}
-		
-		
+	foreach($tv as $key => $v){		
 		$metas = $clerk->getMetas($v['data_id']);
 		if(!empty($metas['season'])){
 			//We would subdivide into seasons here if we had that data available.
@@ -38,6 +22,14 @@ if($return == false){
 		}
 	}
 
+
+	/*
+	Name: Stephen Kennedy
+	Date: 8/5/2020
+	Comment: Previously we were doing a lot of this manually, and avoiding more than one join at a time.
+	
+	On one hand it makes the code a little easier to read and modify, but on the other it means to get the full metadata we need to make one additional query per item, which is horrifically inefficient. For this reason, I added meta field joins to the Clerk class so that our code can be readable maybe even more so than previously, while still cleaning up the number of queries we do here.
+	*/
 
 	//Episodes that are organized into seasons
 	$seasons = [];
@@ -54,33 +46,27 @@ if($return == false){
 	$pos_seasons = $query->fetchAll();
 	$season_ids = [];
 	foreach($pos_seasons as $ord => $s){
-		$sql = 'SELECT * FROM data, data_meta WHERE data.data_id = data_meta.data_id 
-		AND data.data_parent = :id 
-		AND data.data_id IN(SELECT data_id FROM data_meta WHERE data_meta_name = "season" AND data_meta_content = :season) AND data_meta.data_meta_name = "episode_ord" 
-		ORDER BY data_meta.data_meta_content + 0 ASC';
-		$params = [
-			':id' => $id,
-			':season' => $s['data_id'],
+		$metas = [
+			'season',
+			'episode_ord',
+			'poster',
+			'length',
+			'release',
+			'director',
+			'desc',
+			'starring'
 		];
-		$query = $db->query($sql, $params);
-		$episodes = $query->fetchAll();
+		$options = [
+			'metas' => $metas,
+			'parent' => $id,
+			'search_meta' => [
+				'season' => $s['data_id']
+			],
+			'search_meta_mode' => 'strict',
+			'orderby' => 'episode_ord + 0'
+		];
 		
-		foreach($episodes as $key => $e){
-			//$sql = 'SELECT * FROM history WHERE data_id = :id AND user_key = :user';
-			//$params = [
-			//	':id' => $e['data_id'],
-			//	':user' => $user['user_key']
-			//];
-			//$query = $db->query($sql, $params);
-			//$history = $query->fetch();
-			//if(!empty($history)){
-			//	$episodes[$key]['time'] = $history['history_val'];
-			//}else{
-			//	$episodes[$key]['time'] = false;
-			//}
-			$meta = $clerk->getMetas($e['data_id']);
-			$episodes[$key]['meta'] = $meta;
-		}
+		$episodes = $clerk->getRecords($options);
 		
 		$seasons[$ord] = [
 			'name' => $s['data_name'],
@@ -90,36 +76,21 @@ if($return == false){
 
 
 	//Videos and films that are in a series
-
-	$sql = 'SELECT * FROM data WHERE data.data_parent = :id AND data.data_type = "video" ORDER BY data.data_name';
-	$params = [
-		':id' => $id
+	$metas = [
+		'length',
+		'poster',
+		'release',
+		'director',
+		'desc',
+		'starring'
 	];
-	$query2 = $db->query($sql, $params);
-	if($query2 !== false){
-		$movies = $query2->fetchAll();
-	}else{
-		$movies = [];
-	}
-
-	foreach($movies as $key => $v){
-		
-		//$sql = 'SELECT * FROM history WHERE data_id = :id AND user_key = :user';
-		//$params = [
-		//	':id' => $v['data_id'],
-		//	':user' => $user['user_key']
-		//];
-		//$query = $db->query($sql, $params);
-		//$history = $query->fetch();
-		//if(!empty($history)){
-		//	$movies[$key]['time'] = $history['history_val'];
-		//}else{
-		//	$movies[$key]['time'] = false;
-		//}
-		
-		$metas = $clerk->getMetas($v['data_id']);
-		$movies[$key]['meta'] = $metas;
-	}
+	$options = [
+		'metas' => $metas,
+		'type' => 'video',
+		'parent' => $id,
+		'orderby' => 'data_name'
+	];
+	$movies = $clerk->getRecords($options);
 
 	$return = [
 		'tv' => $tv,

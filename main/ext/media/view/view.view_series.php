@@ -17,8 +17,8 @@ if(!empty($members['seasons'])){
 			if(empty($r['series'])){
 				$r['series'] = '';
 			}
-			if(empty($r['meta']['release'])){
-				$r['meta']['release'] = '';
+			if(empty($r['release'])){
+				$r['release'] = '';
 			}
 			if(empty($r['data_name'])){
 				$filename = $r['data_content'];
@@ -30,9 +30,9 @@ if(!empty($members['seasons'])){
 				}else{
 					$class = 'tv-series';
 				}
-			if(!empty($r['meta']['poster'])){
-				$r['meta']['poster'] = str_replace(ROOT, '', $r['meta']['poster']);
-				echo '<li>'.$r['data_name'].' ('.formatLength($r['meta']['length']).')<br><img class="series_poster" data-src="'.$r['meta']['poster'].'">';
+			if(!empty($r['poster'])){
+				$r['poster'] = str_replace(ROOT, '', $r['poster']);
+				echo '<li>'.$r['data_name'].' ('.formatLength($r['length']).')<br><img class="series_poster" data-src="'.$r['poster'].'">';
 				
 				//if($r['time'] == false){
 					$percent = 0;
@@ -40,7 +40,7 @@ if(!empty($members['seasons'])){
 				//	$percent = ceil(($r['time'] / $r['meta']['length']) * 100);
 				//}
 				
-				echo '<div data-id="'.$r['data_id'].'" data-length="'.$r['meta']['length'].'" class="episode_progress"><div style="width: '.$percent.'%" class="progress_bar"></div></div>';
+				echo '<div data-id="'.$r['data_id'].'" data-length="'.$r['length'].'" class="episode_progress"><div style="width: '.$percent.'%" class="progress_bar"></div></div>';
 				echo '<a href="'.build_slug('watch/'.$r['data_id'], [], 'media').'"><i class="fa fa-play"></i> Play</a><a href="'.build_slug('view/'.$r['data_id'], [], 'media').'" class="video-link '.$class.'" ><i class="fa fa-info"></i> Details</a></li>';
 			}else{
 				echo '<li>'.$r['data_name'].'<br>Test<a href="'.build_slug('view/'.$r['data_id'], [], 'media').'" class="video-link '.$class.'" ><i class="fa fa-info"></i> Details</a><a href="'.build_slug('watch/'.$r['data_id'], [], 'media').'"><i class="fa fa-play"></i> Play</a></li>';
@@ -60,7 +60,7 @@ if(!empty($members['tv'])){
 		if(empty($r['series'])){
 			$r['series'] = '';
 		}
-		if(empty($r['meta']['release'])){
+		if(empty($r['release'])){
 			$r['meta']['release'] = '';
 		}
 		if(empty($r['data_name'])){
@@ -73,9 +73,9 @@ if(!empty($members['tv'])){
 			}else{
 				$class = 'tv-series';
 			}
-		if(!empty($r['meta']['poster'])){
-			$r['meta']['poster'] = str_replace(ROOT, '', $r['meta']['poster']);
-			echo '<li>'.$r['data_name'].' ('.formatLength($r['meta']['length']).')<br><img class="series_poster" data-src="'.$r['meta']['poster'].'">';
+		if(!empty($r['poster'])){
+			$r['poster'] = str_replace(ROOT, '', $r['poster']);
+			echo '<li>'.$r['data_name'].' ('.formatLength($r['length']).')<br><img class="series_poster" data-src="'.$r['poster'].'">';
 			
 			//if($r['time'] == false){
 				$percent = 0;
@@ -83,7 +83,7 @@ if(!empty($members['tv'])){
 			//	$percent = ceil(($r['time'] / $r['meta']['length']) * 100);
 			//}
 			
-			echo '<div data-id="'.$r['data_id'].'" data-length="'.$r['meta']['length'].'" class="episode_progress"><div style="width: '.$percent.'%" class="progress_bar"></div></div>';
+			echo '<div data-id="'.$r['data_id'].'" data-length="'.$r['length'].'" class="episode_progress"><div style="width: '.$percent.'%" class="progress_bar"></div></div>';
 			echo '<a href="'.build_slug('watch/'.$r['data_id'], [], 'media').'"><i class="fa fa-play"></i> Play</a><a href="'.build_slug('view/'.$r['data_id'], [], 'media').'" class="video-link '.$class.'" ><i class="fa fa-info"></i> Details</a></li>';
 		}else{
 			echo '<li>'.$r['data_name'].'<br><a href="'.build_slug('view/'.$r['data_id'], [], 'media').'" class="video-link '.$class.'" ><i class="fa fa-info"></i> Details</a><a href="'.build_slug('watch/'.$r['data_id'], [], 'media').'"><i class="fa fa-play"></i> Play</a></li>';
@@ -99,8 +99,8 @@ if(!empty($members['movies'])){?>
 		if(empty($r['series'])){
 			$r['series'] = '';
 		}
-		if(empty($r['meta']['release'])){
-			$r['meta']['release'] = '';
+		if(empty($r['release'])){
+			$r['release'] = '';
 		}
 		if(empty($r['data_name'])){
 			$filename = $r['data_content'];
@@ -112,9 +112,9 @@ if(!empty($members['movies'])){?>
 			}else{
 				$class = 'tv-series';
 			}
-		if(!empty($r['meta']['poster'])){
-			$r['meta']['poster'] = str_replace(ROOT, '', $r['meta']['poster']);
-			echo '<li>'.$r['data_name'].' ('.formatLength($r['meta']['length']).')<br><img class="series_poster" data-src="'.$r['meta']['poster'].'">';
+		if(!empty($r['poster'])){
+			$r['poster'] = str_replace(ROOT, '', $r['poster']);
+			echo '<li>'.$r['data_name'].' ('.formatLength($r['length']).')<br><img class="series_poster" data-src="'.$r['poster'].'">';
 			
 			//if($r['time'] == false){
 				$percent = 0;
@@ -122,7 +122,7 @@ if(!empty($members['movies'])){?>
 			//	$percent = ceil(($r['time'] / $r['meta']['length']) * 100);
 			//}
 			
-			echo '<div data-id="'.$r['data_id'].'" data-length="'.$r['meta']['length'].'" class="episode_progress"><div style="width: '.$percent.'%" class="progress_bar"></div></div>';
+			echo '<div data-id="'.$r['data_id'].'" data-length="'.$r['length'].'" class="episode_progress"><div style="width: '.$percent.'%" class="progress_bar"></div></div>';
 			echo '<a href="'.build_slug('watch/'.$r['data_id'], [], 'media').'"><i class="fa fa-play"></i> Play</a><a href="'.build_slug('view/'.$r['data_id'], [], 'media').'" class="video-link '.$class.'" ><i class="fa fa-info"></i> Details</a></li>';
 
 		}else{

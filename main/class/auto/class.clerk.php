@@ -379,16 +379,47 @@ class clerk {
 		}
 		if(isset($options['search_meta']) && !is_array($options['search_meta'])){
 			$sub_where = [];
-			$params[':search_meta'] = '%'.$options['search_meta'].'%';
-			foreach($options['metas'] as $key => $m){
-				$sub_where[] = 'm'.$key.'.data_meta_content LIKE :search_meta';
+			if(isset($options['search_meta_mode'])){
+				$mode = $options['search_meta_mode'];
+			}else{
+				$mode = 'like';
+			}
+			switch($mode){
+				default:
+				case 'like':
+					$params[':search_meta'] = '%'.$options['search_meta'].'%';
+					foreach($options['metas'] as $key => $m){
+						$sub_where[] = 'm'.$key.'.data_meta_content LIKE :search_meta';
+					}
+					break;
+				case 'strict':
+					$params[':search_meta'] = $options['search_meta'];
+					foreach($options['metas'] as $key => $m){
+						$sub_where[] = 'm'.$key.'.data_meta_content = :search_meta';
+					}
+					break;
 			}
 			$where[] = '('.implode(' OR ', $sub_where).')';
 		}else if(isset($options['search_meta']) && is_array($options['search_meta'])){
+			if(isset($options['search_meta_mode'])){
+				$mode = $options['search_meta_mode'];
+			}else{
+				$mode = 'like';
+			}
 			foreach($options['search_meta'] as $field => $search){
-				$key = array_search($field, $options['metas']);
-				$where[] = 'm'.$key.'.data_meta_content LIKE :search_meta'.$key;
-				$params[':search_meta'.$key] = $search;
+				switch($mode){
+					default:
+					case 'like':
+						$key = array_search($field, $options['metas']);
+						$where[] = 'm'.$key.'.data_meta_content LIKE :search_meta'.$key;
+						$params[':search_meta'.$key] = '%'.$search.'%';
+						break;
+					case 'strict':
+						$key = array_search($field, $options['metas']);
+						$where[] = 'm'.$key.'.data_meta_content = :search_meta'.$key;
+						$params[':search_meta'.$key] = $search;
+						break;
+				}
 			}
 		}
 		
