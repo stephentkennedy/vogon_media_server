@@ -155,6 +155,9 @@ class clerk {
 		if(is_numeric($options)){
 			return $this->getRecord(['id' => $options]);
 		}
+		if(isset($options['metas'])){
+			return $this->metaComplex($options);
+		}
 		if(isset($options['limit'])){
 			$cql = 'SELECT COUNT(*) as `count` FROM `data`';
 		}
@@ -340,6 +343,69 @@ class clerk {
 		$this->db->query($sql, $this->params);
 	}
 	
+	private function metaComplex($options){
+		$sql = 'SELECT `data`.*, ';
+		$mj = $this->metaJoin($options['metas']);
+		$sql .= implode(', ', $mj['select']) . ' FROM `data` ' . implode(' ', $mj['joins']);
+		
+		$where = [];
+		$params = [];
+		
+		/*
+		Name: Stephen Kennedy
+		Date: 8/5/2020
+		Comment: Since we're joining here, we're only allowing a subset of the options we offer in the main function.
+		*/
+		
+		if(isset($options['type'])){
+			$where[] = '`data`.`data_type` = :type';
+			$params[':type'] = $options['type'];
+		}
+		if(isset($options['id'])){
+			$where[] = '`data`.`data_id` = :id';
+			$params[':id'] = $options['id'];
+		}
+		if(isset($options['parent'])){
+			$where[] = '`data`.`data_parent` = :parent';
+			$params[':parent'] = $options['parent'];
+		}
+		if(isset($options['search_name'])){
+			$where[] ='`data`.`data_name` LIKE :search_name';
+			$params[':search_name'] = '%'.$options['search_name'].'%';
+		}
+		if(isset($options['search_content'])){
+			$where[] ='`data`.`data_content` LIKE :search_content';
+			$params[':search_content'] ='%'.$options['search_content'].'%';
+		}
+		if(isset($options['search_meta']) && !is_array($options['search_meta'])){
+			$sub_where = [];
+			$params[':search_meta'] = '%'.$options['search_meta'].'%';
+			foreach($options['metas'] as $key => $m){
+				$sub_where[] = 'm'.$key.'.data_meta_content LIKE :search_meta';
+			}
+			$where[] = '('.implode(' OR ', $sub_where).')';
+		}else if(isset($options['search_meta']) && is_array($options['search_meta'])){
+			foreach($options['search_meta'] as $field => $search){
+				$key = array_search($field, $options['metas']);
+				$where[] = 'm'.$key.'.data_meta_content LIKE :search_meta'.$key;
+				$params[':search_meta'.$key] = $search;
+			}
+		}
+		
+		$sql .= ' WHERE ' . implode(' AND ', $where);
+		if(isset($options['orderby'])){
+			$sql .= ' ORDER BY '.$options['orderby'];
+		}
+		
+		$query = $this->db->query($sql, $params);
+		if($query != false){
+			$records = $query->fetchAll();
+		}else{
+			$records = [];
+		}
+		return $records;
+	}
+	
 	private function buildParam($option, $field, $friendly = false, $compare = '='){
 		if($friendly == false){
 			$friendly = $field;
@@ -357,5 +423,21 @@ class clerk {
 			$this->where[] = '`'.$field.'` '.$compare.' :'.$friendly;
 			$this->params[':'.$friendly] = $option;
 		}
+	}
+	
+	private function metaJoin($fields){
+		$select = [];
+		$joins = [];
+		if(!is_array($fields)){
+			$fields = [$fields];
+		}
+		foreach($fields as $key => $f){
+			$select[] = 'm'.$key.'.data_meta_content AS `'.$f.'`';
+			$joins[] = 'LEFT JOIN (SELECT * FROM data_meta WHERE data_meta_name = "'.$f.'") m'.$key.' on `data`.`data_id` = m'.$key.'.data_id';
+		}
+		return [
+			'select' => $select,
+			'joins' => $joins
+		];
 	}
 }
