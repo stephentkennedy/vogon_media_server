@@ -1,6 +1,7 @@
 <?php
 set_time_limit(0);
 
+
 require ROOT . '/vendor/autoload.php';
 
 $ffmpeg = FFMpeg\FFMpeg::create();
@@ -8,14 +9,25 @@ $ffmpeg = FFMpeg\FFMpeg::create();
 load_class('filesystem');
 $fs = new filesystem;
 
-$files = $fs->recursiveScan(ROOT . DIRECTORY_SEPARATOR . 'upload' . DIRECTORY_SEPARATOR . 'video' . DIRECTORY_SEPARATOR . 'DBGT', true);
+//$files = $fs->recursiveScan(ROOT . DIRECTORY_SEPARATOR . 'upload' . DIRECTORY_SEPARATOR . 'video' . DIRECTORY_SEPARATOR . 'DBGT', true);
+$files = $fs->recursiveScan($dir, true);
 
 $thumbDir = ROOT . DIRECTORY_SEPARATOR . 'upload' . DIRECTORY_SEPARATOR . 'thumbs' . DIRECTORY_SEPARATOR;
 
 $clerk = new clerk;
 //$parent = 10844; //DBZ
-$parent = 11676; //DB
-$parent = 11836; //DBGT
+//$parent = 11676; //DB
+//$parent = 11836; //DBGT
+if(!empty($series_name) && empty($series_id)){
+	$parent = $clerk->addRecord([
+		'name' => $series_name,
+		'type' => 'series'
+	]);
+}else if(!empty($series_id)){
+	$parent = $series_id;
+}else{
+	$parent = 0;
+}
 
 foreach($files as $f){
 	debug_d($f);

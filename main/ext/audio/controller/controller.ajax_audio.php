@@ -4,6 +4,9 @@ ini_set('display_errors', 0);
 $id = get_slug_part(3);
 $clerk = new clerk;
 $track = $clerk->getRecord($id, true);
+if(!empty($track['data_parent'])){
+	$album = $clerk->getRecord($track['data_parent'])['data_name'];
+}
 $src = str_replace(ROOT, '', $track['data_content']);
 $src = str_replace(DIRECTORY_SEPARATOR, '/', $src);
 $mime = mime_content_type($track['data_content']);
@@ -20,6 +23,11 @@ $return = [
 	'duration' => $track['meta']['length'],
 	'artist' => $track['meta']['artist']
 ];
+if(!empty($album)){
+	$return['album'] = $album;
+}else{
+	$return['album'] = '';
+}
 if(!empty($track['meta']['history'])){
 	//This means that audio and media are linked together and you can't have audio without media.
 	//Honestly should look into making them one extension and supporting more routes via build_slug

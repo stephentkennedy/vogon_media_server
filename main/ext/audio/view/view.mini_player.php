@@ -50,7 +50,17 @@ $(document).ready(function(){
 					miniplayer.track = true;
 				}
 				miniplayer.audio[0].play();
-				$('.mini-player-audio-controls .mini-player-play').removeClass('fa-play').addClass('fa-pause');
+				if('mediaSession' in navigator){
+					navigator.mediaSession.metadata = new MediaMetadata({
+						title: data['title'],
+						artist: data['artist'],
+						album: data['album']
+					});
+					if('MediaPositionState' in navigator.mediaSession){
+						navigator.mediaSession.MediaPositionState.duration = data['length'];
+						navigator.mediaSession.MediaPositionState.position = 0.0;
+					}
+				}
 			});			
 		},
 		init: function(){
@@ -73,12 +83,8 @@ $(document).ready(function(){
 			$('.mini-player-audio-controls .mini-player-play').click(function(){
 				if(miniplayer.src.prop('src') != ''){
 					if($(this).hasClass('fa-play')){
-						$(this).removeClass('fa-play');
-						$(this).addClass('fa-pause');
 						miniplayer.audio[0].play();
 					}else{
-						$(this).removeClass('fa-pause');
-						$(this).addClass('fa-play');
 						miniplayer.audio[0].pause();
 					}
 				}
@@ -93,6 +99,9 @@ $(document).ready(function(){
 			miniplayer.audio[0].addEventListener('timeupdate', function(){
 				var curtime = parseInt(miniplayer.audio[0].currentTime, 10);
 				$('.mini-player-audio-controls .seek').val(curtime);
+				if('mediaSession' in navigator && 'MediaPositionState' in navigator.mediaSession){
+					navigator.mediaSession.MediaPositionState.position = miniplayer.audio[0].currentTime;
+				}
 			});
 			miniplayer.audio[0].onended = function(){
 				if(playlist.playing == false){
@@ -144,11 +153,54 @@ $(document).ready(function(){
 				}
 			});
 			
+			if('mediaSession' in navigator){
+				navigator.mediaSession.setActionHandler('play', miniplayer.play);
+				navigator.mediaSession.setActionHandler('pause', miniplayer.play);
+				navigator.mediaSession.setActionHandler('nexttrack', playlist.next);
+				navigator.mediaSession.setActionHandler('previoustrack', playlist.prev);
+			}
+			
+			/*
+			Name: Stephen Kennedy
+			Date: 8/5/2020
+			Comment: This works when in focus, but we may not need to use it if we use the mediaSession API.
+			*/
+			$(document).on('keydown', function(e){
+				switch(e.originalEvent.code){
+					case 'MediaPlayPause':
+							if(miniplayer.src.prop('src') != ''){
+								if($('.mini-player-audio-controls .mini-player-play').hasClass('fa-play')){
+									miniplayer.audio[0].play();
+								}else{
+									miniplayer.audio[0].pause();
+								}
+							}
+						break;
+					case 'MediaStop':
+							miniplayer.audio[0].pause();
+							miniplayer.audio[0].currentTime = 0.0;
+						break;
+					case 'MediaTrackPrevious':
+						console.log('Previous');
+						if(playlist.playing == true){
+							playlist.prev();
+						}
+						break;
+					case 'MediaTrackNext':
+						console.log('Next');
+						if(playlist.playing == true){
+							playlist.next();
+						}						
+						break;
+				}
+			});
+			
 			//Update these functions with the class changes when you come back to this.
 			miniplayer.audio.on('play', function(){
 				miniplayer.playing = true;
 				clearTimeout(miniplayer.h_loop);
 				miniplayer.h_loop = setTimeout(miniplayer.updateHistory, miniplayer.h_freq);
+				$('.mini-player-audio-controls .mini-player-play').removeClass('fa-play').addClass('fa-pause');
 			});
 			
 			miniplayer.audio.on('pause', function(){
@@ -156,6 +208,7 @@ $(document).ready(function(){
 				clearTimeout(miniplayer.h_loop);
 				//Because the first thing I do before changing devices is pause
 				miniplayer.updateHistory();
+				$('.mini-player-audio-controls .mini-player-play').removeClass('fa-pause').addClass('fa-play');
 			});
 		},
 		toggle: function(){
@@ -174,9 +227,15 @@ $(document).ready(function(){
 		},
 		play: function(){
 			if(miniplayer.instance.find('.fa.play').hasClass('fa-play')){
-				miniplayer.instance.find('.fa.play').removeClass('fa-play').addClass('fa-pause');
-			}{
-				miniplayer.instance.find('.fa.play').removeClass('fa-pause').addClass('fa-play');
+				miniplayer.audio[0].play();
+				if('mediaSession' in navigator){
+					navigator.mediaSession.playbackState = 'playing';
+				}
+			}else{
+				miniplayer.audio[0].pause();
+				if('mediaSession' in navigator){
+					navigator.mediaSession.playbackState = 'paused';
+				}
 			}
 		},
 		updateHistory: function(){

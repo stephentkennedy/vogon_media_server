@@ -12,12 +12,24 @@ if(!empty($action)){
 			load_model('stop_minidlna', [], 'media');
 			load_model('start_minidlna', [], 'media');
 			break;
+		case 'import':
+			load_controller('importer', [], 'media');
+			break;
 	}
-	$string = $_SERVER['REQUEST_URI'];
-	$array = explode('/', $string);
-	array_pop($array);
-	$string = implode('/', $array);
-	header('Location: '.$string);
+	
+	//This switch case is because we're repurposing this controller.
+	switch(strtolower($action)){
+		case 'stop':
+		case 'start':
+		case 'restart':
+			$string = $_SERVER['REQUEST_URI'];
+			$array = explode('/', $string);
+			array_pop($array);
+			$string = implode('/', $array);
+			header('Location: '.$string);
+			break;
+	}
+	
 }else{
 	load_controller('header');
 	echo load_view('minidlna', [], 'media');

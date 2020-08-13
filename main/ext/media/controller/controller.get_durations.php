@@ -7,7 +7,7 @@ $getID3->setOption(['encoding' => 'UTF-8']);
 $clerk = new clerk;
 
 //$sql = 'SELECT * FROM data WHERE data_type = "video" OR data_type = "tv"';
-$sql = 'SELECT * FROM data WHERE data_parent = 11835';
+$sql = 'SELECT * FROM data WHERE data_parent = 12670';
 $query = $db->query($sql, []);
 $items = $query->fetchAll();
 foreach($items as $item){
