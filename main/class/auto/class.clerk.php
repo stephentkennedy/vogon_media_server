@@ -3,7 +3,8 @@
 class clerk {
 	private $params, $where, $sql;
 	private $debug = false;
-	public $db, $total_count, $record = [];
+	public $db, $total_count; 
+	public $record = []; //Currently unused
 	
 	public function __construct($db = false){
 		if($db == false){
@@ -373,7 +374,7 @@ class clerk {
 			$where[] ='`data`.`data_name` LIKE :search_name';
 			$params[':search_name'] = '%'.$options['search_name'].'%';
 		}
-		if(isset($options['search_content'])){
+		if(isset($options['search_content']) || isset($options['content'])){
 			$where[] ='`data`.`data_content` LIKE :search_content';
 			$params[':search_content'] ='%'.$options['search_content'].'%';
 		}

@@ -15,5 +15,8 @@
 		':create' => date('Y-m-d H:i:s'),
 		':edit' => date('Y-m-d H:i:s')
 	];
-	return $db->query($sql, $params);
+
+	$return = $db->query($sql, $params);
+	
+	return $return
 ?>

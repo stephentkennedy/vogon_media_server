@@ -22,6 +22,8 @@
 				load_controller('footer', ['view' => 'mini']);
 				die(); //Die here so that no additional routing will be done.
 			}
+			global $user;
+			$user = $check;
 			load_model('start_session', ['user_key' => $check['user_key']], 'user');
 		}
 	}else{

@@ -7,7 +7,6 @@ Comment: Let's establish what we need for our bootstrap;
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 $directories = explode(DIRECTORY_SEPARATOR,__DIR__);
-ini_set('display_errors', 1);
 array_pop($directories);
 $directories = implode(DIRECTORY_SEPARATOR,$directories);
 define('ROOT', $directories);
@@ -72,4 +71,3 @@ if(empty($_REQUEST['orderby'])){
 
 //Include our router
 include __DIR__.DIRECTORY_SEPARATOR.'router.php';
-?>
