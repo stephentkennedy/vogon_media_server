@@ -10,6 +10,13 @@ if(!empty($_POST['action'])){
 			], 'media');
 			load_controller('footer');
 			break;
+		case 'audio':
+			load_controller('header');
+			load_controller('scan', [
+				'dir' => $_POST['dir']
+			], 'audio');
+			load_controller('footer');
+			break;
 	}
 }else{
 	load_controller('header');

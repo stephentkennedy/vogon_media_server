@@ -1,23 +1,26 @@
 <?php
+//Imports take a bit. If we were C programmers, we'd probably do this with a dedicated programmer, but since we're PHP hacks here we go.
 set_time_limit(0);
 
-
+//Create our classes, in this case $ffmpeg, $getID3, $fs, and $clerk
 require ROOT . '/vendor/autoload.php';
 
 $ffmpeg = FFMpeg\FFMpeg::create();
 
+require_once(ROOT . DIRECTORY_SEPARATOR .  'main'. DIRECTORY_SEPARATOR . 'ext'. DIRECTORY_SEPARATOR . 'audio'. DIRECTORY_SEPARATOR . 'include' . DIRECTORY_SEPARATOR . 'getid3'. DIRECTORY_SEPARATOR . 'getid3.php');
+$getID3 = new getID3;
+$getID3->setOption(['encoding' => 'UTF-8']);
+
 load_class('filesystem');
 $fs = new filesystem;
 
-//$files = $fs->recursiveScan(ROOT . DIRECTORY_SEPARATOR . 'upload' . DIRECTORY_SEPARATOR . 'video' . DIRECTORY_SEPARATOR . 'DBGT', true);
+$clerk = new clerk;
+
+//Scan our files
 $files = $fs->recursiveScan($dir, true);
 
 $thumbDir = ROOT . DIRECTORY_SEPARATOR . 'upload' . DIRECTORY_SEPARATOR . 'thumbs' . DIRECTORY_SEPARATOR;
 
-$clerk = new clerk;
-//$parent = 10844; //DBZ
-//$parent = 11676; //DB
-//$parent = 11836; //DBGT
 if(!empty($series_name) && empty($series_id)){
 	$parent = $clerk->addRecord([
 		'name' => $series_name,
@@ -57,8 +60,12 @@ foreach($files as $f){
 				'parent' => $parent
 			];
 			
+			$file_info = $getID3->analyze($f);
+			$length = $file_info['playtime_seconds'];
+			
 			$meta_data = [
-				'poster' => $thumb_name
+				'poster' => $thumb_name,
+				'length' => $length
 			];
 			
 			$clerk->addRecord($record_data, $meta_data);

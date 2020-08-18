@@ -5,7 +5,7 @@ set_time_limit(0);
 load_class('filesystem');
 $fs = new filesystem;
 
-$files = $fs->recursiveScan(ROOT . DIRECTORY_SEPARATOR . 'upload' . DIRECTORY_SEPARATOR . 'audio', true);
+$files = $fs->recursiveScan($dir, true);
 
 require_once(ROOT . DIRECTORY_SEPARATOR .  'main'. DIRECTORY_SEPARATOR . 'ext'. DIRECTORY_SEPARATOR . 'audio'. DIRECTORY_SEPARATOR . 'include' . DIRECTORY_SEPARATOR . 'getid3'. DIRECTORY_SEPARATOR . 'getid3.php');
 
