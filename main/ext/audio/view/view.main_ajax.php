@@ -12,8 +12,33 @@
 </div>
 <?php echo load_view('mini_player', [], 'audio'); ?>
 <script type="text/javascript">
-	var controller = {};
+	var controller = {
+		url: {
+			'default': '/ajax/ajax_search/audio',
+			'artists': '/ajax/ajax_search_artist/audio',
+			'albums': '/ajax/ajax_search_album/audio',
+			'genre': ''
+		},
+		active_url: '<?php switch($type){
+							case 'artists':
+								echo 'artists';
+								break;
+							case 'albums':
+								echo 'albums';
+								break;
+							default: 
+								echo 'default'; 
+								break; 
+						} ?>'
+	};
 	$(document).ready(function(){
+		$('.nav.audio').removeAttr('href').attr('data-search', 'default');
+		$('#main-nav a.audio').click(function(){
+			var dom = $(this);
+			var search = dom.data('search');
+			controller.active_url = search;
+			controller.page(1);
+		});
 		controller.load = function(content){
 			$('#ajax-output').html(content);
 			$('.page-change').click(function(){
@@ -26,6 +51,11 @@
 				var id = $(this).data('id');
 				miniplayer.load(id);
 			});
+			$('.miniplayer-server-shuffle').click(function(){
+				playlist.playing = false;
+				playlist.currentChunk = false;
+				playlist.serverShuffle();
+			});
 			playlist.bind();
 		}
 		controller.page = function(page, push){
@@ -34,7 +64,8 @@
 			}
 			var data = {
 				'format': 'HTML',
-				'page': page
+				'page': page,
+				'type': controller.active_url
 			};
 			var search = $('#search').val();
 			var url = '?p=' + page;
@@ -42,21 +73,12 @@
 				data['search'] = search;
 				url += '&s=' + encodeURI(search);
 			}
+			url += '&t=' + encodeURI(controller.active_url);
 			controller.load('<i class="fa fa-cog fa-spin"></i>');
 			if(push == true){
 				history.pushState(data, '', url);
 			}
-			$.get('<?php switch($type){
-							case 'artists':
-								echo '/ajax/ajax_search_artist/audio';
-								break;
-							case 'albums':
-								echo '/ajax/ajax_search_album/audio';
-								break;
-							default: 
-								echo '/ajax/ajax_search/audio'; 
-								break; 
-						} ?>', data , function(content){
+			$.get(controller.url[controller.active_url], data , function(content){
 				controller.load(content);
 			});
 		}
@@ -84,7 +106,9 @@
 				}else{
 					$('#search').val('');
 				}
-				
+				if(state.type != undefined && state.type != ''){
+					controller.active_url = state.type;
+				}
 				controller.page(state.page, false);
 			}else{
 				var url = new URL(window.location);
@@ -106,6 +130,9 @@
 						$('#search').val(params['s']);
 					}else{
 						$('#search').val('');
+					}
+					if(params['t'] != undefined){
+						controller.active_url = params['t'];
 					}
 					if(params['p'] != undefined){
 						var page = params['p'];

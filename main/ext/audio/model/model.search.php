@@ -1,4 +1,5 @@
 <?php
+
 $sql = '';
 $r_sql = 'SELECT * FROM ';
 $c_sql = 'SELECT count(DISTINCT `data`.`data_id`) as `count` FROM ';

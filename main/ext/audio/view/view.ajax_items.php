@@ -45,6 +45,7 @@ switch($format){
 		break;
 	case 'HTML':
 		$page_data['ajax'] = true;
+		$shufflePlay = '<button class="button miniplayer-server-shuffle"><i class="fa fa-retweet"></i> Shuffle Play All</button><br><br>';
 		$pageination = load_view('pageination', $page_data, 'audio');
 		$table = '<table><thead><tr>
 			<th>Title</th>
@@ -95,6 +96,6 @@ switch($format){
 			$table .= '</tr>';
 		}
 		$table .= '</tbody></table>';
-		echo $pageination.$table.$pageination;
+		echo $shufflePlay.$pageination.$table.$pageination;
 		break;
 }

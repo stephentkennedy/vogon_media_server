@@ -8,7 +8,7 @@ switch($type){
 		$array = [];
 		$string = '';
 		foreach($nav_routes as $r){
-			$string .= '<a href="'.URI.'/'.$r['route_slug'].'">';
+			$string .= '<a class="nav '.$r['route_ext'].'" href="'.URI.'/'.$r['route_slug'].'">';
 			if(empty($r['nav_display'])){
 				$string .= $r['route_ext'];
 			}else{
@@ -21,7 +21,17 @@ switch($type){
 					$subnav = file_get_contents($subnav);
 					$subnav = json_decode($subnav, true);
 					foreach($subnav as $nav){
-						$string .= '<a class="subnav" href="'.build_slug($nav['link'], [], $r['route_ext']).'">'.$nav['display'].'</a> ';
+						$string .= '<a class="subnav '.$r['route_ext'].'" ';
+						if(!empty($nav['link'])){
+							$string .= 'href="'.build_slug($nav['link'], [], $r['route_ext']).'" ';
+						}
+						if(!empty($nav['data'])){
+							foreach($nav['data'] as $name => $value){
+								$string .= 'data-'.$name.'="'.$value.'" ';
+							}
+						}
+						
+						$string .= '>'.$nav['display'].'</a> ';
 					}
 				}
 			}

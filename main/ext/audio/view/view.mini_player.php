@@ -636,9 +636,33 @@ var playlist = {
 	loopMode: 'none',
 	playing: false,
 	window: false,
+	currentChunk: false,
 	shuffle: false,
-	shuffleHistory: []
+	shuffleMode: "local",
+	shuffleHistory: [],
+	shuffleURL: '/ajax/ajax_server_shuffle/audio'
 };
+
+playlist.serverShuffle = function(){
+	//Set ourselves up.
+	playlist.shuffleMode = 'server';
+	playlist.list = [];
+	playlist.shuffle = true;
+	playlist.shuffleHistory = [];
+	playlist.i = 0;
+	
+	var search = $('#search').val();
+	
+	//Get our first chunk of 100 songs and start playback.
+	$.post(playlist.shuffleURL, {search: search}, function(content){
+		if(content.error === false){
+			playlist.list = content.chunk;
+			playlist.play(0);
+		}else{
+			console.log(content.message);
+		}
+	});
+}
 
 playlist.bind = function(){
 	$('.playlist-add').off().click(function(){
@@ -684,14 +708,27 @@ playlist.disable = function(){
 }
 
 playlist.next = function(){
-	if(playlist.shuffle == false){
-		if(playlist.i + 1 >= playlist.list.length){
+	miniplayer.audio[0].pause();
+	if(playlist.shuffle == false || playlist.shuffleMode == 'server'){
+		if(playlist.i + 1 >= playlist.list.length && playlist.shuffleMode != 'server'){
 			if(playlist.loopMode == 'loop'){
 				playlist.i = 0;
 				miniplayer.load(playlist.list[0]);
 			}else if(playlist.loopMode == 'one'){
 				miniplayer.load(playlist.list[playlist.i]);
 			}
+		}else if(playlist.i + 1 >= playlist.list.length && playlist.shuffleMode == 'server'){
+			var search = $('#search').val();
+			var data = {prev: playlist.list, search: search};
+			playlist.i = 0;
+			$.post(playlist.shuffleURL, data, function(content){
+				if(content.error === false){
+					playlist.list = content.chunk;
+					playlist.play(0);
+				}else{
+					console.log(content.message);
+				}
+			});
 		}else{
 			playlist.i++;
 			miniplayer.load(playlist.list[playlist.i]);
@@ -709,7 +746,7 @@ playlist.next = function(){
 }
 
 playlist.actual_prev = function(){
-	if(playlist.shuffle == false){
+	if(playlist.shuffle == false || playlist.shuffleMode == 'server'){
 		if(playlist.i - 1 < 0){
 			if(playlist.loopMode == 'loop'){
 				playlist.i = playlist.list.length - 1;

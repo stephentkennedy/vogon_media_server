@@ -140,9 +140,6 @@ Popup styles
 	width: 25%;
 	text-align: right;
 }
-.popup .closePop .fa.fa-times:before{
-	content: 'X';
-}
 .popup .content{
 	overflow: auto;
 }

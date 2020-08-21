@@ -399,6 +399,17 @@ class clerk {
 						$sub_where[] = 'm'.$key.'.data_meta_content = :search_meta';
 					}
 					break;
+				case 'is not':
+					//$params[':search_meta'] = $options['search_meta'];
+					foreach($options['metas'] as $key => $m){
+						$sub_where[] = 'm'.$key.'.data_meta_content IS NOT NULL';
+					}
+					break;
+				case 'is':
+					foreach($options['metas'] as $key => $m){
+						$sub_where[] = 'm'.$key.'.data_meta_content IS NULL';
+					}
+					break;
 			}
 			$where[] = '('.implode(' OR ', $sub_where).')';
 		}else if(isset($options['search_meta']) && is_array($options['search_meta'])){
@@ -419,6 +430,14 @@ class clerk {
 						$key = array_search($field, $options['metas']);
 						$where[] = 'm'.$key.'.data_meta_content = :search_meta'.$key;
 						$params[':search_meta'.$key] = $search;
+						break;
+					case 'is not':
+						$key = array_search($field, $options['metas']);
+						$where[] = 'm'.$key.'.data_meta_content IS NOT NULL';
+						break;
+					case 'is':
+						$key = array_search($field, $options['metas']);
+						$where[] = 'm'.$key.'.data_meta_content IS NULL';
 						break;
 				}
 			}
