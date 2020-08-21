@@ -44,7 +44,7 @@ The point of the project is to make a lean, easily editable, web interface for a
 The prototype is running successfully on a Raspberry Pi 3 with 2 simultaneous 1080p video streams. More than that and the RAM fills up and buffering becomes constant.
 
 ## Installation
-You will need Apache, PHP, MySQL, and FFMPEG installed and available for the Apache user(s). I also recommend installing MiniDLNA server and setting it up to be run by the same Apache user(s) so that the web interface can manage starting/stoping/restarting as needed, this is not required, and nothing in the software requires MiniDLNA to run, it just covers a number of devices that don't have access to fully HTML5 compliant web browsers.
+You will need Apache, PHP, MySQL, and FFMPEG installed and available for the Apache user(s). I also recommend installing MiniDLNA server and setting it up to be run by the same Apache user(s) so that the web interface can manage starting/stopping/restarting as needed, this is not required, and nothing in the software requires MiniDLNA to run, it just covers a number of devices that don't have access to fully HTML5 compliant web browsers.
 
 You will need to setup a database and database user that can create tables, that done, the installer.php will install the needed database information.
 
