@@ -14,8 +14,9 @@ $(document).ready(function(){
 		playing: false,
 		h_loop: false,
 		h_freq: 10000,
+		sleep_timer: false,
 		animation: miniplayer.cleanCircle,
-		seed: '<div class="mini-player"><header class="mini-player-header"><span class="shadow"></span><span class="title">Mini-Player</span><span class="controls"><i class="fa fa-window-maximize toggle"></i><i class="fa fa-cog option"></i><i class="fa fa-expand fullscreen"></i><i class="fa fa-times close"></i></span></header><canvas></canvas><audio class="current-track"><source class="current-source"></source></audio><div class="mini-player-audio-controls"><i class="fa fa-step-backward fa-fw  mini-player-prev disable"></i><i class="fa fa-play fa-fw  mini-player-play"></i><i class="fa fa-step-forward fa-fw  mini-player-next disable"></i><i class="fa fa-random  fa-fw mini-player-shuffle disable"></i><i class="fa fa-retweet fa-fw  mini-player-loop disable"></i><span class="mini-one">1</span><input type="range" class="seek" value="0" max="" /><i class="fa fa-fw fa-volume-up mini-player-volume"></i></div><i class="fa fa-list playlist-toggle"></i><div class="mini-player-playlist"></div></div>',
+		seed: '<div class="mini-player"><header class="mini-player-header"><span class="shadow"></span><span class="title">Mini-Player</span><span class="controls"><i class="fa fa-window-maximize toggle"></i><i class="fa fa-cog option"></i><i class="fa fa-expand fullscreen"></i><i class="fa fa-times close"></i></span></header><canvas></canvas><audio class="current-track"><source class="current-source"></source></audio><div class="mini-player-audio-controls"><i class="fa fa-step-backward fa-fw  mini-player-prev disable"></i><i class="fa fa-play fa-fw  mini-player-play"></i><i class="fa fa-step-forward fa-fw  mini-player-next disable"></i><i class="fa fa-random  fa-fw mini-player-shuffle disable"></i><i class="fa fa-retweet fa-fw  mini-player-loop disable"></i><span class="mini-one">1</span><input type="range" class="seek" value="0" max="" /><i class="fa fa-fw fa-volume-up mini-player-volume"></i></div><i class="fa fa-list playlist-toggle"></i><i class="fa fa-clock-o sleep-timer"></i><div class="mini-player-playlist"></div></div>',
 		load: function(id){
 			if(miniplayer.instance == false){
 				miniplayer.init();
@@ -68,6 +69,35 @@ $(document).ready(function(){
 			miniplayer.audio = $('.mini-player .current-track');
 			miniplayer.src = $('.mini-player .current-track .current-source');
 			miniplayer.header = $('.mini-player .mini-player-header .title');
+			
+			$('.mini-player .sleep-timer').click(function(){
+				
+				var string = '<h3>Sleep Timer</h3>';
+				if(miniplayer.sleep_timer != false){
+					string += '<button id="clear-current"><i class="fa fa-times"></i> Clear Current Timer</button><br><br>';
+				}
+				string += '<input class="auto" type="number" id="hours" value="0" min="0">:<input class="auto" type="number" id="minutes" value="0" min="0" max="59"><br><button id="start"><i class="fa fa-clock-o"></i> Start Timer</button>';
+				
+				var p = aPopup.newWindow(string);
+				p.find('#start').click(function(){
+					var hours = Number(p.find('#hours').val());
+					var minutes = Number(p.find('#minutes').val());
+					var temp = (hours * 60) + minutes;
+					var seconds = (temp * 60) * 1000;
+					//JavaScript seconds are not exact, but they are close enough for this.
+					miniplayer.sleep_timer = setTimeout(function(){
+						miniplayer.audio[0].pause();
+						miniplayer.sleep_timer = false;
+					}, seconds);
+					p.remove();
+				});
+				p.find('#clear-current').click(function(){
+					clearTimeout(miniplayer.sleep_timer);
+					miniplayer.sleep_timer = false;
+					$(this).remove();
+				});
+			});
+			
 			$('.mini-player .fa.toggle').click(function(){ miniplayer.toggle()});
 			$('.mini-player .fa.close').click(function(){ miniplayer.remove()});
 			$('.mini-player .fa.option').click(function(){ miniplayer.options()});

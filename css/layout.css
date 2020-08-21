@@ -73,6 +73,9 @@ input, textarea, select{
 	padding: 5px;
 	margin-bottom: 10px;
 }
+input.auto, textarea.auto, select.auto{
+	width: auto;
+}
 input[type="radio"], input[type="checkbox"]{
 	width: auto;
 }

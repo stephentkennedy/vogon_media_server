@@ -9,6 +9,33 @@ I also don't have a complete build process for uploading here to GitHub, so whil
 ## What is Vogon?
 It's a prototyping and developing framework for PHP. You can find the framework by itself at https://github.com/stephentekennedy/vogon
 
+## Notable Features
+
+**Meta Data Aware Mass Import**
+* Auto-generate Thumbnails for imported videos
+* Auto-populate meta data required for history tracking features
+* Auto-import common meta data fields for supported audio formats (Artist, Year, Composer, Album, Track Number)
+
+**User Profiles**
+* Support for multiple user profiles
+* History tracked individually between profiles
+
+**Audiobook Support**
+* Turn individual audio tracks into a coherent audio book
+* History tracking allows resuming across devices
+
+**Custom HTML5 Video Player Interface:**
+* Autoplay next episode for items categorized as part of a TV series
+* History tracking for media resuming across devices
+
+**Custom HTML5 Audio Player Interface:**
+* Playlists (Ongoing development)
+* Shuffle Play (client-side and client/server hybrid)
+* Visualizers (3 currently, but hopefully the vizualizer code will be rewritten to be module and these can be developed as plugins)
+* Media key support
+* Partial Media Meta Data support (Depending on your browser and device, you will get media controls on lock screens or when the browser is not the active window)
+* Sleep timer
+
 ## What makes this project different than others
 I wrote it. Other than that I can only tell you the project goals.
 

@@ -414,7 +414,15 @@ footer{
 	transition: color 0.2s linear, background 0.2s linear;
 	background-color: rgba(255,255,255,0);
 }
-.mini-player .playlist-toggle:hover{
+.mini-player .sleep-timer{
+	position: absolute;
+	top: 80px;
+	left: 0px;
+	padding: 10px;
+	transition: color 0.2s linear, background 0.2s linear;
+	background-color: rgba(255,255,255,0);
+}
+.mini-player .playlist-toggle:hover, .mini-player .sleep-timer:hover{
 	cursor: pointer;
 	color: #222;
 	background-color: rgba(255,255,255,.5);
