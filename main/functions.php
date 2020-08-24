@@ -30,6 +30,7 @@ function loader($file, $data = []){
 		return include $file;
 	}else{
 		//echo 'unable to load '.$file;
+		trigger_error('No file located at: '.$file, E_USER_NOTICE);
 		return null; //Should probably look into returning some kind of non-exception style error, just so the app can give the user some feedback on why their request didn't follow the app's pre-programmed logic.
 	}
 }
@@ -282,6 +283,24 @@ function redirect($loc){
 		echo '<script type="text/javascript"> window.location = "'.$loc.'"; </script>';
 	}else{
 		header('Location: '.$loc);
+	}
+}
+
+function trueLoc($file){
+	if(file_exists($file)){
+		return $file;
+	}
+	if(stristr($file, ROOT) === false){
+		if(substr($file, 0, 1) == DIRECTORY_SEPARATOR){
+			$file = ROOT . $file;
+		}else{
+			$file = ROOT . DIRECTORY_SEPARATOR . $file;
+		}
+		if(file_exists($file)){
+			return $file;
+		}else{
+			return false;
+		}
 	}
 }
 ?>

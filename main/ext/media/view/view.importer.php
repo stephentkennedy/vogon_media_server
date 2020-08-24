@@ -10,7 +10,7 @@
 		<input id="series_id" type="hidden" name="series_id" value="0">
 		<input id="series" type="text" name="series_name" value="" placeholder="Name">
 	</fieldset><br>
-	<?php load_controller('ajax_filebrowser', [], 'filebrowser'); ?>
+	<?php load_controller('ajax_filebrowser', ['form' => 'dir'], 'filebrowser'); ?>
 	<button type="submit"><i class="fa fa-check"></i> Import</button>
 </form>
 <script type="text/javascript">

@@ -1,7 +1,11 @@
-<?php if(!empty($form) && $form == true){?>
+<?php
+ if(!empty($form) && $form == 'dir'){?>
 <label>Selected Directory:</label>
 <input id="form-dir" type="text" name="dir" value="<?php echo $dir; ?>" readonly>
-<?php } 
+<?php }else if(!empty($form) && $form == 'file'){
+?><label>Selected File:</label>
+<input id="form-file" type="text" name="file" value="<?php if(!empty($b_file)){ echo $b_file; } ?>" readonly><?php
+} 
 	echo $preload;
 ?><script type="text/javascript">
 	var fbrowser = {
@@ -19,13 +23,18 @@
 		},
 		click: function(e){
 			var dom = e.target;
-			console.log(dom);
-			var dir = dom.getAttribute('data-loc');
-			console.log(dir);
-			fbrowser.get(dir);
+			var isDir = $(dom).hasClass('dir');
+			if(isDir){
+				var dir = dom.getAttribute('data-loc');
+				console.log(dir);
+				fbrowser.get(dir);
+			}else if(fbrowser.form == true){
+				var file = dom.getAttribute('data-loc');
+				$('#form-file').val(file);
+			}
 		},
 		bind: function(){
-			$('.file-link.dir').click(fbrowser.click);
+			$('.file-link').click(fbrowser.click);
 		},
 	};
 	

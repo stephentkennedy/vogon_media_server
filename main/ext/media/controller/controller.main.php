@@ -9,13 +9,11 @@ if(isset($_POST['action'])){
 				}
 				$model_data = [
 					'title' => $_POST['title'],
-					'genre' => $_POST['genre'],
-					'location' => $_POST['location'],
+					'location' => urldecode($_POST['file']),
 					'director' => $_POST['director'],
 					'release' => $_POST['release'],
 					'starring' => $_POST['starring'],
 					'desc' => $_POST['desc'],
-					'poster' => $_POST['poster'],
 					'id' => $_POST['id']
 				];
 				load_model('update_video', $model_data, 'media');
@@ -23,13 +21,12 @@ if(isset($_POST['action'])){
 			}else{
 				$model_data = [
 					'title' => $_POST['title'],
-					'genre' => $_POST['genre'],
-					'location' => $_POST['location'],
+					'location' => urldecode($_POST['file']),
 					'director' => $_POST['director'],
 					'release' => $_POST['release'],
 					'starring' => $_POST['starring'],
 					'desc' => $_POST['desc'],
-					'poster' => $_POST['poster'],
+					'runtime' => $_POST['runtime'],
 				];
 				$id = load_model('create_video', $model_data, 'media');
 			}
