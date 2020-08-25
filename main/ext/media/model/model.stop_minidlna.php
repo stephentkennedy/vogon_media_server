@@ -1,2 +1,2 @@
 <?php
-shell_exec('xargs kill </home/pi/.minidlna/minidlna.pid');
+shell_exec('xargs kill <'.$_SESSION['minidlna_dir']. DIRECTORY_SEPARATOR .'minidlna.pid');

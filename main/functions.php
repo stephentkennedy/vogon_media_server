@@ -180,11 +180,14 @@ function get_var($var_name, $format="string"){
 	}
 	return $content;
 }
-function put_var($var_name, $value, $format="string"){
+function put_var($var_name, $value, $format="string", $session = false){
 	global $db;
 	$sql = "SELECT var_content FROM var WHERE var_name = :name";
 	$params = [':name' => $var_name];
 	$query = $db->query($sql, $params);
+	if($query != false){
+		$query = $query->fetch();
+	}
 	switch($format){
 		case 'array':
 			$content = serialize($content);
@@ -193,15 +196,34 @@ function put_var($var_name, $value, $format="string"){
 			break;
 	}
 	$params = [
-		':content' => $content,
-		':name' => $name
+		':content' => $value,
+		':name' => $var_name
 	];
+	if($session == true){
+		$params[':session'] = true;
+	}
 	if($query != false){
-		$sql = 'UPDATE var SET var_content = :content WHERE var_name = :name';
+		$sql = 'UPDATE var SET var_content = :content';
+		if($session == true){
+			$sql .= ', var_session = :session';
+		}
+		$sql .= ' WHERE var_name = :name';
 		$db->query($sql, $params);
 	}else{
-		$sql = 'INSERT INTO var (var_session, var_name, var_content, var_type, user_key) VALUES (0, :name, :content, "", 0)';
-		$db->query($sql, $params);
+		$sql = 'INSERT INTO var (var_session, var_name, var_content, user_key) VALUES (';
+		if($session == true){
+			$sql .= ':session';
+		}else{
+			$sql .= '0';
+		}
+		$sql .= ', :name, :content, 0)';
+		$check = $db->query($sql, $params);
+		if($check == false){
+			debug_d($db->error);
+		}
+	}
+	if($session == true){
+		$_SESSION[$var_name] = $value;
 	}
 }
 

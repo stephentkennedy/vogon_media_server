@@ -8,6 +8,6 @@ $dir_data = load_model('dir_scan', ['dir' => $dir], 'filebrowser');
 $html_content = load_view('dir_ajax', $dir_data, 'filebrowser');
 $return = [
 	'content' => $html_content,
-	'dir' => $dir
+	'dir' => preg_replace('~\/{2,}~', '/', $dir)
 ];
 echo load_view('json', $return);

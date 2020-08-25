@@ -1,11 +1,16 @@
 <?php
+if(empty($_SESSION['active_filebrowsers'])){
+	$_SESSION['active_filebrowsers'] = 1;
+}else{
+	$_SESSION['active_filebrowsers']++;
+}
 if(!empty($b_file)){
 	$b_file = trueLoc($b_file);
 	$dir = dirname($b_file);
 }else{
 	$b_file = false;
 }
-if(empty($dir)){
+if(empty($dir) || !file_exists($dir)){
 	$dir = ROOT;
 }
 $dir_data = load_model('dir_scan', ['dir' => $dir], 'filebrowser');

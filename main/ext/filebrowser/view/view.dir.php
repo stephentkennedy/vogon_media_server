@@ -1,4 +1,4 @@
-<div class="dir-container">
+<div class="dir-container dir-container-<?php echo $_SESSION['active_filebrowsers']; ?>">
 	<a class="file-link dir" data-loc="<?php echo $dir_up; ?>"><i class="fa fa-caret-up"></i> [Up a directory]</a>
 	<?php 
 		

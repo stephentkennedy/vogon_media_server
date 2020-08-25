@@ -1,6 +1,13 @@
 <?php
 
-$thumbDir = ROOT . DIRECTORY_SEPARATOR . 'upload' . DIRECTORY_SEPARATOR . 'thumbs' . DIRECTORY_SEPARATOR;
+$thumbDir = $_SESSION['thumb_dir'];
+if(!file_exists($thumbDir)){
+	$thumbDir = ROOT . DIRECTORY_SEPARATOR . 'upload' . DIRECTORY_SEPARATOR . 'thumbs';
+	if(!file_exists($thumbDir)){
+		mkdir($thumbDir);
+	}
+}
+$thumbDir .= DIRECTORY_SEPARATOR;
 
 $clerk = new clerk;
 $record_data = [

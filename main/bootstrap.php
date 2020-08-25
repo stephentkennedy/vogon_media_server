@@ -4,7 +4,7 @@ Name: Stephen Kennedy
 Date: 12/4/2018
 Comment: Let's establish what we need for our bootstrap;
 */
-error_reporting(E_ALL);
+error_reporting(E_ERROR);
 ini_set('display_errors', 1);
 $directories = explode(DIRECTORY_SEPARATOR,__DIR__);
 array_pop($directories);
@@ -68,6 +68,9 @@ if(empty($_REQUEST['search'])){
 if(empty($_REQUEST['orderby'])){
 	$_REQUEST['orderby'] = '';
 }
+
+//Used by the Filebrowser Ext, comment out if you're not using that ext
+$_SESSION['active_filebrowsers'] = 0;
 
 //Include our router
 include __DIR__.DIRECTORY_SEPARATOR.'router.php';

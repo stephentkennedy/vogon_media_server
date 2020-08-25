@@ -19,7 +19,14 @@ $clerk = new clerk;
 //Scan our files
 $files = $fs->recursiveScan($dir, true);
 
-$thumbDir = ROOT . DIRECTORY_SEPARATOR . 'upload' . DIRECTORY_SEPARATOR . 'thumbs' . DIRECTORY_SEPARATOR;
+$thumbDir = $_SESSION['thumb_dir'];
+if(!file_exists($thumbDir)){
+	$thumbDir = ROOT . DIRECTORY_SEPARATOR . 'upload' . DIRECTORY_SEPARATOR . 'thumbs';
+	if(!file_exists($thumbDir)){
+		mkdir($thumbDir);
+	}
+}
+$thumbDir .= DIRECTORY_SEPARATOR;
 
 if(!empty($series_name) && empty($series_id)){
 	$parent = $clerk->addRecord([

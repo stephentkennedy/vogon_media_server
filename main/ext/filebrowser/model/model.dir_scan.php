@@ -1,5 +1,8 @@
 <?php
 //Get the next directory up
+if($dir != DIRECTORY_SEPARATOR){
+	$dir = rtrim($dir, DIRECTORY_SEPARATOR);
+}
 $up = explode(DIRECTORY_SEPARATOR, $dir);
 array_pop($up);
 $up = implode(DIRECTORY_SEPARATOR, $up);

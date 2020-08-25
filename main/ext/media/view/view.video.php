@@ -173,7 +173,7 @@
 		playing: false,
 		id: <?php echo $id; ?>,
 		h_loop: false,
-		h_freq: 60000,
+		h_freq: <?php if(!empty($_SESSION['media_his_time'])){ echo $_SESSION['media_his_time']; }else{ echo '60000'; } ?>,
 		init: function(){
 			player.video = $('video');
 			player.controls = $('#controls');
