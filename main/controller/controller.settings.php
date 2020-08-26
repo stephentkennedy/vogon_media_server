@@ -73,6 +73,12 @@
 						load_model('rebuild_nav', ['type' => 'head']);
 						load_model('rebuild_nav', ['type' => 'foot']);
 						break;
+					case 'error_reporting':
+						load_model('save_error', []);
+						break;
+					case 'background_video':
+						load_model('save_bg_vid', []);	
+						break;
 				}
 				break;
 				

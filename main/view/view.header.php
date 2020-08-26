@@ -17,11 +17,32 @@
 		<?php } ?>
 	</head>
 	<body>
+		<?php if(!isset($_SESSION['bg_vid_bool']) || $_SESSION['bg_vid_bool'] == 1){ 
+		if(isset($_SESSION['bg_vid'])){
+			$mime = mime_content_type($_SESSION['bg_vid']);
+			$location = str_replace(ROOT, URI, $_SESSION['bg_vid']);
+		}else{
+			$mime = 'video/mp4';
+			$location = URI.'/upload/color_loop_web_small.mp4';
+		}
+		
+		?>
 		<div id="video-holder">
-			<video id="video-background" loop poster="<?php echo URI; ?>/upload/background_poster.png" muted preload="none">
-				<source src="<?php echo URI; ?>/upload/color_loop_web_small.mp4" type="video/mp4">
-			</video>
+			<?php 
+			$mime_test = explode('/', $mime);
+			switch($mime_test[0]){
+				case 'video':
+			?><video id="video-background" loop muted preload="none">
+				<source src="<?php echo $location; ?>" type="<?php echo $mime; ?>">
+			</video><?php
+				break;
+				case 'image':
+				?><img id="video-background" src="<?php echo $location; ?>"><?php
+					break;
+			}
+			?>
 		</div>
+		<?php } ?>
 		<header class="main">
 			<div id="logo"><img src="<?php echo $logo; ?>" title="<?php echo $logo_title; ?>" alt="<?php echo $logo_alt; ?>" ></div>
 			<nav id="main-nav" class="row">

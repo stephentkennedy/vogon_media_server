@@ -29,7 +29,7 @@
 				var dir = dom.getAttribute('data-loc');
 				console.log(dir);
 				fbrowser<?php echo $_SESSION['active_filebrowsers'];?>.get(dir);
-			}else if(fbrowser.form == true){
+			}else if(fbrowser<?php echo $_SESSION['active_filebrowsers'];?>.form == true){
 				var file = dom.getAttribute('data-loc');
 				$('#form-file-<?php echo $_SESSION['active_filebrowsers'];?>').val(file);
 			}

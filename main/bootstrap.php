@@ -4,7 +4,7 @@ Name: Stephen Kennedy
 Date: 12/4/2018
 Comment: Let's establish what we need for our bootstrap;
 */
-error_reporting(E_ERROR);
+error_reporting(0);
 ini_set('display_errors', 1);
 $directories = explode(DIRECTORY_SEPARATOR,__DIR__);
 array_pop($directories);
@@ -45,6 +45,10 @@ session_start();
 $session_vars = $query->fetchAll();
 foreach($session_vars as $var){
 	$_SESSION[$var['var_name']] = $var['var_content'];
+}
+
+if(isset($_SESSION['error_reporting'])){
+	error_reporting($_SESSION['error_reporting']);
 }
 
 //Include our framework functions

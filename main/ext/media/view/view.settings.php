@@ -1,6 +1,6 @@
 <h3>Video Media Settings</h3>
 <h4>Thumbnail Directory</h4>
-<form action="?ext={{ext_name}}&form=thumb" method="post">
+<form action="?ext={{ext_name}}&form=thumb&force_reload=true" method="post">
 	<?php
 	
 	if(empty($_SESSION['thumb_dir'])){
@@ -15,7 +15,7 @@
 	<button type="submit"><i class="fa fa-floppy-o"></i> Save</button>
 </form>
 <h4>History Sync (In Seconds)</h4>
-<form action="?ext={{ext_name}}&form=mediahistime" method="post">
+<form action="?ext={{ext_name}}&form=mediahistime&force_reload=true" method="post">
 	<input type="number" value="<?php
 	if(empty($_SESSION['media_his_time'])){
 		$_SESSION['media_his_time'] = 60000;
@@ -24,7 +24,7 @@
 	<button type="submit"><i class="fa fa-floppy-o"></i> Save</button>
 </form>
 <h4>Minidlna configuration</h4>
-<form action="?ext={{ext_name}}&form=minidlna" method="post">
+<form action="?ext={{ext_name}}&form=minidlna&force_reload=true" method="post">
 	<label>Accessible Install Location</label><br>
 	<small>This should be the location of the minidlna.conf and minidlna.pid files usable by the Apache user.</small><br><br>
 	<?php 
