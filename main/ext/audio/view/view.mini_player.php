@@ -12,11 +12,29 @@ $(document).ready(function(){
 		angle: 0,
 		track: false,
 		playing: false,
+		fDur: false,
 		h_loop: false,
 		h_freq: <?php if(!empty($_SESSION['audio_his_time'])){ echo $_SESSION['audio_his_time']; }else{ echo '10000'; } ?>,
 		sleep_timer: false,
 		animation: miniplayer.<?php if(!empty($_SESSION['def_visual'])){ echo $_SESSION['def_visual']; }else{ echo 'cleanCircle'; } ?>,
-		seed: '<div class="mini-player"><header class="mini-player-header"><span class="shadow"></span><span class="title">Mini-Player</span><span class="controls"><i class="fa fa-window-maximize toggle"></i><i class="fa fa-cog option"></i><i class="fa fa-expand fullscreen"></i><i class="fa fa-times close"></i></span></header><canvas></canvas><audio class="current-track"><source class="current-source"></source></audio><div class="mini-player-audio-controls"><i class="fa fa-step-backward fa-fw  mini-player-prev disable"></i><i class="fa fa-play fa-fw  mini-player-play"></i><i class="fa fa-step-forward fa-fw  mini-player-next disable"></i><i class="fa fa-random  fa-fw mini-player-shuffle disable"></i><i class="fa fa-retweet fa-fw  mini-player-loop disable"></i><span class="mini-one">1</span><input type="range" class="seek" value="0" max="" /><i class="fa fa-fw fa-volume-up mini-player-volume"></i></div><i class="fa fa-list playlist-toggle"></i><i class="fa fa-clock-o sleep-timer"></i><div class="mini-player-playlist"></div></div>',
+		seed: '<div class="mini-player"><header class="mini-player-header"><span class="shadow"></span><span class="controls"><i class="fa fa-window-maximize toggle"></i><i class="fa fa-cog option"></i><i class="fa fa-expand fullscreen"></i><i class="fa fa-times close"></i></span></header><canvas></canvas><audio class="current-track"><source class="current-source"></source></audio><div class="mini-player-audio-controls"><input type="range" class="seek" value="0" max="" /> <span class="mini-player-counter">0:00 / 0:00</span> <br><i class="fa fa-random  fa-fw mini-player-shuffle disable"></i><i class="fa fa-step-backward fa-fw  mini-player-prev disable"></i><i class="fa fa-play fa-fw  mini-player-play"></i><i class="fa fa-step-forward fa-fw  mini-player-next disable"></i><i class="fa fa-retweet fa-fw  mini-player-loop disable"></i><span class="mini-one">1</span></div><i class="fa fa-list playlist-toggle"></i><i class="fa fa-clock-o sleep-timer"></i><div class="mini-player-playlist"></div></div>',
+		timeFormat : function(duration){
+			// Hours, minutes and seconds
+			var hrs = ~~(duration / 3600);
+			var mins = ~~((duration % 3600) / 60);
+			var secs = ~~duration % 60;
+
+			// Output like "1:01" or "4:03:59" or "123:03:59"
+			var ret = "";
+
+			if (hrs > 0) {
+				ret += "" + hrs + ":" + (mins < 10 ? "0" : "");
+			}
+
+			ret += "" + mins + ":" + (secs < 10 ? "0" : "");
+			ret += "" + secs;
+			return ret;
+		},
 		load: function(id){
 			if(miniplayer.instance == false){
 				miniplayer.init();
@@ -32,9 +50,14 @@ $(document).ready(function(){
 					miniplayer.header.find('span').addClass('marquee');
 				}
 				miniplayer.audio[0].load();
+				if(data['duration'] !== undefined){
+					var duration = Number(data['duration']);
+					miniplayer.fDur = miniplayer.timeFormat(duration);
+				}
 				if(data['time'] == undefined || data['time'] == 0){
 					miniplayer.currentTime = 0.0;
 					miniplayer.audio[0].currentTime = 0.0;
+					miniplayer.instance.find('.mini-player-counter').html('0:00 / ' + miniplayer.fDur);
 				}else{
 					var min = 60;
 					if(data['time'] <= (data['duration'] - .5 * min)){
@@ -43,7 +66,9 @@ $(document).ready(function(){
 					}else{
 						miniplayer.currentTime = 0.0;
 						miniplayer.audio[0].currentTime = 0.0;
-					}					
+					}
+					var friendly = miniplayer.timeFormat(miniplayer.audio[0].currentTime);
+					miniplayer.instance.find('.mini-player-counter').html(friendly + ' / ' + miniplayer.fDur);
 				}
 				if(data['time'] == undefined){
 					miniplayer.track = false;
@@ -129,6 +154,8 @@ $(document).ready(function(){
 			miniplayer.audio[0].addEventListener('timeupdate', function(){
 				var curtime = parseInt(miniplayer.audio[0].currentTime, 10);
 				$('.mini-player-audio-controls .seek').val(curtime);
+				var friendly = miniplayer.timeFormat(miniplayer.audio[0].currentTime);
+				miniplayer.instance.find('.mini-player-counter').html(friendly + ' / ' + miniplayer.fDur);
 				if('mediaSession' in navigator && 'MediaPositionState' in navigator.mediaSession){
 					navigator.mediaSession.MediaPositionState.position = miniplayer.audio[0].currentTime;
 				}
@@ -651,7 +678,7 @@ miniplayer.fullscreen = function(){
 	}else{
 		miniplayer.instance.addClass('fullscreen');
 		var width = miniplayer.instance.width();
-		var height = miniplayer.instance.height() - 80;
+		var height = miniplayer.instance.height() - 158;
 		canvas.width = width;
 		canvas.height = height;
 	}

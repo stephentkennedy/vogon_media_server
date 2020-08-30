@@ -236,4 +236,7 @@ label.required:after{
 	.col, .col-one, .col-two, .col-three, .col-four, .col-five, .col-six, .col-seven, .col-eight, .col-nine, .col-ten{
 		width: 100% !important;
 	}
+	#content{
+		max-width: 100vw;
+	}
 }
