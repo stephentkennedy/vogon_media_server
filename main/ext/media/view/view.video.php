@@ -12,19 +12,20 @@
 		<h1><i class="fa fa-arrow-circle-left back-to-view"></i> <span class="title-text"><?php echo $title; ?></span></h1>
 	</div>
 	<div id="sub-controls" class="<?php if(empty($subtitles)){
-		 echo ' none';
+		 echo 'none';
 	} ?>">
 		<i class="fa fa-comment subtitles"></i>
 	</div>
 	<div id="video_preview">
 		<h3 id="video_title">Next:</h3>
 		<div id="img_container">
-			<img id="video_img" src="/upload/thumbs/DB_001 - Secret Of The Dragon Balls-1.jpg">
+			<img id="video_img" src="">
 			<h4 id="counter">15</h4>
 		</div>
 	</div>
 	<div id="controls" class="active">
-		<i class="fa fa-fw fa-play play"></i><input type="range" class="seek" value="0" max="" /><span id="time">0:00 / 0:00</span><i class="fa fa-fw fa-volume-up mute"></i><input type="range" class="volume" value="100" max="100" /><i class="fa fa-fw fa-expand fullscreen"></i>
+		<input type="range" class="seek" value="0" max="" /><span id="time">0:00 / 0:00</span><br>
+		<i class="fa fa-fw fa-play play"></i><i class="fa fa-fw fa-volume-up mute"></i><input type="range" class="volume" value="100" max="100" /><i class="fa fa-fw fa-expand fullscreen"></i>
 	</div>
 </div>
 <style>
@@ -41,15 +42,18 @@
 		bottom: 0;
 		opacity: 0;
 		transition: opacity 0.2s linear;
-		height: 2.5rem;
+		height: 5rem;
 		overflow: hidden;
 		background: rgb(0,0,0);
 		background: linear-gradient(0deg, rgba(0,0,0,1) 0%, rgba(5,5,5,1) 76%, rgba(100,100,100,1) 100%);
+		text-align: center;
 	}
 	#controls i{
 		cursor: pointer;
-		padding: .5rem;
+		padding: 1rem;
 		width: 2rem;
+		min-height: 48px;
+		min-width: 48px;
 	}
 	#controls > *{
 		vertical-align: middle;
@@ -62,7 +66,8 @@
 		margin-top: 7px;
 	}
 	#controls .seek{
-		width: calc(100% - calc(14rem + 104px));
+		width: calc(100% - calc(14rem));
+		margin-bottom: 0px;
 	}
 	#controls .volume{
 		width: 100px;
@@ -70,6 +75,7 @@
 	#controls #time{
 		width: 8rem;
 		text-align: center;
+		padding-top: .5rem;
 	}
 	#controls.active{
 		opacity: 1;
@@ -206,6 +212,9 @@
 		background-color: rgba(0,0,0.0.5);
 		font-size: 1.5rem;
 	}
+	@media only screen and (max-width: 993px){
+		
+	}
 </style>
 <script type="text/javascript">
 	var player = {
@@ -229,7 +238,9 @@
 			
 			player.video.find('.seek').attr('max', player.video[0].duration);
 			player.duration = player.timeFormat(player.video[0].duration);
-			player.video[0].currentTime = player.time;
+			if(player.time < player.duration - 60){
+				player.video[0].currentTime = player.time;
+			}
 			player.controls.find('#time').html('0:00 / ' + player.duration);
 			
 			player.video.on('play', function(){
@@ -296,7 +307,7 @@
 			player.video.on('loadedmetadata', function(){
 				player.video.find('.seek').attr('max', player.video[0].duration);
 				player.duration = player.timeFormat(player.video[0].duration);
-				var display_time = player.timeFormat(player.time);
+				var display_time = player.timeFormat(player.video[0].currentTime);
 				player.controls.find('#time').html(display_time + ' / ' + player.duration);
 			});
 			player.video.on('timeupdate', function(){
