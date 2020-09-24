@@ -59,12 +59,24 @@
 			die();
 		}
 		load_controller('header', ['title' => 'Edit Profile']);
-		if(isset($_POST['user_email']) && $user['user_key'] != $user_data['user_key']){
+		if(isset($_POST['user_email'])){
 			echo load_view('notify', ['class' => 'error', 'message' => 'You can&#39;t modify someone else&#39;s account']);
 		}
 		
 		echo load_view('edit_user', $user_data, 'user');
-		load_controller('footer');	
+		load_controller('footer');
+	}else if($action == 'remove'){
+		$user_email = get_slug_part(2);
+		$user_data = load_model('get', ['user_key' => $user_email], 'user');
+		$confirm = get_slug_part(3);
+		if(empty($confirm)){
+			load_controller('header', ['title' => 'Confirm Profile Removal']);
+			echo load_view('remove_confirm', $user_data, 'user');
+			load_controller('footer');
+		}else{
+			load_model('remove', $user_data, 'user');
+			redirect(build_slug('', [], 'user'));
+		}
 	}else if($action == 'logout'){
 		redirect( build_slug('', []) );
 		load_model('logout', [], 'user');

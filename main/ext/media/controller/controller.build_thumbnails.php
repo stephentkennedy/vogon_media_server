@@ -5,7 +5,7 @@ $thumb_dir = ROOT . DIRECTORY_SEPARATOR . 'upload' . DIRECTORY_SEPARATOR . 'thum
 $exist = scandir($thumb_dir);
 
 $clerk = new clerk;
-$movies = $clerk->getRecords(['type'=>'video'], true);
+$movies = $clerk->getRecords(['type'=>'tv', 'parent' = 15899], true);
 
 load_class('thumbnailer', 'media');
 $th = new thumbnailer;

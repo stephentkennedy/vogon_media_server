@@ -1,7 +1,30 @@
+<div class="tray right col col-three">
+	<div class="controls">
+		<i class="fa fa-list tray-expand" title="Playlists"></i>
+	</div>
+	<div class="container">
+		<h2>Playlists</h2>
+		<div id="playlists" class="content row">
+			
+		</div>
+	</div>
+</div>
+<div id="current" class="tray right second col col-three">
+	<div class="controls">
+		<i class="fa fa-list-alt tray-expand" title="Now Playing"></i><span class="counter hidden"></span>
+	</div>
+	<div class="container">
+		<h2 id="title">Now Playing <i class="fa fa-floppy-o button playlist-save" title="save"></i> <i class="fa fa-file-o button playlist-new" title="New Playlist"></i></h2>
+		<div id="current-playlist" class="content row">
+			
+		</div>
+	</div>
+</div>
 <script type="text/javascript">
 var miniplayer = {
 };
 $(document).ready(function(){
+	playlist.fetch();
 	playlist.bind();
 	miniplayer = {
 		instance: {},
@@ -17,7 +40,7 @@ $(document).ready(function(){
 		h_freq: <?php if(!empty($_SESSION['audio_his_time'])){ echo $_SESSION['audio_his_time']; }else{ echo '10000'; } ?>,
 		sleep_timer: false,
 		animation: miniplayer.<?php if(!empty($_SESSION['def_visual'])){ echo $_SESSION['def_visual']; }else{ echo 'cleanCircle'; } ?>,
-		seed: '<div class="mini-player"><header class="mini-player-header"><span class="shadow"></span><span class="controls"><i class="fa fa-window-maximize toggle"></i><i class="fa fa-cog option"></i><i class="fa fa-expand fullscreen"></i><i class="fa fa-times close"></i></span></header><canvas></canvas><audio class="current-track"><source class="current-source"></source></audio><div class="mini-player-audio-controls"><input type="range" class="seek" value="0" max="" /> <span class="mini-player-counter">0:00 / 0:00</span> <br><i class="fa fa-random  fa-fw mini-player-shuffle disable"></i><i class="fa fa-step-backward fa-fw  mini-player-prev disable"></i><i class="fa fa-play fa-fw  mini-player-play"></i><i class="fa fa-step-forward fa-fw  mini-player-next disable"></i><i class="fa fa-retweet fa-fw  mini-player-loop disable"></i><span class="mini-one">1</span></div><i class="fa fa-list playlist-toggle"></i><i class="fa fa-clock-o sleep-timer"></i><div class="mini-player-playlist"></div></div>',
+		seed: '<div class="mini-player"><header class="mini-player-header"><span class="shadow"></span><span class="controls"><i class="fa fa-window-maximize toggle"></i><i class="fa fa-cog option"></i><i class="fa fa-expand fullscreen"></i><i class="fa fa-times close"></i></span></header><info><label class="mini-player-label title"></label><label class="mini-player-label album"></label><label class="mini-player-label band"></label></info><canvas></canvas><audio class="current-track"><source class="current-source"></source></audio><div class="mini-player-audio-controls"><input type="range" class="seek" value="0" max="" /> <span class="mini-player-counter">0:00 / 0:00</span> <br><i class="fa fa-random  fa-fw mini-player-shuffle disable"></i><i class="fa fa-step-backward fa-fw  mini-player-prev disable"></i><i class="fa fa-play fa-fw  mini-player-play"></i><i class="fa fa-step-forward fa-fw  mini-player-next disable"></i><i class="fa fa-retweet fa-fw  mini-player-loop disable"></i><span class="mini-one">1</span></div><i class="fa fa-list playlist-toggle"></i><i class="fa fa-clock-o sleep-timer"></i><div class="mini-player-playlist"></div></div>',
 		timeFormat : function(duration){
 			// Hours, minutes and seconds
 			var hrs = ~~(duration / 3600);
@@ -46,6 +69,17 @@ $(document).ready(function(){
 				miniplayer.src.prop('type', data['mime']);
 				miniplayer.id = data['id'];
 				miniplayer.header.html('<span>'+data['title']+'</span>');
+				miniplayer.instance.find('.mini-player-label.title').html(data['title']);
+				if(data['artist'] != null && data['artist'] != ''){
+					miniplayer.instance.find('.mini-player-label.band').html(data['artist']);
+				}else{
+					miniplayer.instance.find('.mini-player-label.band').html('');
+				}
+				if(data['album'] != null && data['album'] != ''){
+					miniplayer.instance.find('.mini-player-label.album').html(data['album']);
+				}else{
+					miniplayer.instance.find('.mini-player-label.album').html('');
+				}
 				if(miniplayer.header.find('span').width() > miniplayer.header.width()){
 					miniplayer.header.find('span').addClass('marquee');
 				}
@@ -690,6 +724,8 @@ initPage();
 var playlist = {
 	list: [],
 	i: 0,
+	pending: 0,
+	pTimeout: false,
 	loopMode: 'none',
 	playing: false,
 	window: false,
@@ -721,26 +757,161 @@ playlist.serverShuffle = function(){
 	});
 }
 
+playlist.clear = function(){
+	$('#current .controls .counter').addClass('hidden').html('');
+	playlist.pending = 0;
+}
+
+playlist.push = function(){
+	if($('#current .controls .counter').hasClass('hidden')){
+		$('#current .controls .counter').removeClass('hidden');
+	}
+	playlist.pending++;
+	$('#current .controls .counter').html('+' + playlist.pending);
+	clearTimeout(playlist.pTimeout);
+	playlist.pTimeout = setTimeout(playlist.clear, 5000);
+}
+
 playlist.bind = function(){
 	$('.playlist-add').off().click(function(){
 		playlist.list.push($(this).data('id'));
+		playlist.push();
 		playlist.render();
 	});
-	$('.playlist-track').off().click(function(){
-		var id = $(this).data('id');
+	$('.playlist-track span').off().click(function(){
+		var id = $(this).parent().data('id');
 		playlist.play(id);
+	});
+	$('.playlist').off().sortable({
+		handle: '.playlist-handle',
+		deactivate: playlist.reorder
+	});
+	$('.playlist-track i.playlist-remove').off().click(function(){
+		playlist.splice(this);
+	});
+	$('#current .playlist-save').off().click(function(){
+		playlist.save();
+	});
+	$('#current .playlist-new').off().click(function(){
+		playlist.list = [];
+		playlist.i = 0;
+		playlist.render();
+		$('#current').find('h2').attr('data-id', '').attr('data-title', '');
+		$('#current-playlist').html('');
+	});
+}
+
+playlist.fetch = function(){
+	$.get('ajax/ajax_get_playlists/audio').done(function(returned){
+		var string = '<ul>';
+		for(i in returned){
+			string += '<li class="playlist-list" data-id="' + returned[i].id + '" data-tracks="'+ returned[i].list +'">' + returned[i].title + '</li>';
+		}
+		string += '</ul>';
+		$('#playlists').html(string);
+		$('#playlists .playlist-list').click(function(){
+			playlist.list = $(this).data('tracks');
+			playlist.render();
+			$('.tray').removeClass('open');
+			$('#current').addClass('open');
+			$('#current').find('h2').attr('data-title', $(this).html());
+			$('#current').find('h2').attr('data-id', $(this).data('id'));
+		});
+	});
+}
+
+playlist.save = function(){
+	var string = '<h2>Save the current playlist?</h2><br><label>Name</label>';
+	
+	var playlist2 = $('.playlist h2.title');
+	var id = playlist2.data('id');
+	var title = playlist2.data('title');
+	
+	if((title == undefined && id == undefined) || (title == "" && id == "")){
+		string += '<input type="text" id="playlist-name" placeholder="Playlist Name...">';
+	}else{
+		string += '<input type="text" id="playlist-name" placeholder="name" value="'+ title +'">';
+		string += '<input type="hidden" id="playlist-id" value="'+ id +'">';
+		string += '<br><input type="checkbox" id="rename"> <label>Replace Existing Name?</label>';
+	}
+	string += '<br><br><button id="save"><i class="fa fa-floppy-o"></i> Save</button>';
+	var w = aPopup.newWindow(string);
+	
+	w.find('#save').click(function(){
+		$(this).off();
+		$(this).find('i').removeClass('fa-floppy-o').addClass('fa-cog').addClass('fa-spin');
+		
+		if(w.find('#playlist-id').length > 0 && w.find('#rename').prop('checked') == true){
+			var id = w.find('#playlist-id').val();
+		}else{
+			var id = false;
+		}
+		
+		var title = w.find('#playlist-name').val();
+		
+		var list = [];
+		$('.playlist .playlist-track').each(function(){
+			var tId = $(this).data('db-id');
+			list.push(tId);
+		});
+		
+		console.log(title, id, list);
+		
+		$.post('/ajax/ajax_playlist_save/audio', {
+			title: title,
+			id: id,
+			list: list
+		}).done(function(){
+			w.remove();
+			playlist.fetch();
+		});
 	});
 }
 
 playlist.render = function(){
 	if(playlist.list.length > 0){
 		$.get('/ajax/ajax_playlist/audio', {'songs': playlist.list, 'current': playlist.i}, function(returned){
-			$('.mini-player-playlist').html(returned);
+			$('#current-playlist').html(returned);
 			playlist.bind();
 		});
 	}else{
 		$('.mini-player-playlist').html('');
 	}
+}
+
+playlist.splice = function(dom){
+	var parent = $(dom).parent();
+	var id = parent.data('id');
+	var dbId = parent.data('db-id');
+	var restart = false;
+	if(id == playlist.i){
+		//If we're removing the current song we need to pause
+		miniplayer.audio[0].pause();
+		restart = true;
+	}
+	if(playlist.i >= (playlist.length - 1)){
+		//If moving forward would give us an invalid value we go to the beginning
+		miniplayer.audio[0].pause();
+		playlist.i = 0;
+		restart = true;
+	}
+	playlist.list.splice(id, 1);
+	playlist.render();
+	if(restart == true){
+		playlist.play(playlist.i);
+	}
+}
+
+playlist.reorder = function(event, ui){
+	var newList = [];
+	$('.playlist .playlist-track').each(function(){
+		var id = $(this).data('db-id');
+		if(id != undefined){
+			newList.push(id);
+		}
+	});
+	playlist.list = newList;
+	playlist.render();
 }
 
 playlist.play = function(id){
@@ -886,7 +1057,9 @@ playlist.edit = function(id){
 		
 		tracks = playlists + '<input type="hidden" name="id" id="id" value="false"><label for="playlist-name">Name</label><input id="playlist-name" type="text" placeholder="Playlist Name..." value="">' + tracks + '<button id="save-playlist"><i class="fa fa-floppy-o"></i> Save</button> <button id="clear-playlist"><i class="fa fa-times"></i> Delete</button>';
 	}
-	var w = aPopup.newWindow(tracks);
+	//var w = aPopup.newWindow(tracks);
+	var w = $('#current-playlist');
+	w.html(tracks);
 	w.find('#playlists').change(function(){
 		//Left off here. Need to create a function to load a saved playlist into the editor
 	});

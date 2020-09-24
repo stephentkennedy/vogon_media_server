@@ -10,11 +10,7 @@
 		echo '<tr>';
 		echo '<td>'.$u['user_email'].'</td>';
 		global $user;
-		if($user['user_key'] == $u['user_key']){
-			echo '<td><a href="'.build_slug('edit/'.$u['user_key'], [], 'user').'">[ Edit ]</a></td>';
-		}else{
-			echo '<td></td>';
-		}
+		echo '<td><a class="button" href="'.build_slug('edit/'.$u['user_key'], [], 'user').'"><i class="fa fa-pencil"></i> Edit</a> <a class="button" href="'.build_slug('remove/'.$u['user_key'], [], 'user').'"><i class="fa fa-times"></i> Remove</td>';
 		echo '</tr>';
 	}
 ?>

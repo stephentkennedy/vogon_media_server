@@ -1,10 +1,20 @@
 <div class="container">
 	<video poster="<?php echo URI.$poster; ?>" preload="metadata">
 		<source src="<?php echo URI.$location; ?>" type="video/mp4">
+		<?php 
+			if(!empty($subtitles)){
+				echo '<track kind="subtitles" srclang="en" src="'.$subtitles.'" default>';
+			}
+		?>
 	</video>
 	<div id="title" class="active">
 		<title class="title-bar"><?php echo $title; ?></title>
 		<h1><i class="fa fa-arrow-circle-left back-to-view"></i> <span class="title-text"><?php echo $title; ?></span></h1>
+	</div>
+	<div id="sub-controls" class="<?php if(empty($subtitles)){
+		 echo ' none';
+	} ?>">
+		<i class="fa fa-comment subtitles"></i>
 	</div>
 	<div id="video_preview">
 		<h3 id="video_title">Next:</h3>
@@ -122,8 +132,40 @@
 		text-align: center;
 		text-shadow: 2px 2px 2px #000;
 	}
+	#sub-controls{
+		width: 25vw;
+		position: absolute;
+		top: 0;
+		right: 0;
+		opacity: 0;
+		transition: opacity 0.2s linear;
+		pointer-events; none;
+		font-size: 1.5rem;
+		color: #fff;
+		text-shadow: 2px 2px 2px #000;
+		padding: 10px;
+		display: block;
+		margin: 0;
+		text-align: right;
+	}
+	#sub-controls.active{
+		opacity: 1;
+		pointer-events: all;
+	}
+	#sub-controls.active i{
+		opacity: 1;
+		transition: opacity 0.2s linear;
+	}
+	#sub-controls.active i:hover{
+		opacity: 0.75;
+		cursor: pointer;
+	}
+	#sub-controls.active.none{
+		opacity: 0;
+		pointer-events: none;
+	}
 	#title{
-		width: 100vw;
+		width: 75vw;
 		position: absolute;
 		top: 0;
 		left: 0;
@@ -159,6 +201,11 @@
 	#title .back-to-view:hover{
 		opacity: 0.75;
 	}
+	::cue{
+		color: #fff;
+		background-color: rgba(0,0,0.0.5);
+		font-size: 1.5rem;
+	}
 </style>
 <script type="text/javascript">
 	var player = {
@@ -167,6 +214,7 @@
 		title: false,
 		duration: 0,
 		time: <?php echo $time; ?>,
+		subtitles: false,
 		fallbackVolume: 0,
 		inactive_timeout: false,
 		play_started: false,
@@ -238,6 +286,7 @@
 				if(e.hasClass('fa-expand')){
 					e.removeClass('fa-expand').addClass('fa-compress');
 					$('.container')[0].requestFullscreen();
+					screen.orientation.lock('landscape');
 				}else{
 					e.removeClass('fa-compress').addClass('fa-expand');
 					document.exitFullscreen();
@@ -259,6 +308,15 @@
 				var curTime = Number(player.video[0].currentTime);
 				seek.val(curTime);
 				player.controls.find('#time').html(player.timeFormat(curTime)+' / '+player.duration);
+			});
+			$('#sub-controls .subtitles').click(function(){
+				if(player.subtitles == false){
+					player.subtitles = true;
+					player.video[0].textTracks[0].mode = 'showing';
+				}else{
+					player.subtitles = false;
+					player.video[0].textTracks[0].mode = 'hidden';
+				}
 			});
 			<?php if($series == ''){?>
 			player.title.find('.back-to-view').click(function(){

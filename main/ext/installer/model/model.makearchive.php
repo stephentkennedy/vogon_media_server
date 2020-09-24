@@ -19,7 +19,7 @@
 	foreach($directories as $dir){
 		$f = recursiveScan($dir, true);
 		foreach($f as $file){
-			$files_to_add[ROOT . DIRECTORY_SEPARATOR . $file] = $file;
+			$files_to_add[ROOT . DIRECTORY_SEPARATOR . $file] = ltrim($file, '/');
 		}
 	}
 	

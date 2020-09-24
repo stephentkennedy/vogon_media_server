@@ -68,6 +68,9 @@ if(empty($meta['desc'])){
 if(empty($meta['length'])){
 	$meta['length'] = 0;
 }
+if(empty($meta['subtitles'])){
+	$meta['subtitles'] = false;
+}
 $meta['poster'] = str_replace(ROOT, '', $meta['poster']);
 
 return [
@@ -85,5 +88,6 @@ return [
 	'series' => $series,
 	'series_id' => $series_id,
 	'time' => $time,
-	'length' => $meta['length']
+	'length' => $meta['length'],
+	'subtitles' => $meta['subtitles']
 ];

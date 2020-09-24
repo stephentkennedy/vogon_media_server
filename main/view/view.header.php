@@ -1,7 +1,7 @@
 <!--DOCTYPE HTML-->
 <html>
 	<head>
-		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1" user-scalable="no">
 		<?php 
 			if(!empty($head_tags)){
 				foreach($head_tags as $tag){

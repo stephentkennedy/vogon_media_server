@@ -97,6 +97,37 @@ table thead{
 table th{
 	text-align: left;
 }
+
+.flex{
+	display: flex;
+	flex-direction: column;
+	flex-wrap: wrap;
+	width: 100%;
+	margin-top: 2rem;
+	margin-bottom: 2rem;
+}
+.flex-row{
+	display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+	width: 100%;
+}
+.flex-row > span{
+	display: flex;
+	flex-basis: auto;
+	flex: 1;
+	padding: 10px;
+	overflow: hidden;
+}
+.flex-row.result-header{
+	position: sticky;
+	top: 0;
+}
+
+#audio-library-main{
+	
+}
+
 /*
 Popup styles
 */
@@ -218,10 +249,121 @@ label.required:after{
 .toggle.active{
 	display: block;
 }
+/*
+Name: Stephen Kennedy
+Date: 9/10/2020
+Comment: Tray system
+*/
+.tray{
+	position: fixed;
+	top: 0;
+	transition: all 0.4s ease;
+	border: 1px solid #fff;
+	height: 100vh;
+	padding: 1rem 2.5rem;
+	z-index: 2001;
+	/*overflow-x: visible;
+	overflow-y: auto;*/
+}
+.tray.open {
+	z-index: 2000;
+}
+.tray.no-pad{
+	padding: 0;
+}
+.tray.left{
+	transform: translateX(-100%);
+	left: 0;	
+}
+.tray.one.open .controls{
+	transform: translateX(0%);
+	opacity: 0.5;
+}
+.tray .controls{
+	top: 0;
+	position: absolute;
+	border: 1px solid #fff;
+	transition: transform 0.4s ease;
+	margin-top: -1px; /*Offset to the top of the border*/
+	z-index: 2000;
+}
+.tray.open .controls{
+	z-index: 10000;
+}
+.tray.second .controls{
+	top: 2.5rem;
+}
+.tray.third .controls{
+	top: 5rem;
+}
+.tray.fourth .controls{
+	top: 7.5rem;
+}
+.tray.fifth .controls{
+	top: 10rem;
+}
+.tray.sixth .controls{
+	top: 12.5rem;
+}
+.tray .controls i{
+	padding: .5rem;
+	display: block;
+	cursor: pointer;
+	transition: background 0.4s ease;
+}
+.tray .controls i:hover{
+	background-color: rgba(255,255,255, 0.25);
+}
+.tray .controls i + i{
+	border-top: 1px solid #fff;
+}
+.tray.left .controls{
+	transform: translateX(100%);
+	right: 0;
+}
+.tray.right .controls{
+	transform: translateX(-100%);
+	left: 0;
+}
+.tray.right{
+	right: 0;
+	transform: translateX(100%);
+}
+.tray.left.open, .tray.right.open{
+	transform: translateX(0);
+	z-index: 2000;
+}
+.tray.one.left.open, .tray.one.right.open{
+	z-index: 10000;
+}
+.tray > .container > .content{
+	display: block;
+	height: calc(100vh - 5rem);
+	padding-left: 2rem;
+	padding-right: 2rem;
+	overflow: auto;
+}
+.tray > .container > h1, .tray > .container > h2, .tray > .container > h3, .tray > .container > h4, .tray > .container > h5, .tray > .container > h6{
+	margin: 0px;
+	padding-left: 2rem;
+	padding-right: 2rem;
+	padding-top: 1rem;
+	padding-bottom: 1rem;
+}
 @media only screen and (max-width: 1440px){
 	#content{
 		padding-left: 20px;
 		padding-right: 20px;
+	}
+}
+@media only screen and (max-width: 993px){
+	.tray.left.open, .tray.right.open {
+		z-index: 100;
+	}
+	.tray.open .controls{
+		transform: translateX(0%);
+		opacity: 0.5;
+		z-index: 10000;
 	}
 }
 @media only screen and (max-width: 768px){

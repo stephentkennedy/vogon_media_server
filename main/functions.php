@@ -235,11 +235,15 @@ function slugify($content){
 	return strtolower($content);
 }
 
-function nice_date($date){
+function nice_date($date, $hours = true){
 	if(gettype($date) != 'int'){
 		$date = strtotime($date);
 	}
-	return date('m/d/Y g:ia', $date);
+	if($hours == true){
+		return date('m/d/Y g:ia', $date);
+	}else{
+		return date('m/d/Y', $date);
+	}
 }
 function db_date($date){
 	if(gettype($date) != 'int'){
