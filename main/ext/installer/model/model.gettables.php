@@ -1,23 +1,39 @@
 <?php
 
 	//Hard coded until an interface can be built.
-	$tables = [
-		'data' => false,
-		'data_meta' => false,
-		'route' => true,
-		'var' => true,
-		'user' => false,
-		'session' => false,
-		'contact' => false,
-		'contact_meta' => false,
-		'history' => false,
-		'cache' => false,
-	];
+	if(empty($tables)){
+		$tables = [
+			'data' => false,
+			'data_meta' => false,
+			'route' => true,
+			'var' => true,
+			'user' => false,
+			'user_meta' => false,
+			'session' => false,
+			'contact' => false,
+			'contact_meta' => false,
+			'touch' => false,
+			'stats' => false,
+			'message' => false,
+			'role' => true,
+			'campaign' => false,
+			'website' => false,
+			'hour' => false,
+			'cron' => false,
+			'email' => false,
+			//'history' => false,
+			//'cache' => false,
+		];
+	}
 	$table_struct = [];
 	$table_data = [];
 	foreach($tables as $table => $data){
 		if($data == true){
-			$sql = 'SELECT * FROM `'.$table.'`';
+			if($table != 'var'){
+				$sql = 'SELECT * FROM `'.$table.'`';
+			}else{
+				$sql = 'SELECT * FROM `'.$table.'` WHERE var_type IS NULL OR var_type != "private"'; //This way we can avoid leaking potentially private information.
+			}
 			$query = $db->query($sql);
 			$t_data = $query->fetchAll();
 			$sql = 'DESCRIBE `'.$table.'`';
@@ -40,7 +56,11 @@
 		}
 		$sql = 'SHOW CREATE TABLE `'.$table.'`';
 		$query = $db->query($sql);
-		$t_data = $query->fetch();
+		if($query != false){
+			$t_data = $query->fetch();
+		}else{
+			$t_data = [];
+		}
 		$table_struct[$table] = $t_data['Create Table'];
 	}
 	return [

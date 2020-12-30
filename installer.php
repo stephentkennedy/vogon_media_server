@@ -16,7 +16,7 @@ if(!isset($_POST['app_name'])){
 			<p>Please fill out the items below so that vogon can be correctly installed to your system</p>
 			<form method="post">
 				<label for="app_name">App Name</label>
-				<input type="text" name="app_name" value="Vogon Web Dev Tools">
+				<input type="text" name="app_name" value="Vogon Media Server">
 				<label for="database_host">Database Host</label>
 				<input type="text" name="database_host" value="localhost">
 				<label for="database_name">Database Name</label>
@@ -45,7 +45,7 @@ if(!isset($_POST['app_name'])){
 $config = <<<HERE
 [app_constants]
 name = "{$app_name}"
-ver = 0.1a
+ver = 0.2a
 uri = "{$uri}"
 [database]
 driver = mysql

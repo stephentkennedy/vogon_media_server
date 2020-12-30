@@ -42,6 +42,8 @@ $db = new thumb(__DIR__.DIRECTORY_SEPARATOR.'config.ini');
 $sql = 'SELECT * FROM var WHERE var_session = 1';
 $query = $db->query($sql, []);
 session_start();
+//Dump session variables not set by the database
+$_SESSION = [];
 $session_vars = $query->fetchAll();
 foreach($session_vars as $var){
 	$_SESSION[$var['var_name']] = $var['var_content'];
