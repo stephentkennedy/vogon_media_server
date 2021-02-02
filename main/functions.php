@@ -30,7 +30,7 @@ function loader($file, $data = []){
 		return include $file;
 	}else{
 		//echo 'unable to load '.$file;
-		trigger_error('No file located at: '.$file, E_USER_NOTICE);
+		//trigger_error('No file located at: '.$file, E_USER_NOTICE);
 		return null; //Should probably look into returning some kind of non-exception style error, just so the app can give the user some feedback on why their request didn't follow the app's pre-programmed logic.
 	}
 }
@@ -62,9 +62,29 @@ function load_controller($controller, $data = [], $ext = false){
 		return null;
 	}
 	if($ext == false){
-		return loader(ROOT.DIRECTORY_SEPARATOR.'main'.DIRECTORY_SEPARATOR.'controller'.DIRECTORY_SEPARATOR.'controller.'.$controller.'.php', $data);
+		
+		$load = ROOT.DIRECTORY_SEPARATOR.'main'.DIRECTORY_SEPARATOR.'controller'.DIRECTORY_SEPARATOR.'controller.'.$controller;
 	}else{
-		return loader(ROOT.DIRECTORY_SEPARATOR.'main'.DIRECTORY_SEPARATOR.'ext'.DIRECTORY_SEPARATOR.$ext.DIRECTORY_SEPARATOR.'controller'.DIRECTORY_SEPARATOR.'controller.'.$controller.'.php', $data);
+		$load = ROOT.DIRECTORY_SEPARATOR.'main'.DIRECTORY_SEPARATOR.'ext'.DIRECTORY_SEPARATOR.$ext.DIRECTORY_SEPARATOR.'controller'.DIRECTORY_SEPARATOR.'controller.'.$controller;
+	}
+	/*
+	Name: Stephen Kennedy
+	Date: 2/2/2021
+	Comment: In order to better enforce the best practice of POST REDIRECT GET on our forms, this function is now going to attempt to load special controller.[controller_name].post.php files if a $_POST array is detected. Then, once that processing is done, it will redirect to the same slug, clearing the $_POST array.
+	
+	If developers need to redirect elsewhere, the redirect function kills PHP processing, so you just need to use it in your .post code.
+	*/
+	
+	if(!empty($_POST)){
+		$load_check = loader($load.'.post.php', $data);
+		if($load_check === null){ //Hard test to ensure the file doesn't exist
+			//This is a fallback for if the file doesn't exist so that we don't break compatibility with extensions written before this standard was introduced.
+			return loader($load.'.php', $data);
+		}else{
+			redirect($_SERVER['REQUEST_URI']);
+		}
+	}else{
+		return loader($load.'.php', $data);
 	}
 }
 

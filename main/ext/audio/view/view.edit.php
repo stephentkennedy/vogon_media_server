@@ -23,6 +23,7 @@ foreach($meta_data as $item => $default){
 	<label for="meta_artist">Artist</label>
 	<input id="meta_artist" type="text" name="meta_artist" value="<?php echo $meta['artist']; ?>">
 	<label for="meta_album">Album</label>
+	<a class="button" href="<?php echo build_slug('album/'.$album_id, [], 'audio'); ?>"><i class="fa fa-eye"></i> <?php echo $album; ?></a><br><br>
 	<input id="meta_album" type="text" name="meta_album" value="<?php echo $album; ?>">
 	<label for="meta_genre">Genre</label>
 	<input id="meta_genre" type="text" name="meta_genre" value="<?php echo $meta['genre']; ?>">

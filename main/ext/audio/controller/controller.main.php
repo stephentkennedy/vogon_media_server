@@ -1,25 +1,5 @@
 <?php
-if(isset($_REQUEST['action'])){
-	switch($_REQUEST['action']){
-		case 'edit': //Should only appear as a POST
-			load_model('edit_item', $_POST, 'audio');
-			break;
-		case 'ajax_edit': //Should only appear as a POST
-			load_model('edit_item', $_POST, 'audio');
-			die('saved');
-			break;
-		case 'enable_history': //Should only appear as a GET
-			$id = get_slug_part(2);
-			load_model('enable_history', ['id' => $id], 'audio');
-			redirect(build_slug('album/'.$id, [], 'audio'));
-			break;
-		case 'disable_history': //SHould only appear as a GET
-			$id = get_slug_part(2);
-			load_model('enable_history', ['id' => $id], 'audio');
-			redirect(build_slug('album/'.$id, [], 'audio'));
-			break;
-	}
-}
+
 $action = get_slug_part(1);
 $clerk = new clerk;
 switch($action){
@@ -101,6 +81,7 @@ switch($action){
 		if(!empty($audio['data_parent'])){
 			$album = $clerk->getRecord(['id' => $audio['data_parent']]);
 			$audio['album'] = $album['data_name'];
+			$audio['album_id'] = $album['data_id'];
 		}else{
 			$audio['album'] = '';
 		}

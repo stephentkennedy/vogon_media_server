@@ -470,6 +470,37 @@ footer{
 .mini-player.fullscreen .mini-player-playlist{
 	height: calc(100vh - 158px);
 }
+#playlists li.playlist-list{
+	display: flex;
+	direction: row;
+	background: transparent;
+	cursor: pointer;
+}
+#playlists li.playlist-list:hover{
+	background: #555;
+}
+#playlists li.playlist-list i.delete-playlist{
+	padding: 15px;
+	height: 48px;
+	width: 48px;
+	flex-shrink: 0;
+	cursor: pointer;
+	background: transparent;
+}
+#playlists li.playlist-list i.delete-playlist:hover{
+	background: red
+}
+#playlists li.playlist-list span.playlist-title{
+	display: inline-block;
+	overflow: hidden;
+	text-align: left;
+	height: 48px;
+	padding-left: 1rem;
+	padding-right: 1rem;
+	padding-top: 5px;
+	padding-bottom: 5px;
+	flex-grow: 1;
+}
 .playlist .playlist-track{
 	display: flex;
 	flex-direction: row;

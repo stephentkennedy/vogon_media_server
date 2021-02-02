@@ -13,7 +13,7 @@
 	<div class="controls">
 		<i class="fa fa-list-alt tray-expand" title="Now Playing"></i><span class="counter hidden"></span>
 	</div>
-	<div class="container">
+	<div class="container" id="now_playing">
 		<h2 id="title">Now Playing <i class="fa fa-floppy-o button playlist-save" title="save"></i> <i class="fa fa-file-o button playlist-new" title="New Playlist"></i></h2>
 		<div id="current-playlist" class="content row">
 			
@@ -802,20 +802,42 @@ playlist.bind = function(){
 }
 
 playlist.fetch = function(){
-	$.get('ajax/ajax_get_playlists/audio').done(function(returned){
+	$.get('/ajax/ajax_get_playlists/audio').done(function(returned){
 		var string = '<ul>';
 		for(i in returned){
-			string += '<li class="playlist-list" data-id="' + returned[i].id + '" data-tracks="'+ returned[i].list +'">' + returned[i].title + '</li>';
+			string += '<li class="playlist-list" data-id="' + returned[i].id + '" data-tracks="'+ returned[i].list +'"><span class="playlist-title">' + returned[i].title + '</span><i class="fa fa-times delete-playlist"></i></li>';
 		}
 		string += '</ul>';
 		$('#playlists').html(string);
-		$('#playlists .playlist-list').click(function(){
-			playlist.list = $(this).data('tracks');
+		$('#playlists .playlist-list .playlist-title').click(function(){
+			playlist.list = $(this).parent().data('tracks');
 			playlist.render();
 			$('.tray').removeClass('open');
 			$('#current').addClass('open');
 			$('#current').find('h2').attr('data-title', $(this).html());
 			$('#current').find('h2').attr('data-id', $(this).data('id'));
+		});
+		$('#playlists .playlist-list .delete-playlist').click(function(){
+			var selected = $(this).parent();
+			var playlist_id = selected.data('id');
+			var playlist_title = selected.children('.playlist-title').html();
+			var string = '<h2>Confirm Playlist Delete</h2> Please confirm that you would like to delete the playlist:<br>'+playlist_title+'<br><br><button data-id="'+playlist_id+'" class="yes"><i class="fa fa-check"></i> Yes</button> <button class="no"><i class="fa fa-times"></i> No</button>';
+			
+			var w = aPopup.newWindow(string);
+			
+			w.find('.yes').click(function(){
+				var id = $(this).data('id');
+				$.post('/ajax/ajax_playlist_delete/audio', {
+					id: id
+				}).done(function(){
+					w.remove();
+					playlist.fetch();
+				});
+			});
+			
+			w.find('.no').click(function(){
+				w.remove();
+			});
 		});
 	});
 }
@@ -823,7 +845,7 @@ playlist.fetch = function(){
 playlist.save = function(){
 	var string = '<h2>Save the current playlist?</h2><br><label>Name</label>';
 	
-	var playlist2 = $('.playlist h2.title');
+	var playlist2 = $('#now_playing h2#title');
 	var id = playlist2.data('id');
 	var title = playlist2.data('title');
 	
@@ -832,7 +854,7 @@ playlist.save = function(){
 	}else{
 		string += '<input type="text" id="playlist-name" placeholder="name" value="'+ title +'">';
 		string += '<input type="hidden" id="playlist-id" value="'+ id +'">';
-		string += '<br><input type="checkbox" id="rename"> <label>Replace Existing Name?</label>';
+		string += '<br><input class="inline" type="checkbox" id="rename"> <label class="inline">Replace Existing Name?</label>';
 	}
 	string += '<br><br><button id="save"><i class="fa fa-floppy-o"></i> Save</button>';
 	var w = aPopup.newWindow(string);

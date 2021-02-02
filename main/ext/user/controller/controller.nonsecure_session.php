@@ -25,6 +25,7 @@
 			global $user;
 			$user = $check;
 			load_model('start_session', ['user_key' => $check['user_key']], 'user');
+			redirect($_SERVER['REQUEST_URI']);
 		}
 	}else{
 		$session_info = load_model('resume_session', [], 'user');

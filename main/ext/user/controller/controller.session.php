@@ -7,6 +7,7 @@
 		$check = load_model('compare_password', $password_data, 'user');
 		if($check['correct'] == true){			
 			load_model('start_session', ['user_key' => $check['user_key']], 'user');
+			redirect($_SERVER['REQUEST_URI']);
 		}else{
 			echo load_view('login', [], 'user');
 			die(); //Die here so that no additional routing will be done.

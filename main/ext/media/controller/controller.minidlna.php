@@ -31,7 +31,9 @@ if(!empty($action)){
 	}
 	
 }else{
-	load_controller('header');
+	load_controller('header', [
+		'title'=> 'Server Tools'
+	]);
 	echo load_view('minidlna', [], 'media');
 	load_controller('footer');
 }
