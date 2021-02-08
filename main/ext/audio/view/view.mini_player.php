@@ -32,6 +32,14 @@ $(document).ready(function(){
 		id: {},
 		src: {},
 		header: {},
+		trueColor: {
+			r: 200,
+			g: 200,
+			b: 0
+		},
+		curColor: false,
+		colorHold: 200,
+		colorFrame: 0,
 		angle: 0,
 		track: false,
 		playing: false,
@@ -123,7 +131,19 @@ $(document).ready(function(){
 				}
 			});			
 		},
+		chooseColor: function(){
+			var r = Math.floor(Math.random() * 255);
+			var g = Math.floor(Math.random() * 255);
+			var b = Math.floor(Math.random() * 255);
+			miniplayer.trueColor = {
+				r: r,
+				g: g,
+				b: b
+			};
+		},
 		init: function(){
+			miniplayer.chooseColor();
+			miniplayer.curColor = miniplayer.trueColor;
 			miniplayer.instance = $(miniplayer.seed).appendTo('body');
 			miniplayer.audio = $('.mini-player .current-track');
 			miniplayer.src = $('.mini-player .current-track .current-source');
@@ -377,6 +397,7 @@ function initPage(){
 
 miniplayer.cleanCircle = function(){
 	if(miniplayer.instance.hasClass('open')){
+		miniplayer.colorControl();
 		// set to the size of device
 		canvas = miniplayer.instance.find('canvas')[0];
 		//canvas.width = miniplayer.instance.find('canvas').width();
@@ -437,12 +458,13 @@ miniplayer.cleanCircle = function(){
 
 miniplayer.burnout = function(){
     if(miniplayer.instance.hasClass('open')){
+		miniplayer.colorControl();
 		// set to the size of device
 		canvas = miniplayer.instance.find('canvas')[0];
 		//canvas.width = miniplayer.instance.find('canvas').width();
 		//canvas.height = ;
 		ctx = canvas.getContext("2d");
-		ctx.globalCompositeOperation = 'hard-light';
+		ctx.globalCompositeOperation = 'source-over';
 		
 		// find the center of the window
 		center_x = canvas.width / 2;
@@ -463,32 +485,32 @@ miniplayer.burnout = function(){
 		
 		radius = level;
 		
-		var temp_width = canvas.width - 4;
-		var temp_height = canvas.height - 4;
+		var temp_width = canvas.width + .01;
+		var temp_height = canvas.height + .01;
 		
 		ctx.translate(center_x, center_y);
-		miniplayer.angle += 2;
+		miniplayer.angle += 0.00005;
 		if(miniplayer.angle > 360){
 			miniplayer.angle = 0;
 		}
 		var radian = miniplayer.angle * Math.PI / 180;
-		//ctx.rotate(radian);
+		ctx.rotate(radian);
 		ctx.drawImage(canvas, Math.floor(temp_width / 2) * -1, Math.floor(temp_height / 2) * -1, temp_width, temp_height);
-		ctx.globalCompositeOperation = 'hard-light';
-		//ctx.rotate(-1 * radian);
+		ctx.globalCompositeOperation = 'source-over';
+		ctx.rotate(-1 * radian);
 		ctx.setTransform(1, 0, 0, 1, 0, 0);
 		
-		gradient.addColorStop(0,"rgba("+level+", 7, "+level+", 1)");
+		gradient.addColorStop(0,"rgba("+level+", 0, "+level+", 1)");
 		gradient.addColorStop(1,"rgba(0, 0, 0, 0)");
 		ctx.fillStyle = gradient;
-		ctx.fillRect(0,0,canvas.width,canvas.height);
+		//ctx.fillRect(0,0,canvas.width,canvas.height);
 		ctx.fillStyle = 'transparent';
 		
 		//draw a circle
-		ctx.strokeStyle = 'rgba(150,0,100,1)';
+		ctx.filleStyle = 'rgba(0,0,0,1)';
 		ctx.beginPath();
 		ctx.arc(center_x,center_y,radius,0,2*Math.PI);
-		ctx.stroke();
+		ctx.fill();
 		for(var i = 0; i < bars; i++){
 			
 			//divide a circle into equal parts
@@ -498,7 +520,7 @@ miniplayer.burnout = function(){
 			
 			// set coordinates
 			x = center_x + Math.cos(rads * i) * (radius);
-		y = center_y + Math.sin(rads * i) * (radius);
+			y = center_y + Math.sin(rads * i) * (radius);
 			x_end = center_x + Math.cos(rads * i)*(radius + bar_height);
 			y_end = center_y + Math.sin(rads * i)*(radius + bar_height);
 			
@@ -512,6 +534,7 @@ miniplayer.burnout = function(){
  
 miniplayer.bars = function(){
 	if(miniplayer.instance.hasClass('open')){
+		miniplayer.colorControl();
 		// set to the size of device
 		canvas = miniplayer.instance.find('canvas')[0];
 		//canvas.width = miniplayer.instance.find('canvas').width();
@@ -584,6 +607,7 @@ miniplayer.bars = function(){
 
 miniplayer.spectro = function(){
 	if(miniplayer.instance.hasClass('open')){
+		miniplayer.colorControl();
 		// set to the size of device
 		canvas = miniplayer.instance.find('canvas')[0];
 		//canvas.width = miniplayer.instance.find('canvas').width();
@@ -659,7 +683,17 @@ miniplayer.spectro = function(){
 // for drawing a bar
 miniplayer.drawBar = function (x1, y1, x2, y2, width,frequency){
     
-    var lineColor = "rgb(" + frequency + ", " + frequency + ", " + 0 + ")";
+	var freq_temp = frequency / 255;
+	if(freq_temp > 1){
+		freq_temp = 1;
+	}
+	var color = {
+		r: freq_temp * miniplayer.curColor.r,
+		g: freq_temp * miniplayer.curColor.g,
+		b: freq_temp * miniplayer.curColor.b
+	}
+	
+    var lineColor = "rgb(" + color.r + ", " + color.g + ", " + color.b + ")";
     
     ctx.strokeStyle = lineColor;
     ctx.lineWidth = width;
@@ -671,7 +705,7 @@ miniplayer.drawBar = function (x1, y1, x2, y2, width,frequency){
 
 miniplayer.drawBarSolid = function (x1, y1, x2, y2, width,frequency){
     
-    var lineColor = "rgb(200,200,0)";
+    var lineColor = "rgb("+miniplayer.curColor.r+","+miniplayer.curColor.g+","+miniplayer.curColor.b+")";
     
     ctx.strokeStyle = lineColor;
     ctx.lineWidth = width;
@@ -679,6 +713,56 @@ miniplayer.drawBarSolid = function (x1, y1, x2, y2, width,frequency){
     ctx.moveTo(x1,y1);
     ctx.lineTo(x2,y2);
     ctx.stroke();
+}
+
+//transition from our current color to our next color
+miniplayer.cTransition = function(){
+	var to = miniplayer.trueColor;
+	var cur = miniplayer.curColor;
+	if(to.r == cur.r && to.g == cur.g && to.b == cur.b){
+		return false;
+	}
+	if(to.r != cur.r){
+		if(to.r > cur.r){
+			cur.r++;
+		}else{
+			cur.r--;
+		}
+	}
+	if(to.g != cur.g){
+		if(to.g > cur.g){
+			cur.g++;
+		}else{
+			cur.g--;
+		}
+	}
+	if(to.b != cur.b){
+		if(to.b > cur.b){
+			cur.b++;
+		}else{
+			cur.b--;
+		}
+	}
+	miniplayer.curColor = cur;
+	return true;
+}
+//Controls shifting our colors.
+miniplayer.colorControl = function(){
+	var check = miniplayer.cTransition();
+	if(check == false){
+		//console.log('Holding: '+miniplayer.colorFrame+ ' of ' + miniplayer.colorHold);
+		if(miniplayer.colorFrame == 0){
+			miniplayer.colorHold = Math.floor(Math.random() * (2000));
+		}
+		if(miniplayer.colorHold > miniplayer.colorFrame){
+			miniplayer.colorFrame++;
+		}else{
+			miniplayer.colorFrame = 0;
+			miniplayer.chooseColor();
+		}
+	}else{
+		
+	}
 }
 
 miniplayer.options = function(){

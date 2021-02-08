@@ -61,13 +61,26 @@
 	}
 	#controls input[type="range"]{
 		display: inline-block;
-		padding: .5rem;
-		border: none !important;
-		margin-top: 7px;
+		padding: 0rem;
+		margin-top: 14px;
+		margin-bottom: 14px;
+		vertical-align: middle;
+		border: none;
 	}
 	#controls .seek{
 		width: calc(100% - calc(14rem));
-		margin-bottom: 0px;
+	}
+	/* Chrome 29+ */
+	@media screen and (-webkit-min-device-pixel-ratio:0)
+	  and (min-resolution:.001dpcm) {
+		#controls input[type="range"]{
+			border: 0.2px solid var(--white);
+		}
+	}
+	@-moz-document url-prefix() {
+		#controls input[type="range"]{
+			border: none;
+		}
 	}
 	#controls .volume{
 		width: 100px;

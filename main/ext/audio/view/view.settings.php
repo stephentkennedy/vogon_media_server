@@ -6,7 +6,8 @@
 			$visualizers = [
 				'cleanCircle' => 'Circle',
 				'bars' => 'Bars',
-				'spectro' => 'Spectrograph'
+				'spectro' => 'Spectrograph',
+				'burnout' => 'Burnout'
 			];
 			foreach($visualizers as $var => $friendly){
 				$selected = '';

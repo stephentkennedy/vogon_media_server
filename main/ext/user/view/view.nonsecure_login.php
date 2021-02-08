@@ -1,3 +1,4 @@
+<div id="content">
 <header><h1>Choose a profile</h1></header>
 <form id="profile_container" method="post">
 	<div class="container row wide">

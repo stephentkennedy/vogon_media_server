@@ -602,7 +602,12 @@ footer{
 	margin-bottom: 14px;
 	padding: 0px;
 	vertical-align: middle;
-	border: none;
+	border: 0.2px solid var(--white);
+}
+@-moz-document url-prefix() {
+	.mini-player-audio-controls .seek{
+		border: none;
+	}
 }
 input[type=range] {
   -webkit-appearance: none; /* Hides the slider so that custom slider can be made */
@@ -636,7 +641,7 @@ input[type=range]::-webkit-slider-thumb {
   border-radius: 100px;
   background: var(--white);
   cursor: pointer;
-  margin-top: -14px; /* You need to specify a margin in Chrome, but in Firefox and IE it is automatic */
+  margin-top: -4px; /* You need to specify a margin in Chrome, but in Firefox and IE it is automatic */
   box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d; /* Add cool effects to your sliders! */
 }
 
