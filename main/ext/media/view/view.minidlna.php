@@ -1,4 +1,6 @@
-<header><h1>Server Tools</h1></header>
+<header><h1>Server Tools</h1></header> 
+<h2>App Identity</h2>
+<?php echo NAME.' version '.VER; ?>
 <h2>Mini DLNA Server</h2>
 <a class="button" href="/server/restart">Restart</a>
 <a class="button" href="/server/start">Start</a>

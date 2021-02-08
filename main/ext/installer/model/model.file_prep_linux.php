@@ -3,6 +3,7 @@
 		'main',
 		'js',
 		'css',
+		'upload'
 	];
 	if(file_exists(ROOT . DIRECTORY_SEPARATOR . 'fonts')){
 		$directories[] = 'fonts';
@@ -19,7 +20,9 @@
 	foreach($directories as $dir){
 		$f = recursiveScan($dir, true);
 		foreach($f as $file){
-			$files_to_add[ROOT . DIRECTORY_SEPARATOR . $file] = str_replace(DIRECTORY_SEPARATOR, '/', $file);
+			if($dir != 'upload' || $f == 'favicon.png'){
+				$files_to_add[ROOT . DIRECTORY_SEPARATOR . $file] = str_replace(DIRECTORY_SEPARATOR, '/', $file);
+			}
 		}
 	}
 	return $files_to_add;
