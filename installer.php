@@ -2,6 +2,13 @@
 if(!defined('NEW')){
 	die('The installer is not directly accessed');
 }
+if(isset($argc)){
+	foreach($argc as $arg){
+		$array = explode('=', $arg);
+		$_POST[$array[0]] = $array[1];
+	}
+}
+
 if(!isset($_POST['app_name'])){
 ?>
 <html>
