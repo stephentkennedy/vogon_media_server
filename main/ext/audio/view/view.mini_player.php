@@ -40,6 +40,7 @@ $(document).ready(function(){
 		curColor: false,
 		colorHold: 200,
 		colorFrame: 0,
+		colorStep: 0.05,
 		angle: 0,
 		track: false,
 		playing: false,
@@ -125,8 +126,11 @@ $(document).ready(function(){
 						album: data['album']
 					});
 					if('MediaPositionState' in navigator.mediaSession){
-						navigator.mediaSession.MediaPositionState.duration = data['length'];
-						navigator.mediaSession.MediaPositionState.position = 0.0;
+						navigator.mediaSession.setPositionState({
+						duration: miniplayer.audio[0].duration,
+						playbackRate: 1,
+						position: miniplayer.audio[0].currentTime
+					});
 					}
 				}
 			});			
@@ -211,7 +215,11 @@ $(document).ready(function(){
 				var friendly = miniplayer.timeFormat(miniplayer.audio[0].currentTime);
 				miniplayer.instance.find('.mini-player-counter').html(friendly + ' / ' + miniplayer.fDur);
 				if('mediaSession' in navigator && 'MediaPositionState' in navigator.mediaSession){
-					navigator.mediaSession.MediaPositionState.position = miniplayer.audio[0].currentTime;
+					navigator.mediaSession.setPositionState({
+						duration: miniplayer.audio[0].duration,
+						playbackRate: 1,
+						position: miniplayer.audio[0].currentTime
+					});
 				}
 			});
 			miniplayer.audio[0].onended = function(){
@@ -265,10 +273,18 @@ $(document).ready(function(){
 			});
 			
 			if('mediaSession' in navigator){
-				navigator.mediaSession.setActionHandler('play', miniplayer.play);
-				navigator.mediaSession.setActionHandler('pause', miniplayer.play);
-				navigator.mediaSession.setActionHandler('nexttrack', playlist.next);
-				navigator.mediaSession.setActionHandler('previoustrack', playlist.prev);
+				navigator.mediaSession.setActionHandler('play', function(){
+					miniplayer.audio[0].play();
+				});
+				navigator.mediaSession.setActionHandler('pause', function(){
+					miniplayer.audio[0].pause();
+				});
+				navigator.mediaSession.setActionHandler('nexttrack', function(){
+					playlist.next();
+				});
+				navigator.mediaSession.setActionHandler('previoustrack', function(){
+					playlist.prev();
+				});
 			}
 			
 			/*
@@ -424,7 +440,11 @@ miniplayer.cleanCircle = function(){
 		
 		radius = level;
 		
-		gradient.addColorStop(0,"rgba("+level+", 7, "+level+", 1)");
+		var comp = miniplayer.getCompliment(miniplayer.curColor);
+		var lvl_temp = level / 255;
+		
+		gradient.addColorStop(0,"rgba("+(comp.r * lvl_temp)+","+(comp.g * lvl_temp)+", "+(comp.b * lvl_temp)+", 1)");
+		
 		gradient.addColorStop(1,"rgba(0, 0, 0, 1)");
 		ctx.fillStyle = gradient;
 		ctx.fillRect(0,0,canvas.width,canvas.height);
@@ -500,7 +520,10 @@ miniplayer.burnout = function(){
 		ctx.rotate(-1 * radian);
 		ctx.setTransform(1, 0, 0, 1, 0, 0);
 		
-		gradient.addColorStop(0,"rgba("+level+", 0, "+level+", 1)");
+		var comp = miniplayer.getCompliment(miniplayer.curColor);
+		var lvl_temp = level / 255;
+		
+		gradient.addColorStop(0,"rgba("+(comp.r * lvl_temp)+","+(comp.g * lvl_temp)+", "+(comp.b * lvl_temp)+", 1)");
 		gradient.addColorStop(1,"rgba(0, 0, 0, 0)");
 		ctx.fillStyle = gradient;
 		//ctx.fillRect(0,0,canvas.width,canvas.height);
@@ -573,8 +596,10 @@ miniplayer.bars = function(){
 		level = Math.floor((level / bars) / 4);
 		
 		radius = level;
+		var comp = miniplayer.getCompliment(miniplayer.curColor);
+		var lvl_temp = level / 255;
 		
-		gradient.addColorStop(0,"rgba("+level+", 7, "+level+", 1)");
+		gradient.addColorStop(0,"rgba("+(comp.r * lvl_temp)+","+(comp.g * lvl_temp)+", "+(comp.b * lvl_temp)+", 1)");
 		gradient.addColorStop(1,"rgba(0, 0, 0, 1)");
 		ctx.fillStyle = gradient;
 		ctx.fillRect(0,0,canvas.width,canvas.height);
@@ -648,7 +673,10 @@ miniplayer.spectro = function(){
 		
 		radius = level;
 		
-		gradient.addColorStop(0,"rgba("+level+", 7, "+level+", 1)");
+		var comp = miniplayer.getCompliment(miniplayer.curColor);
+		var lvl_temp = level / 255;
+		
+		gradient.addColorStop(0,"rgba("+(comp.r * lvl_temp)+","+(comp.g * lvl_temp)+", "+(comp.b * lvl_temp)+", 1)");
 		gradient.addColorStop(1,"rgba(0, 0, 0, 1)");
 		ctx.fillStyle = gradient;
 		ctx.fillRect(0,0,canvas.width,canvas.height);
@@ -678,6 +706,116 @@ miniplayer.spectro = function(){
 		}
 	}
 	window.requestAnimationFrame(miniplayer.animation);
+}
+
+miniplayer.driving = function(){
+	if(miniplayer.instance.hasClass('open')){
+		//Color shortcuts
+		var sunset_orange = {
+			r: 253,
+			g: 94,
+			b: 83
+		};
+		var sky_blue = {
+			r: 83,
+			g: 241,
+			b: 252
+		};
+		var evening_purple = {
+			r: 75,
+			g: 0,
+			b: 130
+		};
+		var rainy_gray = {
+			r: 69,
+			g: 69,
+			b: 69
+		};
+		var sunrise_pink = {
+			r: 251,
+			g: 114,
+			b: 152
+		};
+		
+		miniplayer.colorControl();
+		// set to the size of device
+		canvas = miniplayer.instance.find('canvas')[0];
+		//canvas.width = miniplayer.instance.find('canvas').width();
+		//canvas.height = ;
+		ctx = canvas.getContext("2d");
+		ctx.globalCompositeOperation = 'source-over';
+		
+		// find the center of the window
+		center_x = canvas.width / 2;
+		center_y = canvas.height / 2;
+		
+		var bar_ratio = 256 / canvas.height;
+		
+		if(bars > center_x){
+			var use_bars = center_x;
+		}else{
+			var use_bars = bars;
+		}
+		
+		analyser.getByteFrequencyData(frequency_array);
+		var level = 0;
+		for(var i = 0; i < use_bars; i++){
+			level += frequency_array[i];
+		}
+		level = Math.floor((level / bars) / 4);
+		
+		var number_lines = 100;
+		
+		var scale_y = ~~(center_y / number_lines);
+		var scale_x = ~~(center_x / 2);
+		for( var i = 0; i < number_lines; i++ ){
+			miniplayer.drawRoad(i, level, scale_x, scale_y, center_x, center_y);
+		}
+		
+	}
+	window.requestAnimationFrame(miniplayer.animation);
+}
+
+miniplayer.drawRoad = function(line, level, scaleX, scaleY, centerX, centerY){
+	var asphalt_black = {
+		r: 20,
+		g: 20,
+		b: 20
+	};
+	var line_yellow = {
+		r: 204,
+		g: 204,
+		b: 0
+	};
+	var test = ~~((((miniplayer.audio[0].currentTime) * level) / (miniplayer.audio[0].duration)) * (100)) + line;
+	var height = scaleY;
+	
+	var lineColor = miniplayer.rgbMe(asphalt_black);
+	ctx.strokeStyle = lineColor;
+	ctx.lineWidth = height;
+	ctx.beginPath();
+	
+	var width = ~~(scaleX + (5 * line));
+	
+	ctx.moveTo((centerX - width), (centerY + (scaleY * line)));
+	ctx.lineTo((centerX + width), (centerY + (scaleY * line)));
+	ctx.stroke();
+	
+	if( test % 5 == 0 || (test+1) % 5 == 0 || (test+2) % 5 == 0 || (test+3) % 5 == 0 || (test+4) % 5 == 0){
+		var mini_width = ~~(width / 10);
+		var lineColor = miniplayer.rgbMe(line_yellow);
+		ctx.strokeStyle = lineColor;
+		ctx.lineWidth = height;
+		ctx.beginPath();
+		ctx.moveTo((centerX - mini_width), (centerY + (scaleY * line)));
+		ctx.lineTo((centerX + mini_width), (centerY + (scaleY * line)));
+		ctx.stroke();
+	}
+}
+
+miniplayer.rgbMe = function(colorObj){
+	var string = 'rgb(' + colorObj.r + ',' + colorObj.g + ',' + colorObj.b + ')';
+	return string;	
 }
 
 // for drawing a bar
@@ -719,29 +857,40 @@ miniplayer.drawBarSolid = function (x1, y1, x2, y2, width,frequency){
 miniplayer.cTransition = function(){
 	var to = miniplayer.trueColor;
 	var cur = miniplayer.curColor;
-	if(to.r == cur.r && to.g == cur.g && to.b == cur.b){
+	if(to.r == ~~cur.r && to.g == ~~cur.g && to.b == ~~cur.b){
+		miniplayer.curColor = {
+			r: ~~cur.r,
+			g: ~~cur.g,
+			b: ~~cur.b
+		};
 		return false;
 	}
 	if(to.r != cur.r){
-		if(to.r > cur.r){
-			cur.r++;
+		if(to.r > ~~cur.r){
+			cur.r +=  miniplayer.colorStep;
 		}else{
-			cur.r--;
+			cur.r +=  miniplayer.colorStep * -1;
 		}
+	}else{
+		cur.r = ~~cur.r;
 	}
-	if(to.g != cur.g){
+	if(to.g != ~~cur.g){
 		if(to.g > cur.g){
-			cur.g++;
+			cur.g +=  miniplayer.colorStep;
 		}else{
-			cur.g--;
+			cur.g +=  miniplayer.colorStep * -1;
 		}
+	}else{
+		cur.g = ~~cur.g;
 	}
-	if(to.b != cur.b){
-		if(to.b > cur.b){
-			cur.b++;
+	if(to.b != ~~cur.b){
+		if(to.b > ~~cur.b){
+			cur.b +=  miniplayer.colorStep;
 		}else{
-			cur.b--;
+			cur.b +=  miniplayer.colorStep * -1;
 		}
+	}else{
+		cur.b = ~~cur.b;
 	}
 	miniplayer.curColor = cur;
 	return true;
@@ -763,6 +912,18 @@ miniplayer.colorControl = function(){
 	}else{
 		
 	}
+}
+
+miniplayer.getCompliment = function(colorObj){
+	//Floor them so we can deal with scaling colors.
+	var r = ~~colorObj.r;
+	var g = ~~colorObj.g;
+	var b = ~~colorObj.b;
+	return {
+		r: (255 - r),
+		g: (255 - g),
+		b: (255 - b)
+	};
 }
 
 miniplayer.options = function(){

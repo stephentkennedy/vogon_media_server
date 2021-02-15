@@ -16,6 +16,9 @@
 		'.htaccess',
 		'installer.php'
 	];
+	if(file_exists(ROOT . DIRECTORY_SEPARATOR . 'composer.json')){
+		$files[] = 'composer.json';
+	}
 	$files_to_add = [];
 	foreach($directories as $dir){
 		$f = recursiveScan($dir, true);
