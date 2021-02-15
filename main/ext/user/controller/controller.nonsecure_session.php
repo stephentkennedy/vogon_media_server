@@ -1,4 +1,11 @@
 <?php
+	if(isset($_POST['user_email']) && isset($_POST['first_user'])){
+		load_model('add', [
+			'email' => $_POST['user_email'],
+			'role' => ''
+		], 'user');
+	}
+
 	if(isset($_POST['user_key'])){
 		
 		//Move this DB logic to a model.
@@ -10,7 +17,11 @@
 		if($query == false){
 			$users = load_model('get_users', [], 'user');
 			load_controller('header', ['view' => 'mini']);
-			echo load_view('nonsecure_login', ['users' => $users], 'user');
+			if(!empty($users)){
+				echo load_view('nonsecure_login', ['users' => $users], 'user');
+			}else{
+				echo load_view('create_first_user', [], 'user');
+			}
 			load_controller('footer', ['view' => 'mini']);
 			die(); //Die here so that no additional routing will be done.
 		}else{
