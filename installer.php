@@ -3,9 +3,16 @@ if(!defined('NEW')){
 	die('The installer is not directly accessed');
 }
 if(isset($argc)){
-	foreach($argc as $arg){
-		$array = explode('=', $arg);
-		$_POST[$array[0]] = $array[1];
+	$options = getopt(null, [
+		'app_name:',
+		'database_host:',
+		'database_name:',
+		'database_user:',
+		'database_password:',
+		'uri:'
+	]);
+	foreach($options as $name => $value){
+		$_POST[$name] = $value;
 	}
 }
 
