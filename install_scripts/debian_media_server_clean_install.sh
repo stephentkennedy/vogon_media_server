@@ -80,3 +80,7 @@ cd /var/www/html
 sudo composer install --no-dev
 
 sudo php index.php --app_name="Vogon Media Server" --database_host=localhost --database_name="vogon" --database_user="vogon" --database_password="vogon" --uri="" >/dev/null
+
+echo -e "Your installation is complete. By default Apache is running on port 80, MySQL is running on Port 3306, and MiniDLNA is running on port 8200"
+echo -e "With the provided configuration you can upload media to /var/www/html/upload/ in the appropriate folder and import it into the Vogon database by accessing [your device]/server/import in your browser."
+echo -e "Be sure to set the thumbnail directory at [your device]/settings before importing videos so that the system can autogenerate thumbnails for you"

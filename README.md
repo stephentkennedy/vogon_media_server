@@ -4,7 +4,7 @@ A custom web interface for a dlna media server
 # Warning
 This project is in active development, I will come back around and document various dependencies, create better and more user accessible interfaces as development continues, but those are scheduled for after the project is feature complete.
 
-I also don't have a complete build process for uploading here to GitHub, so while this repository can be installed and used, as is, it will likely not work as intended. This repository is mostly intended as a portfolio piece and an example on how I work on a larger scale project. For this reason documentation will absolutely be added, but it isn't here yet.
+This project is not designed for security. The intended use case is a dedicated single purpose device like a Raspberry Pi that has been suitably separated from the rest of the network so that it can't cause problems. This is not something that should used as is on a public network.
 
 ## What is Vogon?
 It's a prototyping and developing framework for PHP. You can find the framework by itself at https://github.com/stephentekennedy/vogon
@@ -51,6 +51,8 @@ You will need to setup a database and database user that can create tables, that
 After creating an appropriate virtual host, or running this project as the root, you can simply navigate to the project in a web browser. The installer will autostart as long as the "new_install" file exists.
 
 As mentioned above, this is not in anything close to a release state, so expect things not to work completely, or for hard-coded variables to need to be changed. This will be addressed in the future.
+
+If you are on a clean install of a Debian based OS, you can download and run the debian_media_server_clean_install.sh script in /install_scripts it will download a copy of this repository, install all of the dependencies, and configure your database for you. Once the script is done running, just access your device in a web browser to log in and start using it.
 
 ## Building
 Since this is primarily a PHP project nothing needs to be compiled, but in an effort to make it easier to deploy there is a build process in place, though it does not currently install anything it might need outside its own directory. It needs access to the PHP zip module to function.
