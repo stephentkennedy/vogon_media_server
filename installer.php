@@ -63,6 +63,8 @@ if(!isset($_POST['app_name'])){
 	if(empty($_POST['uri'])){
 		$_POST['uri'] = '';
 	}
+	
+	define('URI', $_POST['uri']);
 
 	$app_name = addslashes($_POST['app_name']);
 	$uri = $_POST['uri'];
@@ -192,9 +194,18 @@ HERE;
 	], 'user');
 	
 	//Make upload DIR
-	if(!file_exists(__DIR__ . 'upload')){
-		mkdir(__DIR__ . 'upload');
+	if(!file_exists(__DIR__ . DIRECTORY_SEPARATOR . 'upload')){
+		mkdir(__DIR__ . DIRECTORY_SEPARATOR . 'upload');
 	}
+	$base = __DIR__ . DIRECTORY_SEPARATOR . 'upload' . DIRECTORY_SEPARATOR;
+	$thumb = $base . 'thumbs';
+	$video = $base . 'video';
+	$audio = $base . 'audio';
+	mkdir($thumb);
+	mkdir($video);
+	mkdir($audio);
+	
+	
 	
 	//Disable installer
 	unlink(__DIR__ . DIRECTORY_SEPARATOR . 'new_install');
