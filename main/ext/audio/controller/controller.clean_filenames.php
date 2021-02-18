@@ -5,11 +5,12 @@ Date: 2/5/2021
 Comment: Can't have url unsafe symbols in filenames, so we need to have a script that will clean them up.
 */
 $pattern = '/\#\?\&/';
-$sql = 'SELECT * FROM data WHERE (data_type = "video" OR data_type = "audio") AND (data_content LIKE "%#%" OR data_content LIKE "%?%" OR data_content LIKE "%&%")';
+$sql = 'SELECT * FROM data WHERE (data_type = "video" OR data_type = "audio") AND (data_content LIKE "%#%" OR data_content LIKE "%?%" OR data_content LIKE "%&%" OR data_content LIKE "%;%")';
 $replace = [
 	'#',
 	'?',
-	'&'
+	'&',
+	';'
 ];
 
 $query = $db->query($sql, []);
@@ -22,7 +23,7 @@ if($query != false){
 		$root_filename = array_pop($file_array);
 		$file_dir = implode('/', $file_array);
 		$new_filename = $file_dir.'/'.str_replace($replace, '', $root_filename);
-		debug_d('checking: '.$filename);
+		//debug_d('checking: '.$filename);
 		if($new_filename != $filename){
 			$check = rename($filename, $new_filename);
 			
@@ -33,10 +34,10 @@ if($query != false){
 					':id' => $m['data_id']
 				];
 				$db->query($sql, $params);
-				debug_d('Renamed to: '.$new_filename);
+				//debug_d('Renamed to: '.$new_filename);
 			}
 		}
 	}
 }else{
-	debug_d($db-error);
+	debug_d($db->error);
 }

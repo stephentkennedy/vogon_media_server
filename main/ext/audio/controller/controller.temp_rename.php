@@ -22,5 +22,5 @@ foreach($items as $item){
 	
 	$clerk->updateRecord($data, $item['data_id']);
 	$clerk->updateMetas($item['data_id'], $meta);
-	echo $title.'<br>';
+	//echo $title.'<br>';
 }

@@ -18,6 +18,8 @@ if(!empty($_POST['action'])){
 			load_controller('footer');
 			break;
 	}
+	//Clean filenames and rename files as needed
+	load_controller('clean_filenames', [], 'audio');
 }else{
 	load_controller('header');
 	echo load_view('importer', [], 'media');
