@@ -57,6 +57,9 @@ if(!isset($_POST['app_name'])){
 <?php
 }else{
 
+	//We'll need this later
+	define('ROOT', __DIR__);
+
 	if(empty($_POST['uri'])){
 		$_POST['uri'] = '';
 	}
