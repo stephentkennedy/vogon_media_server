@@ -2,6 +2,11 @@
 if(!defined('NEW')){
 	die('The installer is not directly accessed');
 }
+/*
+Name: Stephen Kennedy
+Date: 2/17/21
+Comment: We now allow the installer to be run from the command line so we can install and configure via bash script.
+*/
 if(isset($argc)){
 	$options = getopt(null, [
 		'app_name:',
@@ -14,6 +19,9 @@ if(isset($argc)){
 	foreach($options as $name => $value){
 		$_POST[$name] = $value;
 	}
+	$cgi = true;
+}else{
+	$cgi = false;
 }
 
 if(!isset($_POST['app_name'])){
@@ -22,7 +30,7 @@ if(!isset($_POST['app_name'])){
 	<head>
 		<title>Installer</title>
 		<link rel="stylesheet" href="css/layout.css">
-		<link rel="stylesheet" href="css/dev.css">
+		<link rel="stylesheet" href="css/media_server.css">
 	</head>
 	<body>
 		<div id="content">
@@ -48,6 +56,10 @@ if(!isset($_POST['app_name'])){
 </html>
 <?php
 }else{
+
+	if(empty($_POST['uri'])){
+		$_POST['uri'] = '';
+	}
 
 	$app_name = addslashes($_POST['app_name']);
 	$uri = $_POST['uri'];
@@ -119,8 +131,19 @@ HERE;
 	}
 	echo '</div>';
 	
-	//Build header navigation
-	$sql = 'SELECT * FROM route WHERE in_h_nav = 1';
+	include __DIR__ . DIRECTORY_SEPARATOR . 'main' . DIRECTORY_SEPARATOR . 'functions.php';
+	
+	//Build navigation
+	load_model('rebuild_nav', ['type' => 'head']);
+	load_model('rebuild_nav', ['type' => 'foot']);
+	
+	/*
+	Name: Stephen Kennedy
+	Date: 9/25/2020
+	Comment: The below code is how we used to generate menu navigation, however it's a little out of date now. By including the functions.php, we should be able to use the rebuild_nav model and just reuse the same code we use for the settings menu. If that works, the below code will be removed.
+	*/
+	
+	/*$sql = 'SELECT * FROM route WHERE in_h_nav = 1';
 	$query = $db->query($sql);
 	$nav_routes = $query->fetchAll();
 	$string = '';
@@ -157,13 +180,23 @@ HERE;
 	$params = [
 		':content' => $string
 	];
-	$db->query($sql, $params);
+	$db->query($sql, $params);*/
+	
+	load_model('add', [
+		'password' => '',
+		'email' => 'Admin',
+		'role' => 0
+	], 'user');
 	
 	//Make upload DIR
-	mkdir(__DIR__ . 'upload');
+	if(!file_exists(__DIR__ . 'upload')){
+		mkdir(__DIR__ . 'upload');
+	}
 	
 	//Disable installer
 	unlink(__DIR__ . DIRECTORY_SEPARATOR . 'new_install');
 
-	echo '<script type="text/javascript">window.location = "'.$uri.'/settings";</script>';
+	if($cgi == false){
+		redirect(build_slug('settings'));
+	}
 }
