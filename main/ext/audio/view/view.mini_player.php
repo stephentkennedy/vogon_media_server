@@ -30,6 +30,7 @@ $(document).ready(function(){
 		instance: {},
 		audio: {},
 		id: {},
+		cur_id: false,
 		src: {},
 		header: {},
 		trueColor: {
@@ -49,7 +50,7 @@ $(document).ready(function(){
 		h_freq: <?php if(!empty($_SESSION['audio_his_time'])){ echo $_SESSION['audio_his_time']; }else{ echo '10000'; } ?>,
 		sleep_timer: false,
 		animation: miniplayer.<?php if(!empty($_SESSION['def_visual'])){ echo $_SESSION['def_visual']; }else{ echo 'cleanCircle'; } ?>,
-		seed: '<div class="mini-player"><header class="mini-player-header"><span class="shadow"></span><span class="controls"><i class="fa fa-window-maximize toggle"></i><i class="fa fa-cog option"></i><i class="fa fa-expand fullscreen"></i><i class="fa fa-times close"></i></span></header><info><label class="mini-player-label title"></label><label class="mini-player-label album"></label><label class="mini-player-label band"></label></info><canvas></canvas><audio class="current-track"><source class="current-source"></source></audio><div class="mini-player-audio-controls"><input type="range" class="seek" value="0" max="" /> <span class="mini-player-counter">0:00 / 0:00</span> <br><i class="fa fa-random  fa-fw mini-player-shuffle disable"></i><i class="fa fa-step-backward fa-fw  mini-player-prev disable"></i><i class="fa fa-play fa-fw  mini-player-play"></i><i class="fa fa-step-forward fa-fw  mini-player-next disable"></i><i class="fa fa-retweet fa-fw  mini-player-loop disable"></i><span class="mini-one">1</span></div><i class="fa fa-list playlist-toggle"></i><i class="fa fa-clock-o sleep-timer"></i><div class="mini-player-playlist"></div></div>',
+		seed: '<div class="mini-player"><header class="mini-player-header"><span class="shadow"></span><span class="controls"><i class="fa fa-window-maximize toggle"></i><i class="fa fa-cog option"></i><i class="fa fa-expand fullscreen"></i><i class="fa fa-times close"></i></span></header><info><a target="_blank" data-target="popup" class="mini-player-label title"></a><a target="_blank" data-target="popup" class="mini-player-label album"></a><a target="_blank" data-target="popup" class="mini-player-label band"></a></info><canvas></canvas><audio class="current-track"><source class="current-source"></source></audio><div class="mini-player-audio-controls"><input type="range" class="seek" value="0" max="" /> <span class="mini-player-counter">0:00 / 0:00</span> <br><i class="fa fa-random  fa-fw mini-player-shuffle disable"></i><i class="fa fa-step-backward fa-fw  mini-player-prev disable"></i><i class="fa fa-play fa-fw  mini-player-play"></i><i class="fa fa-step-forward fa-fw  mini-player-next disable"></i><i class="fa fa-retweet fa-fw  mini-player-loop disable"></i><span class="mini-one">1</span></div><i class="fa fa-list playlist-toggle"></i><i class="fa fa-clock-o sleep-timer"></i><div class="mini-player-playlist"></div></div>',
 		timeFormat : function(duration){
 			// Hours, minutes and seconds
 			var hrs = ~~(duration / 3600);
@@ -67,28 +68,66 @@ $(document).ready(function(){
 			ret += "" + secs;
 			return ret;
 		},
+		refresh_labels: function(){
+			$.get('<?php echo build_slug("ajax/ajax_audio/audio/"); ?>' + miniplayer.cur_id, function( returned ){
+				data = returned;
+				miniplayer.header.html('<span>'+data['title']+'</span>');
+				miniplayer.instance.find('.mini-player-label.title').html(data['title']).attr('data-href', data['link']);
+				if(data['artist'] != null && data['artist'] != ''){
+					miniplayer.instance.find('.mini-player-label.band').html(data['artist']);
+				}else{
+					miniplayer.instance.find('.mini-player-label.band').html('').attr('data-href', '');
+				}
+				if(data['album'] != null && data['album'] != ''){
+					miniplayer.instance.find('.mini-player-label.album').html(data['album']).attr('data-href', data['album_link']);
+				}else{
+					miniplayer.instance.find('.mini-player-label.album').html('').attr('data-href', '');
+				}
+				if(miniplayer.header.find('span').width() > miniplayer.header.width()){
+					miniplayer.header.find('span').addClass('marquee');
+				}
+			});
+		},
 		load: function(id){
 			if(miniplayer.instance == false){
 				miniplayer.init();
 			}
 			$.get('<?php echo build_slug("ajax/ajax_audio/audio/"); ?>' + id, function( returned ){
 				data = returned;
+				miniplayer.cur_id = data['id'];
 				miniplayer.audio[0].pause();
 				miniplayer.src.prop('src', data['src']);
 				miniplayer.src.prop('type', data['mime']);
 				miniplayer.id = data['id'];
 				miniplayer.header.html('<span>'+data['title']+'</span>');
-				miniplayer.instance.find('.mini-player-label.title').html(data['title']);
+				miniplayer.instance.find('.mini-player-label.title').html(data['title']).attr('data-href', data['link']);
 				if(data['artist'] != null && data['artist'] != ''){
 					miniplayer.instance.find('.mini-player-label.band').html(data['artist']);
 				}else{
 					miniplayer.instance.find('.mini-player-label.band').html('');
 				}
 				if(data['album'] != null && data['album'] != ''){
-					miniplayer.instance.find('.mini-player-label.album').html(data['album']);
+					miniplayer.instance.find('.mini-player-label.album').html(data['album']).attr('href', data['album_link']);
 				}else{
-					miniplayer.instance.find('.mini-player-label.album').html('');
+					miniplayer.instance.find('.mini-player-label.album').html('').attr('href', '');
 				}
+				$('.mini-player-label.title').off().click(function(){
+					if($(this).attr('data-href') != ''){
+						$(this).prepend('<i class="fa fa-fw fa-cog fa-spin"></i> ... ');
+						var data = {
+							format: 'ajax_form'
+						};
+						$.get($(this).attr('data-href'), data, function( returned ){
+							var html = $('.mini-player-label.title').html();
+							html = html.replace('<i class="fa fa-fw fa-cog fa-spin"></i> ... ', '');
+							$('.mini-player-label.title').html(html);
+							app.ajax_form(returned, function(){
+								miniplayer.refresh_labels();
+								$('.mini-player-label.title').html();
+							});
+						});
+					}
+				});
 				if(miniplayer.header.find('span').width() > miniplayer.header.width()){
 					miniplayer.header.find('span').addClass('marquee');
 				}
@@ -136,9 +175,9 @@ $(document).ready(function(){
 			});			
 		},
 		chooseColor: function(){
-			var r = Math.floor(Math.random() * 255);
-			var g = Math.floor(Math.random() * 255);
-			var b = Math.floor(Math.random() * 255);
+			var r = Math.floor(Math.random() * 155) + 100;
+			var g = Math.floor(Math.random() * 155) + 100;
+			var b = Math.floor(Math.random() * 155) + 100;
 			miniplayer.trueColor = {
 				r: r,
 				g: g,
@@ -1048,6 +1087,10 @@ playlist.serverShuffle = function(){
 		if(content.error === false){
 			playlist.list = content.chunk;
 			playlist.play(0);
+			var html = $('.miniplayer-server-shuffle').html();
+			html = html.replace(' ... <i class="fa fa-fw fa-cog fa-spin"></i>', '');
+			$('.miniplayer-server-shuffle').html(html);
+			$('.miniplayer-server-shuffle').attr('disabled', '');
 		}else{
 			console.log(content.message);
 		}

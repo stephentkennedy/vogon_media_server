@@ -106,7 +106,7 @@ switch($format){
 			$table .= '<span class="result-five">';
 			$table .= '<a class="button miniplayer-play" data-id="'.$r['data_id'].'"><i class="fa fa-play"></i></a>';
 			$table .= '<a class="button playlist-add" data-id="'.$r['data_id'].'"><i class="fa fa-plus"></i></a>';
-			$table .= '<a class="button" href="'.build_slug('edit/'.$r['data_id'], [], 'audio').'"><i class="fa fa-pencil"></i></a>';
+			$table .= '<a class="button ajax-form" data-href="'.build_slug('edit/'.$r['data_id'], [], 'audio').'"><i class="fa fa-pencil"></i></a>';
 			//$table .= '</td>';
 			$table .= '</span>';
 			//$table .= '</tr>';

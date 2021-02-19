@@ -15,6 +15,9 @@ aPopup.newWindow = function(content, options){
 		if(options != false && options.height != undefined){
 			style += 'min-height:'+options.height+';';
 		}
+		if(options != false && options.style != undefined){
+			style += options.style;
+		}
 		if(options != false && options.title != undefined){
 			var title = options.title;
 		}else{

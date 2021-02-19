@@ -85,9 +85,19 @@ switch($action){
 		}else{
 			$audio['album'] = '';
 		}
-		load_controller('header', ['title' => 'Edit: '.$audio['data_name']]);
-		echo load_view('edit', $audio, 'audio');
-		load_controller('footer');
+		if(empty($_GET['format'])){
+			$_GET['format'] = '';
+		}
+		switch($_GET['format']){
+			case 'ajax_form':
+				echo load_view('ajax_edit', $audio, 'audio');
+				break;
+			default:
+				load_controller('header', ['title' => 'Edit: '.$audio['data_name']]);
+				echo load_view('edit', $audio, 'audio');
+				load_controller('footer');
+				break;
+		}
 	
 		break;
 	case 'album':

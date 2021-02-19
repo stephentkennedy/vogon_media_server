@@ -5,7 +5,7 @@ $id = get_slug_part(3);
 $clerk = new clerk;
 $track = $clerk->getRecord($id, true);
 if(!empty($track['data_parent'])){
-	$album = $clerk->getRecord($track['data_parent'])['data_name'];
+	$album = $clerk->getRecord($track['data_parent']);
 }
 $src = str_replace(ROOT, '', $track['data_content']);
 $src = str_replace(DIRECTORY_SEPARATOR, '/', $src);
@@ -18,13 +18,15 @@ if(empty($title)){
 $return = [
 	'title' => $title,
 	'id' => $track['data_id'],
+	'link' => build_slug('edit/'.$track['data_id'], [], 'audio'),
 	'src' => $src,
 	'mime' => $mime,
 	'duration' => $track['meta']['length'],
 	'artist' => $track['meta']['artist']
 ];
 if(!empty($album)){
-	$return['album'] = $album;
+	$return['album'] = $album['data_name'];
+	$return['album_link'] = build_slug('album/'.$album['data_id'], [], 'audio');
 }else{
 	$return['album'] = '';
 }

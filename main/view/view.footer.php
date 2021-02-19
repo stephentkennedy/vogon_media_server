@@ -65,6 +65,7 @@
 				});
 			});
 		</script>
+		<script type="text/javascript" src="<?php echo URI; ?>/js/app.js"></script>
 		<script type="text/javascript" src="<?php echo URI; ?>/js/trays.js"></script>
 	</body>
 </html>

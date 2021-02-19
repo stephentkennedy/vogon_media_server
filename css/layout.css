@@ -146,13 +146,17 @@ Popup styles
 .popup{
 	width: 500px;
 	height: auto;
+	max-height: 75vh;
+	max-width: 90vw;
 	min-height: 300px;
 	position: absolute;
 	z-index: 100;
+	display: flex;
+	flex-direction: column;
 }
 .popup .handle{
 	padding: 5px;
-	min-height: 10px;
+	min-height: 40px;
 	width: 100%;
 	position: relative;
 	cursor: grab;

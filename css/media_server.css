@@ -422,10 +422,17 @@ footer{
 	font-size: 1rem;
 	text-shadow: 2px 2px 2px #000;
 	padding: 5px 10px;
-	display: block;
+	display: block !important;
 	text-align: right;
 	margin-bottom: 0;
 	max-width: 100%;
+	border: none !important;
+	background-color: transparent !important;
+	box-shadow: none !important;
+	transition: color 0.2s linear;
+}
+.mini-player .mini-player-label:hover{
+	color: rgba(var(--rgb-white), 0.7);
 }
 .mini-player.fullscreen .mini-player-label{
 	font-size: 1.5rem;

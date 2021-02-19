@@ -56,7 +56,7 @@ if(!empty($album['meta']['history'])){
 				echo '<td>';
 				echo '<a class="button miniplayer-play" data-id="'.$m['data_id'].'"><i class="fa fa-play"></i></a>';
 				echo '<a class="button playlist-add" data-id="'.$m['data_id'].'"><i class="fa fa-plus"></i></a>';
-				echo '<a class="button" href="'.build_slug('edit/'.$m['data_id'], [], 'audio').'"><i class="fa fa-pencil"></i></a>';
+				echo '<a class="button ajax-form" data-href="'.build_slug('edit/'.$m['data_id'], [], 'audio').'"><i class="fa fa-pencil"></i></a>';
 				echo '</td>';
 				echo '</tr>';
 			}
@@ -72,7 +72,16 @@ if(!empty($album['meta']['history'])){
 			playlist.list = list;
 			playlist.play(0);
 		});
-		
+		$('.ajax-form').off().click(function(){
+			if($(this).data('href') != ''){
+				var data = {
+					format: 'ajax_form'
+				};
+				$.get($(this).data('href'), data, function( returned ){
+					app.ajax_form(returned);
+				});
+			}
+		});
 		var resume = $('.album-resume');
 		if(resume.length > 0){
 			var id = resume.data('id');
