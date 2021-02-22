@@ -50,7 +50,7 @@ $(document).ready(function(){
 		h_freq: <?php if(!empty($_SESSION['audio_his_time'])){ echo $_SESSION['audio_his_time']; }else{ echo '10000'; } ?>,
 		sleep_timer: false,
 		animation: miniplayer.<?php if(!empty($_SESSION['def_visual'])){ echo $_SESSION['def_visual']; }else{ echo 'cleanCircle'; } ?>,
-		seed: '<div class="mini-player"><header class="mini-player-header"><span class="shadow"></span><span class="controls"><i class="fa fa-window-maximize toggle"></i><i class="fa fa-cog option"></i><i class="fa fa-expand fullscreen"></i><i class="fa fa-times close"></i></span></header><info><a target="_blank" data-target="popup" class="mini-player-label title"></a><a target="_blank" data-target="popup" class="mini-player-label album"></a><a target="_blank" data-target="popup" class="mini-player-label band"></a></info><canvas></canvas><audio class="current-track"><source class="current-source"></source></audio><div class="mini-player-audio-controls"><input type="range" class="seek" value="0" max="" /> <span class="mini-player-counter">0:00 / 0:00</span> <br><i class="fa fa-random  fa-fw mini-player-shuffle disable"></i><i class="fa fa-step-backward fa-fw  mini-player-prev disable"></i><i class="fa fa-play fa-fw  mini-player-play"></i><i class="fa fa-step-forward fa-fw  mini-player-next disable"></i><i class="fa fa-retweet fa-fw  mini-player-loop disable"></i><span class="mini-one">1</span></div><i class="fa fa-list playlist-toggle"></i><i class="fa fa-clock-o sleep-timer"></i><div class="mini-player-playlist"></div></div>',
+		seed: '<div class="mini-player"><header class="mini-player-header"><span class="shadow"></span><span class="controls"><i class="fa fa-window-maximize toggle"></i><i class="fa fa-cog option"></i><i class="fa fa-expand fullscreen"></i><i class="fa fa-times close"></i></span></header><info><a target="_blank" data-target="popup" class="mini-player-label title"></a><a target="_blank" data-target="popup" class="mini-player-label album"></a><a target="_blank" data-target="popup" class="mini-player-label band"></a></info><canvas></canvas><audio class="current-track"><source class="current-source"></source></audio><div class="mini-player-audio-controls"><input type="range" class="seek" value="0" max="" /><span class="mini-player-seek-counter hidden"></span> <span class="mini-player-counter">0:00 / 0:00</span> <br><i class="fa fa-random  fa-fw mini-player-shuffle disable"></i><i class="fa fa-step-backward fa-fw  mini-player-prev disable"></i><i class="fa fa-play fa-fw  mini-player-play"></i><i class="fa fa-step-forward fa-fw  mini-player-next disable"></i><i class="fa fa-retweet fa-fw  mini-player-loop disable"></i><span class="mini-one">1</span></div><i class="fa fa-clock-o sleep-timer"></i><div class="mini-player-playlist"></div></div>',
 		timeFormat : function(duration){
 			// Hours, minutes and seconds
 			var hrs = ~~(duration / 3600);
@@ -184,13 +184,620 @@ $(document).ready(function(){
 				b: b
 			};
 		},
+		toggle: function(){
+			if(miniplayer.instance.hasClass('open')){
+				miniplayer.instance.removeClass('open');
+				miniplayer.instance.find('.fa.toggle').removeClass('fa-window-minimize').addClass('fa-window-maximize');
+			}else{
+				miniplayer.instance.addClass('open');
+				miniplayer.instance.find('.fa.toggle').removeClass('fa-window-maximize').addClass('fa-window-minimize');
+			}
+		},
+		remove: function(){
+			miniplayer.audio[0].pause();
+			miniplayer.instance.remove();
+			miniplayer.instance = false;
+		},
+		play: function(){
+			if(miniplayer.instance.find('.fa.play').hasClass('fa-play')){
+				miniplayer.audio[0].play();
+				if('mediaSession' in navigator){
+					navigator.mediaSession.playbackState = 'playing';
+				}
+			}else{
+				miniplayer.audio[0].pause();
+				if('mediaSession' in navigator){
+					navigator.mediaSession.playbackState = 'paused';
+				}
+			}
+		},
+		updateHistory: function(){
+			if(miniplayer.track == true){
+				var data = {
+					'id': miniplayer.id,
+					'time': Number(miniplayer.audio[0].currentTime)
+				};
+				$.get('<?php echo build_slug("ajax/ajax_save_history/media"); ?>', data, function(content){
+					if(content == 'saved' && miniplayer.playing == true){
+						miniplayer.h_loop = setTimeout(miniplayer.updateHistory, miniplayer.h_freq);
+					}else if (content != 'saved'){
+						alert(content);
+					}
+				});
+			}
+		},
+		rgbMe: function(colorObj){
+			var string = 'rgb(' + colorObj.r + ',' + colorObj.g + ',' + colorObj.b + ')';
+			return string;
+		},
+		drawBar: function (x1, y1, x2, y2, width,frequency){
+			var freq_temp = frequency / 255;
+			if(freq_temp > 1){
+				freq_temp = 1;
+			}
+			var color = {
+				r: freq_temp * miniplayer.curColor.r,
+				g: freq_temp * miniplayer.curColor.g,
+				b: freq_temp * miniplayer.curColor.b
+			}
+			
+			//var lineColor = "rgb(" + color.r + ", " + color.g + ", " + color.b + ")";
+			var lineColor = miniplayer.rgbMe(color);
+			
+			ctx.strokeStyle = lineColor;
+			ctx.lineWidth = width;
+			ctx.beginPath();
+			ctx.moveTo(x1,y1);
+			ctx.lineTo(x2,y2);
+			ctx.stroke();
+		},
+		drawBarSolid: function (x1, y1, x2, y2, width,frequency){
+			var lineColor = "rgb("+miniplayer.curColor.r+","+miniplayer.curColor.g+","+miniplayer.curColor.b+")";
+    
+			ctx.strokeStyle = lineColor;
+			ctx.lineWidth = width;
+			ctx.beginPath();
+			ctx.moveTo(x1,y1);
+			ctx.lineTo(x2,y2);
+			ctx.stroke();
+		},
+		cTransition: function(){
+			var to = miniplayer.trueColor;
+			var cur = miniplayer.curColor;
+			if(to.r == ~~cur.r && to.g == ~~cur.g && to.b == ~~cur.b){
+				miniplayer.curColor = {
+					r: ~~cur.r,
+					g: ~~cur.g,
+					b: ~~cur.b
+				};
+				return false;
+			}
+			if(to.r != cur.r){
+				if(to.r > ~~cur.r){
+					cur.r +=  miniplayer.colorStep;
+				}else{
+					cur.r +=  miniplayer.colorStep * -1;
+				}
+			}else{
+				cur.r = ~~cur.r;
+			}
+			if(to.g != ~~cur.g){
+				if(to.g > cur.g){
+					cur.g +=  miniplayer.colorStep;
+				}else{
+					cur.g +=  miniplayer.colorStep * -1;
+				}
+			}else{
+				cur.g = ~~cur.g;
+			}
+			if(to.b != ~~cur.b){
+				if(to.b > ~~cur.b){
+					cur.b +=  miniplayer.colorStep;
+				}else{
+					cur.b +=  miniplayer.colorStep * -1;
+				}
+			}else{
+				cur.b = ~~cur.b;
+			}
+			miniplayer.curColor = cur;
+			return true;
+		},
+		colorControl: function(){
+			var check = miniplayer.cTransition();
+			if(check == false){
+				//console.log('Holding: '+miniplayer.colorFrame+ ' of ' + miniplayer.colorHold);
+				if(miniplayer.colorFrame == 0){
+					miniplayer.colorHold = Math.floor(Math.random() * (2000));
+				}
+				if(miniplayer.colorHold > miniplayer.colorFrame){
+					miniplayer.colorFrame++;
+				}else{
+					miniplayer.colorFrame = 0;
+					miniplayer.chooseColor();
+				}
+			}else{
+				
+			}
+		},
+		getCompliment: function(colorObj){
+			//Floor them so we can deal with scaling colors.
+			var r = ~~colorObj.r;
+			var g = ~~colorObj.g;
+			var b = ~~colorObj.b;
+			return {
+				r: (255 - r),
+				g: (255 - g),
+				b: (255 - b)
+			};
+		},
+		options: function(){
+			var win = aPopup.newWindow('<label for="visualizer">Visualization</label><select id="visualizer"><option value="spectro">Spectrograph</option><option value="bars">Bars</option><option value="circle">Circle</option><!--option value="burnout">Burn In</option--></select><br><button class="confirm"><i class="fa fa-floppy-o"></i> Save</button>');
+			win.find('.confirm').click(function(){
+				var anim = win.find('#visualizer').val();
+				switch(anim){
+					case 'spectro':
+						miniplayer.animation = miniplayer.spectro;
+						break;
+					case 'bars':
+						miniplayer.animation = miniplayer.bars;
+						break;
+					case 'circle':
+						miniplayer.animation = miniplayer.cleanCircle;
+						break;
+					case 'burnout':
+						miniplayer.animation = miniplayer.burnout;
+						break;
+				}
+			});
+		},
+		fullscreen: function(){
+			var canvas = miniplayer.instance.find('canvas')[0];
+			if(miniplayer.instance.hasClass('fullscreen')){
+				miniplayer.instance.removeClass('fullscreen');
+				var width = miniplayer.instance.width();
+				canvas.width = width;
+				canvas.height = 150;
+			}else{
+				miniplayer.instance.addClass('fullscreen');
+				var width = miniplayer.instance.width();
+				var height = miniplayer.instance.height() - 158;
+				canvas.width = width;
+				canvas.height = height;
+			}
+		},
+		cleanCircle: function (){
+			if(miniplayer.instance.hasClass('open')){
+				miniplayer.colorControl();
+				// set to the size of device
+				canvas = miniplayer.instance.find('canvas')[0];
+				//canvas.width = miniplayer.instance.find('canvas').width();
+				//canvas.height = ;
+				ctx = canvas.getContext("2d");
+				ctx.globalCompositeOperation = 'source-over';
+				
+				// find the center of the window
+				center_x = canvas.width / 2;
+				center_y = canvas.height / 2;
+				
+				
+				// style the background
+				
+				analyser.getByteFrequencyData(frequency_array);
+				
+				var gradient = ctx.createLinearGradient(0,0,0,canvas.height);
+				
+				var level = 0;
+				
+				/*
+				Name: Stephen Kennedy
+				Date: 2/17/21
+				Comment: Right now the visualizers only sample the top of the array, they need to be modified to sample the whole array so that we get visualization of the highs, mids, and lows, when right now we're just getting highs and some mides.
+				*/
+				
+				var bar_increment = ~~(analyser.frequencyBinCount / bars);
+				
+				for(var i = 0; i < analyser.frequencyBinCount; i += bar_increment){
+					if(i >= analyser.frequencyBinCount){
+						i = analyser.frequencyBinCount - 1;
+					}
+					level += frequency_array[i];
+				}
+				level = Math.floor((level / bars) / 4);
+				
+				radius = level;
+				
+				var comp = miniplayer.getCompliment(miniplayer.curColor);
+				var lvl_temp = level / 255;
+				
+				gradient.addColorStop(0,"rgba("+(comp.r * lvl_temp)+","+(comp.g * lvl_temp)+", "+(comp.b * lvl_temp)+", 1)");
+				
+				gradient.addColorStop(1,"rgba(0, 0, 0, 1)");
+				ctx.fillStyle = gradient;
+				ctx.fillRect(0,0,canvas.width,canvas.height);
+				ctx.fillStyle = 'transparent';
+				
+				//draw a circle
+				//ctx.strokeStyle = 'rgba(150,0,100,1)';
+				ctx.beginPath();
+				ctx.arc(center_x,center_y,radius,0,2*Math.PI);
+				ctx.stroke();
+				var angle = 0;
+				for(var i = 0; i < analyser.frequencyBinCount; i += bar_increment){
+					if(i >= analyser.frequencyBinCount){
+						i = analyser.frequencyBinCount - 1;
+					}
+					//divide a circle into equal parts
+					rads = Math.PI * 2 / (analyser.frequencyBinCount / bar_increment);
+					
+					bar_height = frequency_array[i]*0.7 + (150 - level);
+					
+					// set coordinates
+					x = center_x + Math.cos(rads * angle) * (radius);
+				y = center_y + Math.sin(rads * angle) * (radius);
+					x_end = center_x + Math.cos(rads * angle)*(radius + bar_height);
+					y_end = center_y + Math.sin(rads * angle)*(radius + bar_height);
+					
+					//draw a bar
+					miniplayer.drawBar(x, y, x_end, y_end, bar_width,frequency_array[i]);
+					angle++;
+				}
+			}
+			window.requestAnimationFrame(miniplayer.animation);
+		},
+		burnout: function(){
+			if(miniplayer.instance.hasClass('open')){
+				miniplayer.colorControl();
+				// set to the size of device
+				canvas = miniplayer.instance.find('canvas')[0];
+				//canvas.width = miniplayer.instance.find('canvas').width();
+				//canvas.height = ;
+				ctx = canvas.getContext("2d");
+				ctx.globalCompositeOperation = 'source-over';
+				
+				// find the center of the window
+				center_x = canvas.width / 2;
+				center_y = canvas.height / 2;
+				
+				
+				// style the background
+				
+				analyser.getByteFrequencyData(frequency_array);
+				
+				var gradient = ctx.createLinearGradient(0,0,0,canvas.height);
+				
+				var level = 0;
+				
+				var bar_increment = ~~(analyser.frequencyBinCount / bars);
+				
+				for(var i = 0; i < analyser.frequencyBinCount; i += bar_increment){
+					if(i >= analyser.frequencyBinCount){
+						i = analyser.frequencyBinCount - 1;
+					}
+					level += frequency_array[i];
+				}
+				level = Math.floor((level / bars) / 4);
+				
+				radius = level;
+				
+				var temp_width = canvas.width + .01;
+				var temp_height = canvas.height + .01;
+				
+				ctx.translate(center_x, center_y);
+				miniplayer.angle += 0.00005;
+				if(miniplayer.angle > 360){
+					miniplayer.angle = 0;
+				}
+				var radian = miniplayer.angle * Math.PI / 180;
+				ctx.rotate(radian);
+				ctx.drawImage(canvas, Math.floor(temp_width / 2) * -1, Math.floor(temp_height / 2) * -1, temp_width, temp_height);
+				ctx.globalCompositeOperation = 'source-over';
+				ctx.rotate(-1 * radian);
+				ctx.setTransform(1, 0, 0, 1, 0, 0);
+				
+				var comp = miniplayer.getCompliment(miniplayer.curColor);
+				var lvl_temp = level / 255;
+				
+				gradient.addColorStop(0,"rgba("+(comp.r * lvl_temp)+","+(comp.g * lvl_temp)+", "+(comp.b * lvl_temp)+", 1)");
+				gradient.addColorStop(1,"rgba(0, 0, 0, 0)");
+				ctx.fillStyle = gradient;
+				//ctx.fillRect(0,0,canvas.width,canvas.height);
+				ctx.fillStyle = 'transparent';
+				
+				//draw a circle
+				ctx.filleStyle = 'rgba(0,0,0,1)';
+				ctx.beginPath();
+				ctx.arc(center_x,center_y,radius,0,2*Math.PI);
+				ctx.fill();
+				var angle = 0;
+				for(var i = 0; i < analyser.frequencyBinCount; i += bar_increment){
+					
+					if(i >= analyser.frequencyBinCount){
+						i = analyser.frequencyBinCount - 1;
+					}
+					
+					//divide a circle into equal parts
+					rads = Math.PI * 2 / (analyser.frequencyBinCount / bar_increment);
+					
+					bar_height = frequency_array[i]*0.7 + (150 - level);
+					
+					// set coordinates
+					x = center_x + Math.cos(rads * angle) * (radius);
+					y = center_y + Math.sin(rads *anglei) * (radius);
+					x_end = center_x + Math.cos(rads * angle)*(radius + bar_height);
+					y_end = center_y + Math.sin(rads * angle)*(radius + bar_height);
+					
+					//draw a bar
+					miniplayer.drawBar(x, y, x_end, y_end, bar_width,frequency_array[i]);
+					angle++;
+				}
+			}
+			window.requestAnimationFrame(miniplayer.animation);
+		},
+		bars: function(){
+			if(miniplayer.instance.hasClass('open')){
+				miniplayer.colorControl();
+				// set to the size of device
+				canvas = miniplayer.instance.find('canvas')[0];
+				//canvas.width = miniplayer.instance.find('canvas').width();
+				//canvas.height = ;
+				ctx = canvas.getContext("2d");
+				ctx.globalCompositeOperation = 'source-over';
+				
+				// find the center of the window
+				center_x = canvas.width / 2;
+				center_y = canvas.height / 2;
+				
+				// Let's find out how tall we want our items to be
+				var bar_ratio = 256 / canvas.height;
+				
+				if(bars > center_x){
+					var use_bars = center_x;
+				}else{
+					var use_bars = bars;
+				}
+				
+				//use_bars = Math.floor(use_bars / 4);
+				
+				var bar_width = Math.ceil(canvas.width / use_bars) - 1;
+				
+				
+				// style the background
+				
+				analyser.getByteFrequencyData(frequency_array);
+				
+				var gradient = ctx.createLinearGradient(0,0,0,canvas.height);
+				
+				var level = 0;
+				
+				var bar_increment = ~~(analyser.frequencyBinCount / bars);
+				
+				var use_increment = ~~(analyser.frequencyBinCount / use_bars);
+				
+				for(var i = 0; i < analyser.frequencyBinCount; i += bar_increment){
+					if(i >= analyser.frequencyBinCount){
+						i = analyser.frequencyBinCount - 1;
+					}
+					level += frequency_array[i];
+				}
+				level = Math.floor((level / bars) / 4);
+				
+				radius = level;
+				var comp = miniplayer.getCompliment(miniplayer.curColor);
+				var lvl_temp = level / 255;
+				
+				gradient.addColorStop(0,"rgba("+(comp.r * lvl_temp)+","+(comp.g * lvl_temp)+", "+(comp.b * lvl_temp)+", 1)");
+				gradient.addColorStop(1,"rgba(0, 0, 0, 1)");
+				ctx.fillStyle = gradient;
+				ctx.fillRect(0,0,canvas.width,canvas.height);
+				ctx.fillStyle = 'transparent';
+				
+				var cur_x = 0;
+				
+				for(var i = 0; i < analyser.frequencyBinCount; i += use_increment){
+					if(i >= analyser.frequencyBinCount){
+						i = analyser.frequencyBinCount - 1;
+					}
+					//divide a circle into equal parts
+					//rads = Math.PI * 2 / bars;
+					
+					bar_height = frequency_array[i] / bar_ratio;
+					
+					// set coordinates
+					x = cur_x;
+					y = canvas.height;
+					x_end = cur_x;
+					y_end = canvas.height - bar_height;
+					
+					//draw a bar
+					miniplayer.drawBar(x, y, x_end, y_end, bar_width,frequency_array[i]);
+					
+					cur_x += bar_width + 1;
+				
+				}
+			}
+			window.requestAnimationFrame(miniplayer.animation);
+		},
+		spectro: function(){
+			if(miniplayer.instance.hasClass('open')){
+				miniplayer.colorControl();
+				// set to the size of device
+				canvas = miniplayer.instance.find('canvas')[0];
+				//canvas.width = miniplayer.instance.find('canvas').width();
+				//canvas.height = ;
+				ctx = canvas.getContext("2d");
+				ctx.globalCompositeOperation = 'source-over';
+				
+				// find the center of the window
+				center_x = canvas.width / 2;
+				center_y = canvas.height / 2;
+				
+				// Let's find out how tall we want our items to be
+				var bar_ratio = 256 / canvas.height;
+				
+				if(bars > center_x){
+					var use_bars = center_x;
+				}else{
+					var use_bars = bars;
+				}
+				
+				//use_bars = Math.floor(use_bars / 4);
+				
+				var line_width = 2;
+				var bar_width = Math.ceil(canvas.width / use_bars) - 1;
+				
+				
+				// style the background
+				
+				analyser.getByteFrequencyData(frequency_array);
+				
+				var gradient = ctx.createLinearGradient(0,0,0,canvas.height);
+				
+				var level = 0;
+				
+				var bar_increment = ~~(analyser.frequencyBinCount / bars);
+				
+				var use_increment = ~~(analyser.frequencyBinCount / use_bars);
+				
+				for(var i = 0; i < analyser.frequencyBinCount; i += bar_increment){
+					if(i >= analyser.frequencyBinCount){
+						i = analyser.frequencyBinCount - 1;
+					}
+					level += frequency_array[i];
+				}
+				level = Math.floor((level / bars) / 4);
+				
+				radius = level;
+				
+				var comp = miniplayer.getCompliment(miniplayer.curColor);
+				var lvl_temp = level / 255;
+				
+				gradient.addColorStop(0,"rgba("+(comp.r * lvl_temp)+","+(comp.g * lvl_temp)+", "+(comp.b * lvl_temp)+", 1)");
+				gradient.addColorStop(1,"rgba(0, 0, 0, 1)");
+				ctx.fillStyle = gradient;
+				ctx.fillRect(0,0,canvas.width,canvas.height);
+				ctx.fillStyle = 'transparent';
+				
+				var cur_x = 0;
+				
+				for(var i = 0; i < analyser.frequencyBinCount; i += use_increment){
+					if(i >= analyser.frequencyBinCount){
+						i = analyser.frequencyBinCount - 1;
+					}
+					//divide a circle into equal parts
+					//rads = Math.PI * 2 / bars;
+					if(i + use_increment < analyser.frequencyBinCount){
+						bar_height = frequency_array[i] / bar_ratio;
+						bar_height2 = frequency_array[i + use_increment] / bar_ratio;
+						
+						// set coordinates
+						x = cur_x;
+						y = canvas.height - bar_height;
+						x_end = cur_x + bar_width + 1;
+						y_end = canvas.height - bar_height2;
+						
+						//draw a bar
+						miniplayer.drawBarSolid(x, y, x_end, y_end, line_width,frequency_array[i]);
+						
+						cur_x += bar_width + 1;
+					}
+				}
+			}
+			window.requestAnimationFrame(miniplayer.animation);
+		},
+		driving: function(){
+			if(miniplayer.instance.hasClass('open')){
+				//Color shortcuts
+				var sunset_orange = {
+					r: 253,
+					g: 94,
+					b: 83
+				};
+				var sky_blue = {
+					r: 83,
+					g: 241,
+					b: 252
+				};
+				var evening_purple = {
+					r: 75,
+					g: 0,
+					b: 130
+				};
+				var rainy_gray = {
+					r: 69,
+					g: 69,
+					b: 69
+				};
+				var sunrise_pink = {
+					r: 251,
+					g: 114,
+					b: 152
+				};
+				
+				miniplayer.colorControl();
+				// set to the size of device
+				canvas = miniplayer.instance.find('canvas')[0];
+				//canvas.width = miniplayer.instance.find('canvas').width();
+				//canvas.height = ;
+				ctx = canvas.getContext("2d");
+				ctx.globalCompositeOperation = 'source-over';
+				
+				// find the center of the window
+				center_x = canvas.width / 2;
+				center_y = canvas.height / 2;
+				
+				var bar_ratio = 256 / canvas.height;
+				
+				if(bars > center_x){
+					var use_bars = center_x;
+				}else{
+					var use_bars = bars;
+				}
+				
+				analyser.getByteFrequencyData(frequency_array);
+				var level = 0;
+				
+				var bar_increment = ~~(analyser.frequencyBinCount / bars);
+				
+				for(var i = 0; i < analyser.frequencyBinCount; i += bar_increment){
+					if(i >= analyser.frequencyBinCount){
+						i = analyser.frequencyBinCount - 1;
+					}
+					level += frequency_array[i];
+				}
+				level = Math.floor((level / bars) / 4);
+				
+				var number_lines = 100;
+				
+				var scale_y = ~~(center_y / number_lines);
+				var scale_x = ~~(center_x / 2);
+				for( var i = 0; i < number_lines; i++ ){
+					miniplayer.drawRoad(i, level, scale_x, scale_y, center_x, center_y);
+				}
+				
+			}
+			window.requestAnimationFrame(miniplayer.animation);
+		},
 		init: function(){
+			
 			miniplayer.chooseColor();
 			miniplayer.curColor = miniplayer.trueColor;
 			miniplayer.instance = $(miniplayer.seed).appendTo('body');
 			miniplayer.audio = $('.mini-player .current-track');
 			miniplayer.src = $('.mini-player .current-track .current-source');
 			miniplayer.header = $('.mini-player .mini-player-header .title');
+			
+			miniplayer.animation = miniplayer.<?php if(!empty($_SESSION['def_visual'])){ echo $_SESSION['def_visual']; }else{ echo 'cleanCircle'; } ?>;
+	
+			context = new (window.AudioContext || window.webkitAudioContext)();
+			analyser = context.createAnalyser();
+			
+			source = context.createMediaElementSource(miniplayer.audio[0]);
+			source.connect(analyser);
+			analyser.connect(context.destination);
+			
+			frequency_array = new Uint8Array(analyser.frequencyBinCount);
+
+			window['miniplayer']['animation'](); //Variable variables in JavaScript the jank way.
 			
 			$('.mini-player .sleep-timer').click(function(){
 				
@@ -376,48 +983,33 @@ $(document).ready(function(){
 				miniplayer.updateHistory();
 				$('.mini-player-audio-controls .mini-player-play').removeClass('fa-pause').addClass('fa-play');
 			});
-		},
-		toggle: function(){
-			if(miniplayer.instance.hasClass('open')){
-				miniplayer.instance.removeClass('open');
-				miniplayer.instance.find('.fa.toggle').removeClass('fa-window-minimize').addClass('fa-window-maximize');
-			}else{
-				miniplayer.instance.addClass('open');
-				miniplayer.instance.find('.fa.toggle').removeClass('fa-window-maximize').addClass('fa-window-minimize');
-			}
-		},
-		remove: function(){
-			miniplayer.audio[0].pause();
-			miniplayer.instance.remove();
-			miniplayer.instance = false;
-		},
-		play: function(){
-			if(miniplayer.instance.find('.fa.play').hasClass('fa-play')){
-				miniplayer.audio[0].play();
-				if('mediaSession' in navigator){
-					navigator.mediaSession.playbackState = 'playing';
+			$('.mini-player-audio-controls .seek').mousemove(function(e){
+				var seek = $(this);
+				var span = $('.mini-player-seek-counter');
+				
+				/*
+				Name: Stephen Kennedy
+				Date: 2/22/21
+				Comment: Now we do math to see what percentage we are in the bar.
+				*/
+				var bar_width = seek.width();
+				var mouse_pos = e.pageX - seek.offset().left;
+				var percent = mouse_pos / bar_width;
+				var timecode = percent * miniplayer.audio[0].duration;
+				timecode = miniplayer.timeFormat(timecode);
+				span.html(timecode);
+				
+				
+				var y = ((seek.offset().top - $(window).scrollTop()) * -1) + window.innerHeight;
+				var x = e.pageX - (span.width() / 2);
+				if(span.hasClass('hidden')){
+					span.removeClass('hidden');
 				}
-			}else{
-				miniplayer.audio[0].pause();
-				if('mediaSession' in navigator){
-					navigator.mediaSession.playbackState = 'paused';
-				}
-			}
-		},
-		updateHistory: function(){
-			if(miniplayer.track == true){
-				var data = {
-					'id': miniplayer.id,
-					'time': Number(miniplayer.audio[0].currentTime)
-				};
-				$.get('<?php echo build_slug("/ajax/ajax_save_history/media"); ?>', data, function(content){
-					if(content == 'saved' && miniplayer.playing == true){
-						miniplayer.h_loop = setTimeout(miniplayer.updateHistory, miniplayer.h_freq);
-					}else if (content != 'saved'){
-						alert(content);
-					}
-				});
-			}
+				span.attr('style', 'left:'+x+'px;bottom:'+y+'px;');
+			});
+			$('.mini-player-audio-controls .seek').mouseleave(function(){
+				$('.mini-player-seek-counter').addClass('hidden');
+			});
 		}
 	};
 	miniplayer.init();
@@ -435,623 +1027,9 @@ bars = 200;
 bar_width = 2;
  
 function initPage(){
-    
-	miniplayer.animation = miniplayer.<?php if(!empty($_SESSION['def_visual'])){ echo $_SESSION['def_visual']; }else{ echo 'cleanCircle'; } ?>;
+    var context = '';
+	var analyzer = '';
 	
-    context = new (window.AudioContext || window.webkitAudioContext)();
-    analyser = context.createAnalyser();
-    
-    source = context.createMediaElementSource(miniplayer.audio[0]);
-    source.connect(analyser);
-    analyser.connect(context.destination);
-    
-    frequency_array = new Uint8Array(analyser.frequencyBinCount);
-
-    window['miniplayer']['animation'](); //Variable variables in JavaScript the jank way.
-}
-
-miniplayer.cleanCircle = function(){
-	if(miniplayer.instance.hasClass('open')){
-		miniplayer.colorControl();
-		// set to the size of device
-		canvas = miniplayer.instance.find('canvas')[0];
-		//canvas.width = miniplayer.instance.find('canvas').width();
-		//canvas.height = ;
-		ctx = canvas.getContext("2d");
-		ctx.globalCompositeOperation = 'source-over';
-		
-		// find the center of the window
-		center_x = canvas.width / 2;
-		center_y = canvas.height / 2;
-		
-		
-		// style the background
-		
-		analyser.getByteFrequencyData(frequency_array);
-		
-		var gradient = ctx.createLinearGradient(0,0,0,canvas.height);
-		
-		var level = 0;
-		
-		/*
-		Name: Stephen Kennedy
-		Date: 2/17/21
-		Comment: Right now the visualizers only sample the top of the array, they need to be modified to sample the whole array so that we get visualization of the highs, mids, and lows, when right now we're just getting highs and some mides.
-		*/
-		
-		var bar_increment = ~~(analyser.frequencyBinCount / bars);
-		
-		for(var i = 0; i < analyser.frequencyBinCount; i += bar_increment){
-			if(i >= analyser.frequencyBinCount){
-				i = analyser.frequencyBinCount - 1;
-			}
-			level += frequency_array[i];
-		}
-		level = Math.floor((level / bars) / 4);
-		
-		radius = level;
-		
-		var comp = miniplayer.getCompliment(miniplayer.curColor);
-		var lvl_temp = level / 255;
-		
-		gradient.addColorStop(0,"rgba("+(comp.r * lvl_temp)+","+(comp.g * lvl_temp)+", "+(comp.b * lvl_temp)+", 1)");
-		
-		gradient.addColorStop(1,"rgba(0, 0, 0, 1)");
-		ctx.fillStyle = gradient;
-		ctx.fillRect(0,0,canvas.width,canvas.height);
-		ctx.fillStyle = 'transparent';
-		
-		//draw a circle
-		//ctx.strokeStyle = 'rgba(150,0,100,1)';
-		ctx.beginPath();
-		ctx.arc(center_x,center_y,radius,0,2*Math.PI);
-		ctx.stroke();
-		var angle = 0;
-		for(var i = 0; i < analyser.frequencyBinCount; i += bar_increment){
-			if(i >= analyser.frequencyBinCount){
-				i = analyser.frequencyBinCount - 1;
-			}
-			//divide a circle into equal parts
-			rads = Math.PI * 2 / (analyser.frequencyBinCount / bar_increment);
-			
-			bar_height = frequency_array[i]*0.7 + (150 - level);
-			
-			// set coordinates
-			x = center_x + Math.cos(rads * angle) * (radius);
-		y = center_y + Math.sin(rads * angle) * (radius);
-			x_end = center_x + Math.cos(rads * angle)*(radius + bar_height);
-			y_end = center_y + Math.sin(rads * angle)*(radius + bar_height);
-			
-			//draw a bar
-			miniplayer.drawBar(x, y, x_end, y_end, bar_width,frequency_array[i]);
-			angle++;
-		}
-	}
-	window.requestAnimationFrame(miniplayer.animation);
-}
-
-miniplayer.burnout = function(){
-    if(miniplayer.instance.hasClass('open')){
-		miniplayer.colorControl();
-		// set to the size of device
-		canvas = miniplayer.instance.find('canvas')[0];
-		//canvas.width = miniplayer.instance.find('canvas').width();
-		//canvas.height = ;
-		ctx = canvas.getContext("2d");
-		ctx.globalCompositeOperation = 'source-over';
-		
-		// find the center of the window
-		center_x = canvas.width / 2;
-		center_y = canvas.height / 2;
-		
-		
-		// style the background
-		
-		analyser.getByteFrequencyData(frequency_array);
-		
-		var gradient = ctx.createLinearGradient(0,0,0,canvas.height);
-		
-		var level = 0;
-		
-		var bar_increment = ~~(analyser.frequencyBinCount / bars);
-		
-		for(var i = 0; i < analyser.frequencyBinCount; i += bar_increment){
-			if(i >= analyser.frequencyBinCount){
-				i = analyser.frequencyBinCount - 1;
-			}
-			level += frequency_array[i];
-		}
-		level = Math.floor((level / bars) / 4);
-		
-		radius = level;
-		
-		var temp_width = canvas.width + .01;
-		var temp_height = canvas.height + .01;
-		
-		ctx.translate(center_x, center_y);
-		miniplayer.angle += 0.00005;
-		if(miniplayer.angle > 360){
-			miniplayer.angle = 0;
-		}
-		var radian = miniplayer.angle * Math.PI / 180;
-		ctx.rotate(radian);
-		ctx.drawImage(canvas, Math.floor(temp_width / 2) * -1, Math.floor(temp_height / 2) * -1, temp_width, temp_height);
-		ctx.globalCompositeOperation = 'source-over';
-		ctx.rotate(-1 * radian);
-		ctx.setTransform(1, 0, 0, 1, 0, 0);
-		
-		var comp = miniplayer.getCompliment(miniplayer.curColor);
-		var lvl_temp = level / 255;
-		
-		gradient.addColorStop(0,"rgba("+(comp.r * lvl_temp)+","+(comp.g * lvl_temp)+", "+(comp.b * lvl_temp)+", 1)");
-		gradient.addColorStop(1,"rgba(0, 0, 0, 0)");
-		ctx.fillStyle = gradient;
-		//ctx.fillRect(0,0,canvas.width,canvas.height);
-		ctx.fillStyle = 'transparent';
-		
-		//draw a circle
-		ctx.filleStyle = 'rgba(0,0,0,1)';
-		ctx.beginPath();
-		ctx.arc(center_x,center_y,radius,0,2*Math.PI);
-		ctx.fill();
-		var angle = 0;
-		for(var i = 0; i < analyser.frequencyBinCount; i += bar_increment){
-			
-			if(i >= analyser.frequencyBinCount){
-				i = analyser.frequencyBinCount - 1;
-			}
-			
-			//divide a circle into equal parts
-			rads = Math.PI * 2 / (analyser.frequencyBinCount / bar_increment);
-			
-			bar_height = frequency_array[i]*0.7 + (150 - level);
-			
-			// set coordinates
-			x = center_x + Math.cos(rads * angle) * (radius);
-			y = center_y + Math.sin(rads *anglei) * (radius);
-			x_end = center_x + Math.cos(rads * angle)*(radius + bar_height);
-			y_end = center_y + Math.sin(rads * angle)*(radius + bar_height);
-			
-			//draw a bar
-			miniplayer.drawBar(x, y, x_end, y_end, bar_width,frequency_array[i]);
-			angle++;
-		}
-	}
-	window.requestAnimationFrame(miniplayer.animation);
-}
- 
-miniplayer.bars = function(){
-	if(miniplayer.instance.hasClass('open')){
-		miniplayer.colorControl();
-		// set to the size of device
-		canvas = miniplayer.instance.find('canvas')[0];
-		//canvas.width = miniplayer.instance.find('canvas').width();
-		//canvas.height = ;
-		ctx = canvas.getContext("2d");
-		ctx.globalCompositeOperation = 'source-over';
-		
-		// find the center of the window
-		center_x = canvas.width / 2;
-		center_y = canvas.height / 2;
-		
-		// Let's find out how tall we want our items to be
-		var bar_ratio = 256 / canvas.height;
-		
-		if(bars > center_x){
-			var use_bars = center_x;
-		}else{
-			var use_bars = bars;
-		}
-		
-		//use_bars = Math.floor(use_bars / 4);
-		
-		var bar_width = Math.ceil(canvas.width / use_bars) - 1;
-		
-		
-		// style the background
-		
-		analyser.getByteFrequencyData(frequency_array);
-		
-		var gradient = ctx.createLinearGradient(0,0,0,canvas.height);
-		
-		var level = 0;
-		
-		var bar_increment = ~~(analyser.frequencyBinCount / bars);
-		
-		var use_increment = ~~(analyser.frequencyBinCount / use_bars);
-		
-		for(var i = 0; i < analyser.frequencyBinCount; i += bar_increment){
-			if(i >= analyser.frequencyBinCount){
-				i = analyser.frequencyBinCount - 1;
-			}
-			level += frequency_array[i];
-		}
-		level = Math.floor((level / bars) / 4);
-		
-		radius = level;
-		var comp = miniplayer.getCompliment(miniplayer.curColor);
-		var lvl_temp = level / 255;
-		
-		gradient.addColorStop(0,"rgba("+(comp.r * lvl_temp)+","+(comp.g * lvl_temp)+", "+(comp.b * lvl_temp)+", 1)");
-		gradient.addColorStop(1,"rgba(0, 0, 0, 1)");
-		ctx.fillStyle = gradient;
-		ctx.fillRect(0,0,canvas.width,canvas.height);
-		ctx.fillStyle = 'transparent';
-		
-		var cur_x = 0;
-		
-		for(var i = 0; i < analyser.frequencyBinCount; i += use_increment){
-			if(i >= analyser.frequencyBinCount){
-				i = analyser.frequencyBinCount - 1;
-			}
-			//divide a circle into equal parts
-			//rads = Math.PI * 2 / bars;
-			
-			bar_height = frequency_array[i] / bar_ratio;
-			
-			// set coordinates
-			x = cur_x;
-			y = canvas.height;
-			x_end = cur_x;
-			y_end = canvas.height - bar_height;
-			
-			//draw a bar
-			miniplayer.drawBar(x, y, x_end, y_end, bar_width,frequency_array[i]);
-			
-			cur_x += bar_width + 1;
-		
-		}
-	}
-	window.requestAnimationFrame(miniplayer.animation);
-}
-
-miniplayer.spectro = function(){
-	if(miniplayer.instance.hasClass('open')){
-		miniplayer.colorControl();
-		// set to the size of device
-		canvas = miniplayer.instance.find('canvas')[0];
-		//canvas.width = miniplayer.instance.find('canvas').width();
-		//canvas.height = ;
-		ctx = canvas.getContext("2d");
-		ctx.globalCompositeOperation = 'source-over';
-		
-		// find the center of the window
-		center_x = canvas.width / 2;
-		center_y = canvas.height / 2;
-		
-		// Let's find out how tall we want our items to be
-		var bar_ratio = 256 / canvas.height;
-		
-		if(bars > center_x){
-			var use_bars = center_x;
-		}else{
-			var use_bars = bars;
-		}
-		
-		//use_bars = Math.floor(use_bars / 4);
-		
-		var line_width = 2;
-		var bar_width = Math.ceil(canvas.width / use_bars) - 1;
-		
-		
-		// style the background
-		
-		analyser.getByteFrequencyData(frequency_array);
-		
-		var gradient = ctx.createLinearGradient(0,0,0,canvas.height);
-		
-		var level = 0;
-		
-		var bar_increment = ~~(analyser.frequencyBinCount / bars);
-		
-		var use_increment = ~~(analyser.frequencyBinCount / use_bars);
-		
-		for(var i = 0; i < analyser.frequencyBinCount; i += bar_increment){
-			if(i >= analyser.frequencyBinCount){
-				i = analyser.frequencyBinCount - 1;
-			}
-			level += frequency_array[i];
-		}
-		level = Math.floor((level / bars) / 4);
-		
-		radius = level;
-		
-		var comp = miniplayer.getCompliment(miniplayer.curColor);
-		var lvl_temp = level / 255;
-		
-		gradient.addColorStop(0,"rgba("+(comp.r * lvl_temp)+","+(comp.g * lvl_temp)+", "+(comp.b * lvl_temp)+", 1)");
-		gradient.addColorStop(1,"rgba(0, 0, 0, 1)");
-		ctx.fillStyle = gradient;
-		ctx.fillRect(0,0,canvas.width,canvas.height);
-		ctx.fillStyle = 'transparent';
-		
-		var cur_x = 0;
-		
-		for(var i = 0; i < analyser.frequencyBinCount; i += use_increment){
-			if(i >= analyser.frequencyBinCount){
-				i = analyser.frequencyBinCount - 1;
-			}
-			//divide a circle into equal parts
-			//rads = Math.PI * 2 / bars;
-			if(i + use_increment < analyser.frequencyBinCount){
-				bar_height = frequency_array[i] / bar_ratio;
-				bar_height2 = frequency_array[i + use_increment] / bar_ratio;
-				
-				// set coordinates
-				x = cur_x;
-				y = canvas.height - bar_height;
-				x_end = cur_x + bar_width + 1;
-				y_end = canvas.height - bar_height2;
-				
-				//draw a bar
-				miniplayer.drawBarSolid(x, y, x_end, y_end, line_width,frequency_array[i]);
-				
-				cur_x += bar_width + 1;
-			}
-		}
-	}
-	window.requestAnimationFrame(miniplayer.animation);
-}
-
-miniplayer.driving = function(){
-	if(miniplayer.instance.hasClass('open')){
-		//Color shortcuts
-		var sunset_orange = {
-			r: 253,
-			g: 94,
-			b: 83
-		};
-		var sky_blue = {
-			r: 83,
-			g: 241,
-			b: 252
-		};
-		var evening_purple = {
-			r: 75,
-			g: 0,
-			b: 130
-		};
-		var rainy_gray = {
-			r: 69,
-			g: 69,
-			b: 69
-		};
-		var sunrise_pink = {
-			r: 251,
-			g: 114,
-			b: 152
-		};
-		
-		miniplayer.colorControl();
-		// set to the size of device
-		canvas = miniplayer.instance.find('canvas')[0];
-		//canvas.width = miniplayer.instance.find('canvas').width();
-		//canvas.height = ;
-		ctx = canvas.getContext("2d");
-		ctx.globalCompositeOperation = 'source-over';
-		
-		// find the center of the window
-		center_x = canvas.width / 2;
-		center_y = canvas.height / 2;
-		
-		var bar_ratio = 256 / canvas.height;
-		
-		if(bars > center_x){
-			var use_bars = center_x;
-		}else{
-			var use_bars = bars;
-		}
-		
-		analyser.getByteFrequencyData(frequency_array);
-		var level = 0;
-		
-		var bar_increment = ~~(analyser.frequencyBinCount / bars);
-		
-		for(var i = 0; i < analyser.frequencyBinCount; i += bar_increment){
-			if(i >= analyser.frequencyBinCount){
-				i = analyser.frequencyBinCount - 1;
-			}
-			level += frequency_array[i];
-		}
-		level = Math.floor((level / bars) / 4);
-		
-		var number_lines = 100;
-		
-		var scale_y = ~~(center_y / number_lines);
-		var scale_x = ~~(center_x / 2);
-		for( var i = 0; i < number_lines; i++ ){
-			miniplayer.drawRoad(i, level, scale_x, scale_y, center_x, center_y);
-		}
-		
-	}
-	window.requestAnimationFrame(miniplayer.animation);
-}
-
-miniplayer.drawRoad = function(line, level, scaleX, scaleY, centerX, centerY){
-	var asphalt_black = {
-		r: 20,
-		g: 20,
-		b: 20
-	};
-	var line_yellow = {
-		r: 204,
-		g: 204,
-		b: 0
-	};
-	var test = ~~((((miniplayer.audio[0].currentTime) * level) / (miniplayer.audio[0].duration)) * (100)) + line;
-	var height = scaleY;
-	
-	var lineColor = miniplayer.rgbMe(asphalt_black);
-	ctx.strokeStyle = lineColor;
-	ctx.lineWidth = height;
-	ctx.beginPath();
-	
-	var width = ~~(scaleX + (5 * line));
-	
-	ctx.moveTo((centerX - width), (centerY + (scaleY * line)));
-	ctx.lineTo((centerX + width), (centerY + (scaleY * line)));
-	ctx.stroke();
-	
-	if( test % 5 == 0 || (test+1) % 5 == 0 || (test+2) % 5 == 0 || (test+3) % 5 == 0 || (test+4) % 5 == 0){
-		var mini_width = ~~(width / 10);
-		var lineColor = miniplayer.rgbMe(line_yellow);
-		ctx.strokeStyle = lineColor;
-		ctx.lineWidth = height;
-		ctx.beginPath();
-		ctx.moveTo((centerX - mini_width), (centerY + (scaleY * line)));
-		ctx.lineTo((centerX + mini_width), (centerY + (scaleY * line)));
-		ctx.stroke();
-	}
-}
-
-miniplayer.rgbMe = function(colorObj){
-	var string = 'rgb(' + colorObj.r + ',' + colorObj.g + ',' + colorObj.b + ')';
-	return string;	
-}
-
-// for drawing a bar
-miniplayer.drawBar = function (x1, y1, x2, y2, width,frequency){
-    
-	var freq_temp = frequency / 255;
-	if(freq_temp > 1){
-		freq_temp = 1;
-	}
-	var color = {
-		r: freq_temp * miniplayer.curColor.r,
-		g: freq_temp * miniplayer.curColor.g,
-		b: freq_temp * miniplayer.curColor.b
-	}
-	
-    var lineColor = "rgb(" + color.r + ", " + color.g + ", " + color.b + ")";
-    
-    ctx.strokeStyle = lineColor;
-    ctx.lineWidth = width;
-    ctx.beginPath();
-    ctx.moveTo(x1,y1);
-    ctx.lineTo(x2,y2);
-    ctx.stroke();
-}
-
-miniplayer.drawBarSolid = function (x1, y1, x2, y2, width,frequency){
-    
-    var lineColor = "rgb("+miniplayer.curColor.r+","+miniplayer.curColor.g+","+miniplayer.curColor.b+")";
-    
-    ctx.strokeStyle = lineColor;
-    ctx.lineWidth = width;
-    ctx.beginPath();
-    ctx.moveTo(x1,y1);
-    ctx.lineTo(x2,y2);
-    ctx.stroke();
-}
-
-//transition from our current color to our next color
-miniplayer.cTransition = function(){
-	var to = miniplayer.trueColor;
-	var cur = miniplayer.curColor;
-	if(to.r == ~~cur.r && to.g == ~~cur.g && to.b == ~~cur.b){
-		miniplayer.curColor = {
-			r: ~~cur.r,
-			g: ~~cur.g,
-			b: ~~cur.b
-		};
-		return false;
-	}
-	if(to.r != cur.r){
-		if(to.r > ~~cur.r){
-			cur.r +=  miniplayer.colorStep;
-		}else{
-			cur.r +=  miniplayer.colorStep * -1;
-		}
-	}else{
-		cur.r = ~~cur.r;
-	}
-	if(to.g != ~~cur.g){
-		if(to.g > cur.g){
-			cur.g +=  miniplayer.colorStep;
-		}else{
-			cur.g +=  miniplayer.colorStep * -1;
-		}
-	}else{
-		cur.g = ~~cur.g;
-	}
-	if(to.b != ~~cur.b){
-		if(to.b > ~~cur.b){
-			cur.b +=  miniplayer.colorStep;
-		}else{
-			cur.b +=  miniplayer.colorStep * -1;
-		}
-	}else{
-		cur.b = ~~cur.b;
-	}
-	miniplayer.curColor = cur;
-	return true;
-}
-//Controls shifting our colors.
-miniplayer.colorControl = function(){
-	var check = miniplayer.cTransition();
-	if(check == false){
-		//console.log('Holding: '+miniplayer.colorFrame+ ' of ' + miniplayer.colorHold);
-		if(miniplayer.colorFrame == 0){
-			miniplayer.colorHold = Math.floor(Math.random() * (2000));
-		}
-		if(miniplayer.colorHold > miniplayer.colorFrame){
-			miniplayer.colorFrame++;
-		}else{
-			miniplayer.colorFrame = 0;
-			miniplayer.chooseColor();
-		}
-	}else{
-		
-	}
-}
-
-miniplayer.getCompliment = function(colorObj){
-	//Floor them so we can deal with scaling colors.
-	var r = ~~colorObj.r;
-	var g = ~~colorObj.g;
-	var b = ~~colorObj.b;
-	return {
-		r: (255 - r),
-		g: (255 - g),
-		b: (255 - b)
-	};
-}
-
-miniplayer.options = function(){
-	var win = aPopup.newWindow('<label for="visualizer">Visualization</label><select id="visualizer"><option value="spectro">Spectrograph</option><option value="bars">Bars</option><option value="circle">Circle</option><!--option value="burnout">Burn In</option--></select><br><button class="confirm"><i class="fa fa-floppy-o"></i> Save</button>');
-	win.find('.confirm').click(function(){
-		var anim = win.find('#visualizer').val();
-		switch(anim){
-			case 'spectro':
-				miniplayer.animation = miniplayer.spectro;
-				break;
-			case 'bars':
-				miniplayer.animation = miniplayer.bars;
-				break;
-			case 'circle':
-				miniplayer.animation = miniplayer.cleanCircle;
-				break;
-			case 'burnout':
-				miniplayer.animation = miniplayer.burnout;
-				break;
-		}
-	});
-}
-
-miniplayer.fullscreen = function(){
-	var canvas = miniplayer.instance.find('canvas')[0];
-	if(miniplayer.instance.hasClass('fullscreen')){
-		miniplayer.instance.removeClass('fullscreen');
-		var width = miniplayer.instance.width();
-		canvas.width = width;
-		canvas.height = 150;
-	}else{
-		miniplayer.instance.addClass('fullscreen');
-		var width = miniplayer.instance.width();
-		var height = miniplayer.instance.height() - 158;
-		canvas.width = width;
-		canvas.height = height;
-	}
 }
 
 initPage();

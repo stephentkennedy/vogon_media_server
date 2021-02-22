@@ -123,11 +123,9 @@ table th{
 	position: sticky;
 	top: 0;
 }
-
-#audio-library-main{
-	
+.hidden{
+	opacity: 0;
 }
-
 /*
 Popup styles
 */

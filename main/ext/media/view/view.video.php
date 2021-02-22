@@ -24,7 +24,7 @@
 		</div>
 	</div>
 	<div id="controls" class="active">
-		<input type="range" class="seek" value="0" max="" /><span id="time">0:00 / 0:00</span><br>
+		<input type="range" class="seek" value="0" max="" /><span class="seek-counter hidden"></span><span id="time">0:00 / 0:00</span><br>
 		<i class="fa fa-fw fa-play play"></i><i class="fa fa-fw fa-volume-up mute"></i><input type="range" class="volume" value="100" max="100" /><i class="fa fa-fw fa-expand fullscreen"></i>
 	</div>
 </div>
@@ -225,6 +225,32 @@
 		background-color: rgba(0,0,0.0.5);
 		font-size: 1.5rem;
 	}
+	.seek-counter{
+		position: fixed;
+		text-align: center;
+		background-color: var(--black);
+		border-top: 1px solid var(--white);
+		opacity: 1;
+	}
+	.seek-counter.hidden{
+		opacity: 0;
+	}
+	.seek-counter:after{
+		content: '';
+		position: absolute;
+		height: 7px;
+		width: 7px;
+		background: rgb(var(--rgb-black));
+		background: linear-gradient(135deg, rgba(var(--rgb-black),0) 0%, rgba(var(--rgb-black),0) 50%, rgba(var(--rgb-black),1) 50%, rgba(var(--rgb-black),1) 100%);
+		border-right: 1px solid var(--white);
+		border-bottom: 1px solid var(--white);
+		left: 50%;
+		top: 100%;
+		transform: rotate(45deg) translate(-4.5px, -1px);
+	}
+	.seek-counter.hidden:after{
+		opacity: 0;
+	}
 	@media only screen and (max-width: 993px){
 		
 	}
@@ -347,6 +373,35 @@
 				window.history.back();
 			});
 			<?php }?>
+			
+			$('.seek').mousemove(function(e){
+				var seek = $(this);
+				var span = $('.seek-counter');
+				
+				/*
+				Name: Stephen Kennedy
+				Date: 2/22/21
+				Comment: Now we do math to see what percentage we are in the bar.
+				*/
+				var bar_width = seek.width();
+				var mouse_pos = e.pageX - seek.offset().left;
+				var percent = mouse_pos / bar_width;
+				var timecode = percent * player.video[0].duration;
+				timecode = player.timeFormat(timecode);
+				span.html(timecode);
+				
+				
+				var y = ((seek.offset().top - $(window).scrollTop()) * -1) + window.innerHeight;
+				var x = e.pageX - (span.width() / 2);
+				if(span.hasClass('hidden')){
+					span.removeClass('hidden');
+				}
+				span.attr('style', 'left:'+x+'px;bottom:'+y+'px;');
+			});
+			$('.seek').mouseleave(function(){
+				$('.seek-counter').addClass('hidden');
+			});
+			
 		},
 		timeFormat : function(duration){
 			// Hours, minutes and seconds
