@@ -62,9 +62,14 @@ foreach($files as $f){
 			$name = explode('.', $name);
 			array_pop($name);
 			$name = implode('.', $name);
-			$thumb_name = $thumbDir.'DB_'.$name.'.jpg';
+			$thumb_name = $thumbDir.$name.'.jpg';
 			
-			$vid->frame(FFMpeg\Coordinate\TimeCode::fromSeconds(10))->save($thumb_name);
+			try{
+				$vid->frame(FFMpeg\Coordinate\TimeCode::fromSeconds(10))->save($thumb_name);
+			} catch(Exception $e){
+				echo 'Exception when generating thumbnail<br>'.$e->getMessage().'<br>Continuing without thumbnail.';
+				$thumb_name = '';
+			}
 			$vid = null;
 			
 			$file_info = $getID3->analyze($f);
