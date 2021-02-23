@@ -171,7 +171,7 @@ function build_slug($uri, $params = [], $ext = false){
 		}
 	}
 	$safe = [];
-	$string .= '/'.$uri;
+	$string .= '/'.ltrim($uri, '/'); //This is to avoid errors that only crop up when a URI isn't set (because we aren't running in a folder)
 	if(count($params) > 0){
 		foreach($params as $key => $value){
 			if(gettype($value) == 'string'){
