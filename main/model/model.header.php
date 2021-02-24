@@ -37,12 +37,12 @@
 		'logo_title' => '',
 		'logo_alt' => '',
 		'head_tags' => [
-			'<script type="text/javascript" src="'.URI.'/js/jquery.min.js"></script>',
-			'<script type="text/javascript" src="'.URI.'/js/jquery-ui.min.js"></script>',
-			'<script type="text/javascript" src="'.URI.'/js/aPopup.js"></script>',
-			'<script type="text/javascript" src="'.URI.'/js/lazy.js"></script>',
-			'<link rel="stylesheet" href="'.URI.'/js/jquery-ui.min.css" type="text/css">',
-			'<link rel="stylesheet" href="'.URI.'/css/layout.css" type="text/css">'
+			'<script type="text/javascript" src="'.build_slug('/js/jquery.min.js').'"></script>',
+			'<script type="text/javascript" src="'.build_slug('/js/jquery-ui.min.js').'"></script>',
+			'<script type="text/javascript" src="'.build_slug('/js/aPopup.js').'"></script>',
+			'<script type="text/javascript" src="'.build_slug('/js/lazy.js').'"></script>',
+			'<link rel="stylesheet" href="'.build_slug('/js/jquery-ui.min.css').'" type="text/css">',
+			'<link rel="stylesheet" href="'.build_slug('/css/layout.css').'" type="text/css">'
 		],
 		'header_nav' => $print_menu,
 		'title' => $title

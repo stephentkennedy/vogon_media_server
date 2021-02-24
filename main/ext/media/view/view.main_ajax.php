@@ -38,7 +38,7 @@
 			if(push == true){
 				history.pushState(data, '', url);
 			}
-			$.get('/ajax/ajax_search/media', data , function(content){
+			$.get('<?php echo build_slug("ajax/ajax_search/media"); ?>', data , function(content){
 				controller.load(content);
 			});
 		}

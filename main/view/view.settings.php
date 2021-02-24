@@ -42,7 +42,7 @@
 				<td>/'.$r['route_slug'].'</td>
 				<td>'.$r['route_controller'].'</td>
 				<td>'.$r['route_ext'].'</td>
-				<td>'.$r['nav_display'].' <a class="open-popup right" data-title="Edit display name" data-src="'. URI .'/ajax/settings?action=form&form=change_display_name&id='.$r['route_id'].'">[Edit]</a></td>
+				<td>'.$r['nav_display'].' <a class="open-popup right" data-title="Edit display name" data-src="'. build_slug('/ajax/settings?action=form&form=change_display_name&id='.$r['route_id']) . '">[Edit]</a></td>
 				<td>';
 				if($r['in_h_nav']){
 					echo 'Yes';

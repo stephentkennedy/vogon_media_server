@@ -16,7 +16,7 @@
 <script type="text/javascript">
 	$('#series').autocomplete({
 		source: function(request, response){
-			$.get('/ajax/ajax_series/media', {'search': request.term}).done(function(data){
+			$.get('<?php echo build_slug("ajax/ajax_series/media"); ?>', {'search': request.term}).done(function(data){
 				response($.map(data, function(item){
 					return{
 						label: item.data_name,

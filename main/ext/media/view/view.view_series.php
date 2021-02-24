@@ -147,7 +147,7 @@ if(!empty($members['movies'])){?>
 		},
 		load: function(dom){
 			var id = $(dom).data('id');
-			$.get('/ajax/ajax_history/media', {'id': id}).done(function(returned){
+			$.get('<?php echo build_slug("ajax/ajax_history/media"); ?>', {'id': id}).done(function(returned){
 				var watched = returned['watched'];
 				var total = Number($(dom).data('length'));
 				var percent = watched / total;
@@ -166,7 +166,7 @@ if(!empty($members['movies'])){?>
 		},
 		getNext: function(){
 			var id = $('#next_series').data('id');
-			$.get('/ajax/ajax_get_next/media', {id: id}).done(function(returned){
+			$.get('<?php echo build_slug("ajax/ajax_get_next/media"); ?>', {id: id}).done(function(returned){
 				if(returned.result == true){
 					var link = $('#next_series');
 					link.html(returned.text);

@@ -3,7 +3,7 @@
 	load_controller('header');
 	echo 'Unable to find resource.';
 	$footer_data = [
-		'footer_nav' => '<a href="'.URI.'">Home</a>'
+		'footer_nav' => '<a href="'.build_slug('').'">Home</a>'
 	];
 	load_controller('footer');
 ?>

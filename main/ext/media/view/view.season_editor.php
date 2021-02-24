@@ -98,7 +98,7 @@
 				});
 			});
 			var saveButton = $(this).find('i');
-			$.post('/ajax/ajax_save_season/media', {season: saveSeasons}, function(content){
+			$.post('<?php echo build_slug("ajax/ajax_save_season/media"); ?>', {season: saveSeasons}, function(content){
 				saveButton.removeClass('fa-spin').removeClass('fa-spinner').addClass('fa-floppy-o');
 				var w = aPopup.newWindow(content
 				);

@@ -13,7 +13,7 @@
 		form: <?php if(!empty($form) && $form == true){ echo 'true'; }else{ echo 'false'; } ?>,
 		get: function(dir){
 			$('.dir-container-<?php echo $_SESSION['active_filebrowsers'];?>').html('<i class="fa fa-spin fa-cog"></i>');
-			$.get('/ajax/ajax_main/filebrowser', {'dir': dir}).done(fbrowser<?php echo $_SESSION['active_filebrowsers'];?>.load);
+			$.get('<?php echo build_slug("ajax/ajax_main/filebrowser"); ?>', {'dir': dir}).done(fbrowser<?php echo $_SESSION['active_filebrowsers'];?>.load);
 		},
 		load: function(data){
 			$('.dir-container-<?php echo $_SESSION['active_filebrowsers'];?>').html(data.content);

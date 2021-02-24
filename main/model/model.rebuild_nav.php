@@ -8,7 +8,7 @@ switch($type){
 		$array = [];
 		$string = '';
 		foreach($nav_routes as $r){
-			$string .= '<a class="nav '.$r['route_ext'].'" href="'.URI.'/'.$r['route_slug'].'">';
+			$string .= '<a class="nav '.$r['route_ext'].'" href="'.build_slug($r['route_slug']).'">';
 			if(empty($r['nav_display'])){
 				$string .= $r['route_ext'];
 			}else{
@@ -53,7 +53,7 @@ switch($type){
 		$array = [];
 		$string = '';
 		foreach($nav_routes as $r){
-			$string .= '<a href="'.URI.'/'.$r['route_slug'].'">';
+			$string .= '<a href="'.build_slug($r['route_slug']).'">';
 			if(empty($r['nav_display'])){
 				$string .= $r['route_ext'];
 			}else{

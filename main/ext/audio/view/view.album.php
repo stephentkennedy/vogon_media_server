@@ -85,7 +85,7 @@ if(!empty($album['meta']['history'])){
 		var resume = $('.album-resume');
 		if(resume.length > 0){
 			var id = resume.data('id');
-			$.get('/ajax/ajax_get_next/audio', {id: id}).done(function(returned){
+			$.get('<?php echo build_slug("ajax/ajax_get_next/audio"); ?>', {id: id}).done(function(returned){
 				if(returned.result == true){
 					resume.html(returned.text);
 					var tracks = $('.play-all').data('tracks');

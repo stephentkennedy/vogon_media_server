@@ -14,9 +14,9 @@
 <script type="text/javascript">
 	var controller = {
 		url: {
-			'default': '/ajax/ajax_search/audio',
-			'artists': '/ajax/ajax_search_artist/audio',
-			'albums': '/ajax/ajax_search_album/audio',
+			'default': '<?php echo build_slug("ajax/ajax_search/audio"); ?>',
+			'artists': '<?php echo build_slug("ajax/ajax_search_artist/audio"); ?>',
+			'albums': '<?php echo build_slug("ajax/ajax_search_album/audio"); ?>',
 			'genre': ''
 		},
 		active_url: '<?php switch($type){

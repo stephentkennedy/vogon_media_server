@@ -9,9 +9,9 @@
 				}
 			}
 		?>
-		<link rel="icon" type="image/png" href="<?php echo URI; ?>/upload/favicon.png">
-		<link rel="stylesheet" href="<?php echo URI . '/' . $stylesheet; ?>" type="text/css">
-		<link rel="stylesheet" href="<?php echo URI; ?>/fonts/font-awesome.min.css" type="text/css">
+		<link rel="icon" type="image/png" href="<?php echo build_slug('upload/favicon.png'); ?>">
+		<link rel="stylesheet" href="<?php echo build_slug($stylesheet); ?>" type="text/css">
+		<link rel="stylesheet" href="<?php echo build_slug('fonts/font-awesome.min.css'); ?>" type="text/css">
 		<?php if(!empty($title)){ ?>
 		<title><?php echo $title; ?></title>
 		<?php } ?>

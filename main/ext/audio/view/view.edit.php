@@ -46,7 +46,7 @@ foreach($meta_data as $item => $default){
 	$(document).ready(function(){
 		$('#meta_album').autocomplete({
 			source: function(request, response){
-				$.get('/ajax/ajax_album/audio', {'search': request.term}).done(function(data){
+				$.get('<?php echo build_slug("ajax/ajax_album/audio"); ?>', {'search': request.term}).done(function(data){
 					response($.map(data, function(item){
 						return{
 							label: item.data_name,
@@ -58,7 +58,7 @@ foreach($meta_data as $item => $default){
 		});
 		$('#meta_artist').autocomplete({
 			source: function(request, response){
-				$.get('/ajax/ajax_artist/audio', {'search': request.term}).done(function(data){
+				$.get('<?php echo build_slug("ajax/ajax_artist/audio"); ?>', {'search': request.term}).done(function(data){
 					response($.map(data, function(item){
 						return{
 							label: item.data_meta_content,
@@ -70,7 +70,7 @@ foreach($meta_data as $item => $default){
 		});
 		$('#meta_genre').autocomplete({
 			source: function(request, response){
-				$.get('/ajax/ajax_genre/audio', {'search': request.term}).done(function(data){
+				$.get('<?php echo build_slug("ajax/ajax_genre/audio"); ?>', {'search': request.term}).done(function(data){
 					response($.map(data, function(item){
 						return{
 							label: item.data_meta_content,
@@ -82,7 +82,7 @@ foreach($meta_data as $item => $default){
 		});
 		$('#meta_composer').autocomplete({
 			source: function(request, response){
-				$.get('/ajax/ajax_composer/audio', {'search': request.term}).done(function(data){
+				$.get('<?php echo build_slug("ajax/ajax_composer/audio"); ?>', {'search': request.term}).done(function(data){
 					response($.map(data, function(item){
 						return{
 							label: item.data_meta_content,

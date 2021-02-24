@@ -442,7 +442,7 @@
 				'id': player.id,
 				'time': Number(player.video[0].currentTime)
 			};
-			$.get('/ajax/ajax_save_history/media', data, function(content){
+			$.get('<?php echo build_slug("ajax/ajax_save_history/media");?>', data, function(content){
 				if(content == 'saved' && player.playing == true){
 					player.h_loop = setTimeout(player.updateHistory, player.h_freq);
 				}else if (content != 'saved'){
@@ -485,7 +485,7 @@ if($series != ''){
 				clearInterval(autoplay.counter_loop);
 				autoplay.preview_dom.find('#counter').html('');
 			});
-			$.get('/ajax/ajax_get_series/media', data, function(content){
+			$.get('<?php echo build_slug("ajax/ajax_get_series/media"); ?>', data, function(content){
 				autoplay.index = content.current;
 				autoplay.list = content.list;
 				autoplay.next_season = false;

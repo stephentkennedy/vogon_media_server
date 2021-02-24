@@ -1047,7 +1047,7 @@ var playlist = {
 	shuffle: false,
 	shuffleMode: "local",
 	shuffleHistory: [],
-	shuffleURL: '/ajax/ajax_server_shuffle/audio'
+	shuffleURL: '<?php echo build_slug("ajax/ajax_server_shuffle/audio"); ?>'
 };
 
 playlist.serverShuffle = function(){
@@ -1120,7 +1120,7 @@ playlist.bind = function(){
 }
 
 playlist.fetch = function(){
-	$.get('/ajax/ajax_get_playlists/audio').done(function(returned){
+	$.get('<?php echo build_slug("ajax/ajax_get_playlists/audio"); ?>').done(function(returned){
 		var string = '<ul>';
 		for(i in returned){
 			string += '<li class="playlist-list" data-id="' + returned[i].id + '" data-tracks="'+ returned[i].list +'"><span class="playlist-title">' + returned[i].title + '</span><i class="fa fa-times delete-playlist"></i></li>';
@@ -1145,7 +1145,7 @@ playlist.fetch = function(){
 			
 			w.find('.yes').click(function(){
 				var id = $(this).data('id');
-				$.post('/ajax/ajax_playlist_delete/audio', {
+				$.post('<?php echo build_slug("ajax/ajax_playlist_delete/audio"); ?>', {
 					id: id
 				}).done(function(){
 					w.remove();
@@ -1197,7 +1197,7 @@ playlist.save = function(){
 		
 		console.log(title, id, list);
 		
-		$.post('/ajax/ajax_playlist_save/audio', {
+		$.post('<?php echo build_slug("ajax/ajax_playlist_save/audio"); ?>', {
 			title: title,
 			id: id,
 			list: list
@@ -1210,7 +1210,7 @@ playlist.save = function(){
 
 playlist.render = function(){
 	if(playlist.list.length > 0){
-		$.get('/ajax/ajax_playlist/audio', {'songs': playlist.list, 'current': playlist.i}, function(returned){
+		$.get('<?php echo build_slug("ajax/ajax_playlist/audio"); ?>', {'songs': playlist.list, 'current': playlist.i}, function(returned){
 			$('#current-playlist').html(returned);
 			playlist.bind();
 		});
