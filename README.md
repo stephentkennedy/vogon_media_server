@@ -7,7 +7,7 @@ This project is in active development, I will come back around and document vari
 This project is not designed for security. The intended use case is a dedicated single purpose device like a Raspberry Pi that has been suitably separated from the rest of the network so that it can't cause problems. This is not something that should used as is on a public network.
 
 ## What is Vogon?
-It's a prototyping and developing framework for PHP. You can find the framework by itself at https://github.com/stephentekennedy/vogon
+It's a prototyping and developing framework for PHP. You can find the framework by itself at https://github.com/stephentkennedy/vogon
 
 ## Notable Features
 
