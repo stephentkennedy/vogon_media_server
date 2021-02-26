@@ -27,4 +27,16 @@
 			//debug_d('Updating Metas: '.$ep);
 			$clerk->updateMetas($ep, ['season' => $season_id, 'episode_ord' => $ord]);
 		}
+		
+		/*
+		Name: Stephen Kennedy
+		Date: 2/26/2021
+		Comment: When we update the season order, we'll need to clear the cache for that series.
+		*/
+		
+		$sql = 'DELETE FROM cache WHERE cache_uri = :uri';
+		$params = [
+			':uri' => build_slug('view/'.$series, [] , 'media')
+		];
+		$db->query($sql, $params);
 	}

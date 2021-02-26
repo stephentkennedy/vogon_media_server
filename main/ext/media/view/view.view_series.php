@@ -1,5 +1,5 @@
 <header>
-	<h1><?php echo $title; ?></h1>
+	<h1><?php echo $title; ?> <a href="<?php echo build_slug('season_edit/'.$id, [], 'media'); ?>"><i class="fa fa-pencil"></i> Season Editor</a></h1>
 </header>
 <div class="row">
 	<div class="col col-ten">
@@ -53,7 +53,6 @@ if(!empty($members['seasons'])){
 if(!empty($members['tv'])){
 ?>
 <div class="col col-five">
-<a href="<?php echo build_slug('season_edit/'.$id, [], 'media'); ?>"><i class="fa fa-pencil"></i> Season Editor</a>
 <h2>Unsorted Episodes:</h2>
 <ol class="video-list"><?php
 	foreach($members['tv'] as $r){

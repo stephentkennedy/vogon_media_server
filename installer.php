@@ -201,10 +201,15 @@ HERE;
 	$thumb = $base . 'thumbs';
 	$video = $base . 'video';
 	$audio = $base . 'audio';
-	mkdir($thumb);
-	mkdir($video);
-	mkdir($audio);
-	
+	if(!file_exists($thumb)){
+		mkdir($thumb);
+	}
+	if(!file_exists($video)){
+		mkdir($video);
+	}
+	if(!file_exists($audio)){
+		mkdir($audio);
+	}
 	
 	
 	//Disable installer

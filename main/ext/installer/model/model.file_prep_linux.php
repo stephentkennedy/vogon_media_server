@@ -8,9 +8,9 @@
 	if(file_exists(ROOT . DIRECTORY_SEPARATOR . 'fonts')){
 		$directories[] = 'fonts';
 	}
-	if(file_exists(ROOT . DIRECTORY_SEPARATOR . 'vendor')){
+	/*if(file_exists(ROOT . DIRECTORY_SEPARATOR . 'vendor')){
 		$directories[] = 'vendor';
-	}
+	}*/
 	$files = [
 		'index.php',
 		'.htaccess',

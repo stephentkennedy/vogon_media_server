@@ -15,6 +15,9 @@ if(!empty($action)){
 		case 'import':
 			load_controller('importer', [], 'media');
 			break;
+		case 'flush_cache':
+			load_model('flush_cache', [], 'media');
+			break;
 	}
 	
 	//This switch case is because we're repurposing this controller.
@@ -22,6 +25,7 @@ if(!empty($action)){
 		case 'stop':
 		case 'start':
 		case 'restart':
+		case 'flush_cache':
 			$string = $_SERVER['REQUEST_URI'];
 			$array = explode('/', $string);
 			array_pop($array);

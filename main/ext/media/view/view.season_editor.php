@@ -33,7 +33,7 @@
 		text-align: right;
 	}
 </style>
-<header><h1><?php echo $title; ?>: Season Editor</h1></header>
+<header><h1><?php echo $title; ?>: Season Editor <a href="<?php echo build_slug('view/'.get_slug_part(2), [], 'media'); ?>">Back</a></h1></header>
 <div class="row">
 	<div id="unsorted" class="col col-three">
 		<h2>Unsorted</h2>
@@ -53,7 +53,7 @@
 			echo '</div></div>';
 		}?>
 	</div>
-	<div id="save-contain" class="col col-ten"><button id="save"><i class="fa fa-fw fa-floppy-o"></i> Save</button></div>
+	<div style="margin-top: 10px;" id="save-contain" class="col col-ten"><strong>Note:</strong> It may take a few minutes to save this data.<br><br><button id="save"><i class="fa fa-fw fa-floppy-o"></i> Save</button></div>
 </div>
 <script type="text/javascript">
 	var season = {};
@@ -81,7 +81,7 @@
 			helper: 'clone'
 		});
 		$('#save').click(function(){
-			$(this).find('i').removeClass('fa-floppy-o').addClass('fa-spinner').addClass('fa-spin');
+			$(this).find('i').removeClass('fa-floppy-o').addClass('fa-spinner').addClass('fa-spin').attr('disabled', 'true');
 			var seasons = $('#seasons .season');
 			console.log(seasons);
 			var saveSeasons = [];
@@ -99,7 +99,7 @@
 			});
 			var saveButton = $(this).find('i');
 			$.post('<?php echo build_slug("ajax/ajax_save_season/media"); ?>', {season: saveSeasons}, function(content){
-				saveButton.removeClass('fa-spin').removeClass('fa-spinner').addClass('fa-floppy-o');
+				saveButton.removeClass('fa-spin').removeClass('fa-spinner').addClass('fa-floppy-o').attr('disabled', 'false');
 				var w = aPopup.newWindow(content
 				);
 			});
