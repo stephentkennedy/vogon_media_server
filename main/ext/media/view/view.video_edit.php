@@ -29,6 +29,9 @@
 	if(!isset($length)){
 		$length = 0;
 	}
+	if(!isset($series)){
+		$series = '';
+	}
 ?>
 <form method="post">
 	<input type="hidden" name="action" value="save-film-meta">
@@ -37,6 +40,8 @@
 	} ?>
 	<label for="title">Title</label>
 	<input id="title" type="text" name="title" value="<?php echo $title; ?>">
+	<label for="series">Series</label>
+	<input id="series" name="series" type="text" value="<?php echo $series; ?>">
 	<label for="director">Director</label>
 	<input type="text" id="director" name="director" value="<?php echo $director; ?>">
 	<label for="release">Year of Release</label>
@@ -51,3 +56,21 @@
 	<?php load_controller('ajax_filebrowser', ['b_file' => $location, 'form' => 'file'], 'filebrowser'); ?>
 	<button type="submit" class="button"><i class="fa fa-floppy-o"></i> Save</button>
 </form>
+<script type="text/javascript">
+	$(document).ready(function(){
+		$('#series').autocomplete({
+			source: function(request, response){
+				$.get(<?php echo "'".build_slug('ajax/ajax_search_series/media')."'"; ?>, {
+					'search': request.term
+				}).done(function(data){
+					response($.map(data, function(item){
+						return{
+							label: item.data_name,
+							value: item.data_name
+						}
+					}));
+				});
+			}
+		});
+	});
+</script>

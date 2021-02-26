@@ -9,13 +9,31 @@ if($existing['data_type'] == 'video'){
 		'parent' => $genre,
 		'content' => $location
 	];
-}else{
+}else{	
 	$record_data = [
 		'name' => $title,
 		'slug' => slugify($title),
 		'type' => 'tv',
 		'content' => $location
 	];
+	if(!empty(trim($series))){
+		$series_check = $clerk->getRecord([
+			'name' => $series,
+			'type' => 'series'
+		]);
+		if(!empty($series_check)){
+			$record_data['parent'] = $series_check['data_id'];
+		}else{
+			$new_series = [
+				'name' => $series,
+				'type' => 'series'
+			];
+			$series_id = $clerk->addRecord($new_series);
+			$record_data['parent'] = $series_id;
+		}
+	}else{
+		$record_data['parent'] = 0;
+	}
 }
 $clerk->updateRecord($record_data, $id);
 

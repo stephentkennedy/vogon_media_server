@@ -76,7 +76,7 @@ if(!isset($_POST['app_name'])){
 $config = <<<HERE
 [app_constants]
 name = "{$app_name}"
-ver = 0.5a
+ver = 0.6a
 uri = "{$uri}"
 [database]
 driver = mysql

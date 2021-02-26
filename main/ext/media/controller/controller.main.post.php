@@ -13,6 +13,7 @@ if(isset($_POST['action'])){
 					'release' => $_POST['release'],
 					'starring' => $_POST['starring'],
 					'desc' => $_POST['desc'],
+					'series' => $_POST['series'],
 					'id' => $_POST['id']
 				];
 				load_model('update_video', $model_data, 'media');
