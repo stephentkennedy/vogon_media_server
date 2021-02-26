@@ -1,4 +1,7 @@
 #!/bin/bash
+
+echo -e "Before installing this software, please ensure you have run apt update and apt upgrade.\n\n"
+
 echo -e "This is the installation script for Vogon Media Server. The software this will install on your device is not configured to be secure. Are you comfortable with other devices on your network potentially having root access to this device and its files? y/n"
 
 read script_confirm
@@ -10,13 +13,18 @@ then
 	exit 0
 fi
 
-echo -e "Upgrading Packages"
-sudo apt-get update -y
-sudo apt-get upgrade -y
+echo -e "Creating User Group 'vogon'."
+sudo groupadd vogon
+
+echo -e "Adding root and current user to Group 'vogon'."
+sudo usermod -a -G vogon root
+sudo usermod -a -G vogon $USER
 
 echo -e "Installing Apache"
 sudo apt-get install apache2 -y
 sudo a2enmod rewrite
+echo -e "Adding Apache user to Group 'vogon'."
+sudo usermod -a -G vogon www-data
 
 
 echo -e "Installing PHP"
@@ -61,17 +69,34 @@ echo -e "Downloading most recent Vogon Media Server code"
 curl -L https://github.com/stephentkennedy/vogon_media_server/archive/master.zip > media_server.zip
 
 sudo mv media_server.zip /var/www/html/media_server.zip
-sudo chown root /var/www/html/media_server.zip
 sudo unzip /var/www/html/media_server.zip -d /var/www/html
 sudo rm /var/www/html/index.html
 sudo cp -rp /var/www/html/vogon_media_server-master/{.,}* /var/www/html
 sudo rm -r /var/www/html/vogon_media_server-master
 sudo rm /var/www/html/media_server.zip
+
+#We'll handle making our upload directories here so that ownership can be assigned
+sudo mkdir /var/www/html/upload/video
+sudo mkdir /var/www/html/upload/audio
+sudo mkdir /var/www/html/upload/thumbs
+
+#To resolve ownership problems down the line.
+#The owner will be root but we set the group to vogon
+sudo chown -R root:vogon /var/www/html
+
+#We give all permissions to all users (This isn't a secure application and this will make it easy to add media)
+sudo chmod -R 777 /var/www/html
+
+#We set our assigned group as sticky so that no matter what user uploads it it can be used by our apache user www-data
+sudo chmod -R g+s /var/www/html
+
+#Move our Apache config to set the proper settings
 sudo cp /var/www/html/example_configs/apache2.conf /etc/apache2/apache2.conf
 sudo systemctl restart apache2
 
 echo -e "Installing MiniDLNA Server"
 sudo apt-get install minidlna -y
+#Move our MiniDLNA settings to point at our correct media folder
 sudo cp /var/www/html/example_configs/minidlna.conf /etc/minidlna.conf
 sudo service minidlna restart
 
