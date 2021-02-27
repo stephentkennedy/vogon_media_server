@@ -20,7 +20,8 @@ class fish{
 		CURLOPT_TIMEOUT => 30,
 		CURLOPT_MAXREDIRS => 10,
 		CURLOPT_SSL_VERIFYPEER => 0, //Almost never useful, so it defaults to off
-		CURLOPT_SSL_VERIFYHOST => 0
+		CURLOPT_SSL_VERIFYHOST => 0,
+		CURLOPT_VERBOSE => 0
 	];
 	public $url;
 	public $info;
@@ -88,7 +89,9 @@ class fish{
 		if($append == false){
 			$this->options = $array;
 		}else{
-			$this->options = array_merge($this->options, $array);
+			foreach($array as $key => $value){
+				$this->options[$key] = $value;
+			}
 		}
 	}
 	
