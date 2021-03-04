@@ -97,6 +97,12 @@ $(document).ready(function(){
 				miniplayer.cur_id = data['id'];
 				miniplayer.audio[0].pause();
 				miniplayer.src.prop('src', data['src']);
+				if(data['mime'] == 'application/octet-stream'){
+					//then we have a bad mime-header somewhere
+					//As documented elsewhere this happens most often with mp3 files.
+					//So we'll just override the bad mime with the correct one for mp3 files.
+					data['mime'] = 'audio/mpeg';
+				}
 				miniplayer.src.prop('type', data['mime']);
 				miniplayer.id = data['id'];
 				miniplayer.header.html('<span>'+data['title']+'</span>');

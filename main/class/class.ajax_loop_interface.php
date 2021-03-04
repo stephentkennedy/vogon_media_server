@@ -8,11 +8,13 @@ class ajax_loop_interface {
 	private $base_sql = false;
 	private $count_sql = false;
 	private $params = [];
-	public $db = false;
+	private $debug = false;
+	private $offset = true;
 	private $model;
-	private $ext;
+	private $ext = false;
 	private $var_name = 'row';
 	public $error;
+	public $db = false;
 	
 	public function __construct($options){
 		switch($options['mode']){
@@ -50,7 +52,11 @@ class ajax_loop_interface {
 			$this->var_name = $options['var_name'];
 		}
 		if(!isset($_GET['offset'])){
-			$_SESSION['ajax_loop_interface_array'] = load_model($options['init_model'], [], $this->ext);
+			$init_data = [];
+			if(!empty($options['init_data'])){
+				$init_data = $options['init_data'];
+			}
+			$_SESSION['ajax_loop_interface_array'] = load_model($options['init_model'], $init_data, $this->ext);
 			$count = count($_SESSION['ajax_loop_interface_array']);
 			$output = [
 				'total_tasks' => $count,
@@ -73,16 +79,25 @@ class ajax_loop_interface {
 				if($offset >= (int)$_GET['count'] - 1){
 					$output['state'] = 'finished';
 					$output['continue'] = false;
+					unset($_SESSION['ajax_loop_interface_array']);
+					if(isset($options['cleanup'])){
+						$output['cleanup'] = load_model($options['cleanup'], [], $this->ext);
+					}
 				}else{
 					$output['state'] = 'working';
 					$output['continue'] = true;
 					$output['next_q'] = '?offset='. ($offset + 1).'&count='.$_GET['count'];
 				}
 			}else{
+				//Clean up after ourselves;
+				unset($_SESSION['ajax_loop_interface_array']);
 				$output = [
 					'state' => 'finished',
 					'continue' => false
 				];
+				if(isset($options['cleanup'])){
+					$output['cleanup'] = load_model($options['cleanup'], [], $this->ext);
+				}
 			}
 			echo load_view('json', $output);
 		}
@@ -98,6 +113,10 @@ class ajax_loop_interface {
 			$this->db = $db;
 		}else{
 			$this->db = $options['db'];
+		}
+		
+		if(isset($options['offset'])){
+			$this->offset = $options['offset'];
 		}
 		
 		
@@ -148,7 +167,11 @@ class ajax_loop_interface {
 			echo load_view('json', $output);
 		}else{
 			$offset = (int)$_GET['offset'];
-			$offset_sql = $this->build_sql($_GET['offset']);
+			if($this->offset === true){
+				$offset_sql = $this->build_sql($offset);
+			}else{
+				$offset_sql = $this->base_sql;
+			}
 			if($offset_sql == false){
 				$this->error = 'Non-numeric Offset provided.';
 				return false;
@@ -168,13 +191,22 @@ class ajax_loop_interface {
 				$output = [
 					'message' => $model_output
 				];
+				if($this->debug == true){
+					ob_start();
+					debug_d($result);
+					$output['row'] = ob_get_clean();
+					$output['sql'] = $offset_sql;
+				}
 				if($offset >= $_GET['count'] - 1){
 					$output['state'] = 'finished';
 					$output['continue'] = false;
+					if(isset($options['cleanup'])){
+						$output['cleanup'] = load_model($options['cleanup'], [], $this->ext);
+					}
 				}else{
 					$output['state'] = 'working';
 					$output['continue'] = true;
-					$output['next_q'] = '?offset='. ($_GET['offset'] + 1).'&count='.$_GET['count'];
+					$output['next_q'] = '?offset='. ($offset + 1).'&count='.$_GET['count'];
 				}
 				echo load_view('json', $output);
 			}

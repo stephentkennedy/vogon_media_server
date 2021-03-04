@@ -3,7 +3,7 @@ if(!empty($_POST['action'])){
 	switch($_POST['type']){
 		case 'video':
 			load_controller('header');
-			load_controller('scan', [
+			load_controller('ajax_scan', [
 				'dir' => $_POST['dir'],
 				'series_name' => $_POST['series_name'],
 				'series_id' => $_POST['series_id']
@@ -12,7 +12,7 @@ if(!empty($_POST['action'])){
 			break;
 		case 'audio':
 			load_controller('header');
-			load_controller('scan', [
+			load_controller('ajax_scan', [
 				'dir' => $_POST['dir']
 			], 'audio');
 			load_controller('footer');

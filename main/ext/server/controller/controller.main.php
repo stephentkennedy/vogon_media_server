@@ -1,23 +1,42 @@
 <?php
-/*
-Name: Stephen Kennedy
-Date: 1/10/21
-Comment: This is the controller that enables shell commands through the server interface
-*/
 $action = get_slug_part(1);
-$confirm = get_slug_part(2);
 if(!empty($action)){
-	switch($action){
-		case 'shutdown':
-			load_model('shutdown', [], 'server');
+	switch(strtolower($action)){
+		case 'stop':
+			load_model('stop_minidlna', [], 'media');
+			break;
+		case 'start':
+			load_model('start_minidlna', [], 'media');
 			break;
 		case 'restart':
-			load_model('restart', [], 'server');
-		default:
+			load_model('stop_minidlna', [], 'media');
+			load_model('start_minidlna', [], 'media');
+			break;
+		case 'import':
+			load_controller('importer', [], 'media');
+			break;
+		case 'flush_cache':
+			load_controller('flush_cache', [], 'server');
 			break;
 	}
+	
+	//This switch case is because we're repurposing this controller.
+	switch(strtolower($action)){
+		case 'stop':
+		case 'start':
+		case 'restart':
+			$string = $_SERVER['REQUEST_URI'];
+			$array = explode('/', $string);
+			array_pop($array);
+			$string = implode('/', $array);
+			header('Location: '.$string);
+			break;
+	}
+	
 }else{
-	load_controller('header');
-	echo load_view('main', [], 'server');
+	load_controller('header', [
+		'title'=> 'Server Tools'
+	]);
+	echo load_view('minidlna', [], 'server');
 	load_controller('footer');
 }

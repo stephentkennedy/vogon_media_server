@@ -5,6 +5,8 @@ set_time_limit(0);
 load_class('filesystem');
 $fs = new filesystem;
 
+//Need to build a way to pass variables to the init_model
+
 $files = $fs->recursiveScan($dir, true);
 
 require_once(ROOT . DIRECTORY_SEPARATOR .  'main'. DIRECTORY_SEPARATOR . 'ext'. DIRECTORY_SEPARATOR . 'audio'. DIRECTORY_SEPARATOR . 'include' . DIRECTORY_SEPARATOR . 'getid3'. DIRECTORY_SEPARATOR . 'getid3.php');
@@ -14,6 +16,7 @@ $getID3->setOption(['encoding' => 'UTF-8']);
 
 $clerk = new clerk;
 
+//This gets written into the processing models. Add format conversion to the process.
 foreach($files as $f){
 	$mime = mime_content_type($f);
 	$mime = explode('/', $mime);
