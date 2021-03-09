@@ -13,7 +13,7 @@
 		width: 100%;
 		position: relative;
 		height: 3rem;
-		background: #aaa;
+		background: #444;
 	}
 	#progress_bar{
 		background: green;
@@ -38,11 +38,12 @@
 </style>
 <script type="text/javascript">
 	var ajax_loop_interface = {
-		debug: true,
+		debug: false,
 		base_url: <?php echo "'".build_slug($route, [], $ext)."'"; ?>,
 		i: 0,
+		total: 0,
 		progress: function(){
-			var total = Number($('#progress_bar').attr('data-total'));
+			var total = this.total;
 			var percent = ~~((this.i / total) * 100);
 			$('#progress_bar').css('width', percent + '%');
 			$('#progress_message').html(this.i + ' / ' + total + ' ( ' + percent + '% )');
@@ -50,11 +51,17 @@
 		},
 		output: function(output){
 			if(output != undefined && output != null && output != ''){
-				$('#messages').append(output + '<br>');
-				$('#messages').scrollTop($('#messages')[0].scrollHeight);
+				if(this.total < 1000){
+					$('#messages').append(output + '<br>');
+					$('#messages').scrollTop($('#messages')[0].scrollHeight);
+				}else{
+					//For large tasks we don't want to use up memory by filling up the DOM
+					$('#messages').html('[Truncated to save memory]: ' + output);
+				}
 			}
 		},
 		get: function(q){
+			history.pushState({}, '', q);
 			if(q == undefined){
 				var url = this.base_url;
 				this.output('Initializing.');
@@ -72,6 +79,14 @@
 				ajax_loop_interface.output('Unable to make request.');
 				console.log(returned);
 			});
+		},
+		get_var: function (name, url = window.location.href) {
+			name = name.replace(/[\[\]]/g, '\\$&');
+			var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
+				results = regex.exec(url);
+			if (!results) return null;
+			if (!results[2]) return '';
+			return decodeURIComponent(results[2].replace(/\+/g, ' '));
 		},
 		loop: function(data){
 			if(this.debug == true){
@@ -91,13 +106,23 @@
 					break;
 				case 'initialized':
 					$('#progress_bar').attr('data-total', data.total_tasks);
+					this.total = data.total_tasks;
 					this.output('Initialized and starting.');
+					if(this.get_var('offset') != null){
+						this.i = this.get_var('offset');
+						var next_q = '?offset=' + (this.i) + '&count=' + data.total_tasks;
+						this.progress();
+						this.get(next_q);
+						break; //Skip our default case above.
+					}
 					//This isn't missing a break, we want it to do this and the loop logic below.
 				default:
 					if(data.continue == true){
 						this.output(data.message);
 						this.progress();
 						this.get(data.next_q);
+					}else if(data.state == undefined){
+						this.output('<span style="color:red;font-weight;bold;">ERROR</span>: Recieved a bad response from the server. If the process was simply interrupted, reload this page and the proceess will attempt to resume.');
 					}
 					break;
 			}

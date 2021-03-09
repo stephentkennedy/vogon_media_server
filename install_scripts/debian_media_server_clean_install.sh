@@ -74,6 +74,10 @@ sudo rm /var/www/html/index.html
 sudo cp -rp /var/www/html/vogon_media_server-master/{.,}* /var/www/html
 sudo rm -r /var/www/html/vogon_media_server-master
 sudo rm /var/www/html/media_server.zip
+if [[ $pma_confirm == 'y'  || $pma_confirm == 'Y' ]]
+then
+	sudo ln -s /usr/share/phpmyadmin phpmyadmin
+fi
 
 #We'll handle making our upload directories here so that ownership can be assigned
 sudo mkdir /var/www/html/upload/video
@@ -109,3 +113,7 @@ sudo php index.php --app_name="Vogon Media Server" --database_host=localhost --d
 echo -e "Your installation is complete. By default Apache is running on port 80, MySQL is running on Port 3306, and MiniDLNA is running on port 8200"
 echo -e "With the provided configuration you can upload media to /var/www/html/upload/ in the appropriate folder and import it into the Vogon database by accessing [your device]/server/import in your browser."
 echo -e "Be sure to set the thumbnail directory at [your device]/settings before importing videos so that the system can autogenerate thumbnails for you"
+if [[ $pma_confirm == 'y'  || $pma_confirm == 'Y' ]]
+then
+	echo -e "phpmyadmin is available at [your device]/phpmyadmin The default user, password, and database are all: vogon"
+fi 

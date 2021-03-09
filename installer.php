@@ -103,7 +103,10 @@ HERE;
 		if($query == false){
 			die('Unable to build '. $table .' table. Check database user permissions and run installer again.');
 		}
-		foreach($data['records'][$table] as $r){
+		//We are carrying over our increment from the original table for whatever reason. This statement resets those to 1.
+		$sql = 'ALTER `'.$table.'` AUTO_INCREMENT = 1';
+		$query = $db->query($sql);
+		foreach($data['records'] as $r){
 			$params = [];
 			$columns = [];
 			$param_keys = [];

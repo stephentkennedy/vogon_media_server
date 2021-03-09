@@ -18,6 +18,12 @@ if(!empty($action)){
 		case 'flush_cache':
 			load_controller('flush_cache', [], 'server');
 			break;
+		case 'cleanup_data_table':
+			load_controller('cleanup_data_table', [], 'server');
+			break;
+		case 'cleanup_data_meta_table':
+			load_controller('cleanup_data_meta_table', [], 'server');
+			break;
 	}
 	
 	//This switch case is because we're repurposing this controller.

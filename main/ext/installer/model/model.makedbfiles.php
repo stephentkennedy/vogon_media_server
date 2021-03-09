@@ -2,8 +2,9 @@
 	$write = [];
 	foreach($tables as $table => $data){
 		$write[$table] = [
+			'name' => $table,
 			'create' => $struct[$table],
-			'records' => $records
+			'records' => $records[$table]
 		];
 	}
 	$write = json_encode($write);
