@@ -20,6 +20,8 @@ switch($slug){
 		$filename = load_model('makedbfiles', $table_data, 'installer');
 		if(empty($_POST['filename'])){
 			$_POST['filename'] = slugify(NAME).'_build_'.date('m_d_y_h');
+		}else{
+			$_POST['filename'] = slugify($_POST['filename']); //Let's not just shove whatever they decide into the filename
 		}
 		$archive_data = [
 			'filename' => $_POST['filename']
