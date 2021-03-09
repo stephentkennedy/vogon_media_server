@@ -76,7 +76,7 @@ sudo rm -r /var/www/html/vogon_media_server-master
 sudo rm /var/www/html/media_server.zip
 if [[ $pma_confirm == 'y'  || $pma_confirm == 'Y' ]]
 then
-	sudo ln -s /usr/share/phpmyadmin phpmyadmin
+	sudo ln -s /usr/share/phpmyadmin /var/www/html/phpmyadmin
 fi
 
 #We'll handle making our upload directories here so that ownership can be assigned
