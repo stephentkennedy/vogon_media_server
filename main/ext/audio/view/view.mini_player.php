@@ -43,6 +43,8 @@ $(document).ready(function(){
 		colorFrame: 0,
 		colorStep: 0.05,
 		angle: 0,
+		binCount: 0,
+		binPercent: .75,
 		track: false,
 		playing: false,
 		fDur: false,
@@ -400,20 +402,20 @@ $(document).ready(function(){
 				Comment: Right now the visualizers only sample the top of the array, they need to be modified to sample the whole array so that we get visualization of the highs, mids, and lows, when right now we're just getting highs and some mides.
 				*/
 				
-				var bar_increment = ~~(analyser.frequencyBinCount / bars);
+				var bar_increment = ~~(miniplayer.binCount / bars);
 				
-				for(var i = 0; i < analyser.frequencyBinCount; i += bar_increment){
-					if(i >= analyser.frequencyBinCount){
-						i = analyser.frequencyBinCount - 1;
+				for(var i = 0; i < miniplayer.binCount; i += bar_increment){
+					if(i >= miniplayer.binCount){
+						i = miniplayer.binCount - 1;
 					}
 					level += frequency_array[i];
+					//console.log(i, frequency_array[i]);
 				}
-				level = Math.floor((level / bars) / 4);
-				
-				radius = level;
+				level = Math.floor(level / bars);
+				radius = Math.floor(level / 8);
 				
 				var comp = miniplayer.getCompliment(miniplayer.curColor);
-				var lvl_temp = level / 255;
+				var lvl_temp = ~~(level / 2) / 255;
 				
 				gradient.addColorStop(0,"rgba("+(comp.r * lvl_temp)+","+(comp.g * lvl_temp)+", "+(comp.b * lvl_temp)+", 1)");
 				
@@ -428,14 +430,14 @@ $(document).ready(function(){
 				ctx.arc(center_x,center_y,radius,0,2*Math.PI);
 				ctx.stroke();
 				var angle = 0;
-				for(var i = 0; i < analyser.frequencyBinCount; i += bar_increment){
-					if(i >= analyser.frequencyBinCount){
-						i = analyser.frequencyBinCount - 1;
+				for(var i = 0; i < miniplayer.binCount; i += bar_increment){
+					if(i >= miniplayer.binCount){
+						i = miniplayer.binCount - 1;
 					}
 					//divide a circle into equal parts
-					rads = Math.PI * 2 / (analyser.frequencyBinCount / bar_increment);
+					rads = Math.PI * 2 / (miniplayer.binCount / bar_increment);
 					
-					bar_height = frequency_array[i]*0.7 + (150 - level);
+					bar_height = frequency_array[i]*(center_y / center_x) + ((center_y / 2) - radius);
 					
 					// set coordinates
 					x = center_x + Math.cos(rads * angle) * (radius);
@@ -473,11 +475,11 @@ $(document).ready(function(){
 				
 				var level = 0;
 				
-				var bar_increment = ~~(analyser.frequencyBinCount / bars);
+				var bar_increment = ~~(miniplayer.binCount / bars);
 				
-				for(var i = 0; i < analyser.frequencyBinCount; i += bar_increment){
-					if(i >= analyser.frequencyBinCount){
-						i = analyser.frequencyBinCount - 1;
+				for(var i = 0; i < miniplayer.binCount; i += bar_increment){
+					if(i >= miniplayer.binCount){
+						i = miniplayer.binCount - 1;
 					}
 					level += frequency_array[i];
 				}
@@ -515,14 +517,14 @@ $(document).ready(function(){
 				ctx.arc(center_x,center_y,radius,0,2*Math.PI);
 				ctx.fill();
 				var angle = 0;
-				for(var i = 0; i < analyser.frequencyBinCount; i += bar_increment){
+				for(var i = 0; i < miniplayer.binCount; i += bar_increment){
 					
-					if(i >= analyser.frequencyBinCount){
-						i = analyser.frequencyBinCount - 1;
+					if(i >= miniplayer.binCount){
+						i = miniplayer.binCount - 1;
 					}
 					
 					//divide a circle into equal parts
-					rads = Math.PI * 2 / (analyser.frequencyBinCount / bar_increment);
+					rads = Math.PI * 2 / (miniplayer.binCount / bar_increment);
 					
 					bar_height = frequency_array[i]*0.7 + (150 - level);
 					
@@ -575,17 +577,17 @@ $(document).ready(function(){
 				
 				var level = 0;
 				
-				var bar_increment = ~~(analyser.frequencyBinCount / bars);
+				var bar_increment = ~~(miniplayer.binCount / bars);
 				
-				var use_increment = ~~(analyser.frequencyBinCount / use_bars);
+				var use_increment = ~~(miniplayer.binCount / use_bars);
 				
-				for(var i = 0; i < analyser.frequencyBinCount; i += bar_increment){
-					if(i >= analyser.frequencyBinCount){
-						i = analyser.frequencyBinCount - 1;
+				for(var i = 0; i < miniplayer.binCount; i += bar_increment){
+					if(i >= miniplayer.binCount){
+						i = miniplayer.binCount - 1;
 					}
 					level += frequency_array[i];
 				}
-				level = Math.floor((level / bars) / 4);
+				level = Math.floor((level / bars) / 2);
 				
 				radius = level;
 				var comp = miniplayer.getCompliment(miniplayer.curColor);
@@ -599,9 +601,9 @@ $(document).ready(function(){
 				
 				var cur_x = 0;
 				
-				for(var i = 0; i < analyser.frequencyBinCount; i += use_increment){
-					if(i >= analyser.frequencyBinCount){
-						i = analyser.frequencyBinCount - 1;
+				for(var i = 0; i < miniplayer.binCount; i += use_increment){
+					if(i >= miniplayer.binCount){
+						i = miniplayer.binCount - 1;
 					}
 					//divide a circle into equal parts
 					//rads = Math.PI * 2 / bars;
@@ -660,17 +662,17 @@ $(document).ready(function(){
 				
 				var level = 0;
 				
-				var bar_increment = ~~(analyser.frequencyBinCount / bars);
+				var bar_increment = ~~(miniplayer.binCount / bars);
 				
-				var use_increment = ~~(analyser.frequencyBinCount / use_bars);
+				var use_increment = ~~(miniplayer.binCount / use_bars);
 				
-				for(var i = 0; i < analyser.frequencyBinCount; i += bar_increment){
-					if(i >= analyser.frequencyBinCount){
-						i = analyser.frequencyBinCount - 1;
+				for(var i = 0; i < miniplayer.binCount; i += bar_increment){
+					if(i >= miniplayer.binCount){
+						i = miniplayer.binCount - 1;
 					}
 					level += frequency_array[i];
 				}
-				level = Math.floor((level / bars) / 4);
+				level = Math.floor((level / bars) / 2);
 				
 				radius = level;
 				
@@ -685,13 +687,13 @@ $(document).ready(function(){
 				
 				var cur_x = 0;
 				
-				for(var i = 0; i < analyser.frequencyBinCount; i += use_increment){
-					if(i >= analyser.frequencyBinCount){
-						i = analyser.frequencyBinCount - 1;
+				for(var i = 0; i < miniplayer.binCount; i += use_increment){
+					if(i >= miniplayer.binCount){
+						i = miniplayer.binCount - 1;
 					}
 					//divide a circle into equal parts
 					//rads = Math.PI * 2 / bars;
-					if(i + use_increment < analyser.frequencyBinCount){
+					if(i + use_increment < miniplayer.binCount){
 						bar_height = frequency_array[i] / bar_ratio;
 						bar_height2 = frequency_array[i + use_increment] / bar_ratio;
 						
@@ -762,11 +764,11 @@ $(document).ready(function(){
 				analyser.getByteFrequencyData(frequency_array);
 				var level = 0;
 				
-				var bar_increment = ~~(analyser.frequencyBinCount / bars);
+				var bar_increment = ~~(miniplayer.binCount / bars);
 				
-				for(var i = 0; i < analyser.frequencyBinCount; i += bar_increment){
-					if(i >= analyser.frequencyBinCount){
-						i = analyser.frequencyBinCount - 1;
+				for(var i = 0; i < miniplayer.binCount; i += bar_increment){
+					if(i >= miniplayer.binCount){
+						i = miniplayer.binCount - 1;
 					}
 					level += frequency_array[i];
 				}
@@ -802,6 +804,7 @@ $(document).ready(function(){
 			analyser.connect(context.destination);
 			
 			frequency_array = new Uint8Array(analyser.frequencyBinCount);
+			miniplayer.binCount = ~~(analyser.frequencyBinCount * miniplayer.binPercent);
 
 			window['miniplayer']['animation'](); //Variable variables in JavaScript the jank way.
 			
