@@ -14,7 +14,7 @@
 		$zip->addFile($real, $relative);
 	}
 	$zip->addFromString('new_install', 'You have not installed your copy of vogon yet');
-	$zip->addFromString('ver', VER);
+	$zip->addFromString('ver', $version);
 	$zip->deleteName('main' . '/' . 'config.ini');
 	$files = [
 		'index.php',

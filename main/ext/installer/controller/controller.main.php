@@ -12,8 +12,13 @@ $slug = get_slug_part(1);
 switch($slug){
 	case 'makearchive':
 		error_reporting(E_ALL);
+		$version = VER;
 		if(empty($_POST['include'])){
 			redirect(build_slug('', [], 'installer'));
+		}
+		if(!empty($_POST['increment'])){
+			$level = $_POST['increment_level'];
+			$version = load_model('increment_version', ['level' => $level], 'installer');
 		}
 		load_controller('header');
 		echo '<header><h1>Building Archive</h1></header>';
@@ -26,7 +31,8 @@ switch($slug){
 			$_POST['filename'] = slugify($_POST['filename']); //Let's not just shove whatever they decide into the filename
 		}
 		$archive_data = [
-			'filename' => $_POST['filename']
+			'filename' => $_POST['filename'],
+			'version' => $version
 		];
 		load_model('makearchive', $archive_data, 'installer');
 		echo $filename;

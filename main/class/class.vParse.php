@@ -2,6 +2,7 @@
 
 class vParse{
 	public $cur_version = false;
+	public $diff = false;
 	
 	public function __construct(){
 		$this->cur_version = VER;
@@ -37,8 +38,10 @@ class vParse{
 		
 		foreach($loops as $check){
 			if($first[$check] > $second[$check]){
+				$this->diff = $check;
 				return 'greater';
 			}else if($first[$check] < $second[$check]){
+				$this->diff = $check;
 				return 'lesser';
 			}
 		}
@@ -49,10 +52,9 @@ class vParse{
 		$lifecycles = [
 			'a' => 0, //Alpha
 			'b' => 1, //Beta
-			'rc' => 2 //Release Candidate
 		];
 		$ver_data = [
-			'lifecycle' => '',
+			'lifecycle' => 2,
 			'major' => 0,
 			'minor' => 0,
 			'hotfix' => 0
@@ -73,5 +75,58 @@ class vParse{
 			$ver_data['hotfix'] = $array[2];
 		}
 		return $ver_data;
+	}
+	
+	public function increment($level, $ver = false){
+		if(empty($ver)){
+			$ver = $this->cur_version;
+		}
+		$ver = $this->parse($ver);
+		switch($level){
+			case 'lifecycle':
+				if($ver['lifecycle'] < 2){
+					$ver['lifecycle']++;
+					if($ver['lifecycle'] == 2){
+						$ver['major'] = 1;
+						$ver['minor'] = 0;
+					}else{
+						$ver['major'] = 0;
+						$ver['minor'] = 1;
+					}
+					$ver['hotfix'] = 0;
+				}
+				break;
+			case 'major':
+				$ver['major']++;
+				$ver['minor'] = 0;
+				$ver['hotfix'] = 0;
+				break;
+			case 'minor':
+				$ver['minor']++;
+				$ver['hotfix'] = 0;
+				break;
+			case 'hotfix':
+				$ver['hotfix']++;
+				break;
+		}
+		return $this->rebuild($ver);
+	}
+	
+	public function rebuild($ver_object){
+		$string = $ver_object['major'];
+		if(!empty($ver_object['minor'])){
+			$string .= '.'.$ver_object['minor'];
+		}
+		if(!empty($ver_object['hotfix'])){
+			$string .= '.'.$ver_object['hotfix'];
+		}
+		if($ver_object['lifecycle'] != 2){
+			$key = [
+				'a',
+				'b',
+			];
+			$string .= $key[$ver_object['lifecycle']];
+		}
+		return $string;
 	}
 }

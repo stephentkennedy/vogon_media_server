@@ -47,6 +47,36 @@
 			</tbody>
 		</table>
 	</fieldset><br><br>
+	<label for="increment">Increment Version?</label>
+	<input type="checkbox" value="1" id="increment" name="increment"> <label class="inline" for="increment">Yes</label>
+	<fieldset class="variable-section" data-id="increment" data-value="1">
+		<label for="increment_level">Increment Type</label>
+		<select id="increment_level" name="increment_level">
+			<option value="lifecycle">Lifecycle</option>
+			<option value="major">Major</option>
+			<option value="minor">Minor</option>
+			<option value="hotfix" selected>Hotfix</option>
+		</select>
+		<label for="increment_preview">Resulting Version</label>
+		<input type="text" readonly id="increment_preview" value="<?php 
+			load_class('vParse');
+			$v = new vParse;
+			$new = $v->increment('hotfix');
+			echo $new;
+		?>">
+		<script type="text/javascript">
+			$(document).ready(function(){
+				$('#increment_level').change(function(){
+					var data = {
+						'level': $('#increment_level').val()
+					};
+					$.get(<?php echo "'".build_slug('ajax/ajax_increment/installer')."'"; ?>, data, function(returned){
+						$('#increment_preview').val(returned);
+					});
+				});
+			});
+		</script>
+	</fieldset><br>
 	<label for="filename">Archive Filename</label>
 	<input id="filename" name="filename" value="<?php echo slugify(NAME).'_build_'.date('m_d_y_h'); ?>">
 	<button type="submit"><i class="fa fa-cogs"></i> Build</button>
