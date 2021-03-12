@@ -21,8 +21,8 @@
 			'hour' => false,
 			'cron' => false,
 			'email' => false,
-			//'history' => false,
-			//'cache' => false,
+			'history' => false,
+			'cache' => false,
 		];
 	}
 	$table_struct = [];
@@ -61,6 +61,7 @@
 		}else{
 			$t_data = [];
 		}
+		//This will remove auto increment statements from our creation so we can start back from the beginning on IDs, no more leaking of how many items are in the database that created the build.
 		$pattern = '/\sAUTO_INCREMENT\=[0-9]+\s/';
 		$replace = ' ';
 		$t_data['Create Table'] = preg_replace($pattern, $replace, $t_data['Create Table']);

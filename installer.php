@@ -73,10 +73,17 @@ if(!isset($_POST['app_name'])){
 	$db_user = addslashes($_POST['database_user']);
 	$db_pass = addslashes($_POST['database_password']);
 	
+	$ver_file = ROOT . DIRECTORY_SEPARATOR . 'ver';
+	if(file_exists($ver_file)){
+		$ver = file_get_contents($ver_file);
+	}else{
+		$ver = '0';
+	}
+	
 $config = <<<HERE
 [app_constants]
 name = "{$app_name}"
-ver = 0.6a
+ver = {$ver}
 uri = "{$uri}"
 [database]
 driver = mysql
@@ -103,9 +110,7 @@ HERE;
 		if($query == false){
 			die('Unable to build '. $table .' table. Check database user permissions and run installer again.');
 		}
-		//We are carrying over our increment from the original table for whatever reason. This statement resets those to 1.
-		$sql = 'ALTER `'.$table.'` AUTO_INCREMENT = 1';
-		$query = $db->query($sql);
+
 		foreach($data['records'] as $r){
 			$params = [];
 			$columns = [];
@@ -217,6 +222,7 @@ HERE;
 	
 	//Disable installer
 	unlink(__DIR__ . DIRECTORY_SEPARATOR . 'new_install');
+	unlink($ver_file);
 
 	if($cgi == false){
 		redirect(build_slug('settings'));

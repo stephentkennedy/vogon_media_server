@@ -11,12 +11,14 @@ Additionally, we need to let the developer choose what operating system the inst
 $slug = get_slug_part(1);
 switch($slug){
 	case 'makearchive':
+		error_reporting(E_ALL);
 		if(empty($_POST['include'])){
 			redirect(build_slug('', [], 'installer'));
 		}
 		load_controller('header');
 		echo '<header><h1>Building Archive</h1></header>';
 		$table_data = load_model('parsetables', ['include' => $_POST['include'], 'tables' => $_POST['tables']], 'installer');
+		$table_data['structure_file'] = load_model('get_struct', ['tables' => $_POST['tables']], 'installer');
 		$filename = load_model('makedbfiles', $table_data, 'installer');
 		if(empty($_POST['filename'])){
 			$_POST['filename'] = slugify(NAME).'_build_'.date('m_d_y_h');
