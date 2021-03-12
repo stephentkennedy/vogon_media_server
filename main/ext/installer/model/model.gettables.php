@@ -61,6 +61,9 @@
 		}else{
 			$t_data = [];
 		}
+		$pattern = '/\sAUTO_INCREMENT\=[0-9]+\s/';
+		$replace = ' ';
+		$t_data['Create Table'] = preg_replace($pattern, $replace, $t_data['Create Table']);
 		$table_struct[$table] = $t_data['Create Table'];
 	}
 	return [

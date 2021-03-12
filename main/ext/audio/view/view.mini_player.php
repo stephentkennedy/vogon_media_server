@@ -940,42 +940,43 @@ $(document).ready(function(){
 				navigator.mediaSession.setActionHandler('previoustrack', function(){
 					playlist.prev();
 				});
-			}
+			}else{
 			
-			/*
-			Name: Stephen Kennedy
-			Date: 8/5/2020
-			Comment: This works when in focus, but we may not need to use it if we use the mediaSession API.
-			*/
-			$(document).on('keydown', function(e){
-				switch(e.originalEvent.code){
-					case 'MediaPlayPause':
-							if(miniplayer.src.prop('src') != ''){
-								if($('.mini-player-audio-controls .mini-player-play').hasClass('fa-play')){
-									miniplayer.audio[0].play();
-								}else{
-									miniplayer.audio[0].pause();
+				/*
+				Name: Stephen Kennedy
+				Date: 8/5/2020
+				Comment: This works when in focus, but we don't need to use it if we use the mediaSession API, so it has been moved here as a fallback if we don't have access to the API.
+				*/
+				$(document).on('keydown', function(e){
+					switch(e.originalEvent.code){
+						case 'MediaPlayPause':
+								if(miniplayer.src.prop('src') != ''){
+									if($('.mini-player-audio-controls .mini-player-play').hasClass('fa-play')){
+										miniplayer.audio[0].play();
+									}else{
+										miniplayer.audio[0].pause();
+									}
 								}
+							break;
+						case 'MediaStop':
+								miniplayer.audio[0].pause();
+								miniplayer.audio[0].currentTime = 0.0;
+							break;
+						case 'MediaTrackPrevious':
+							console.log('Previous');
+							if(playlist.playing == true){
+								playlist.prev();
 							}
-						break;
-					case 'MediaStop':
-							miniplayer.audio[0].pause();
-							miniplayer.audio[0].currentTime = 0.0;
-						break;
-					case 'MediaTrackPrevious':
-						console.log('Previous');
-						if(playlist.playing == true){
-							playlist.prev();
-						}
-						break;
-					case 'MediaTrackNext':
-						console.log('Next');
-						if(playlist.playing == true){
-							playlist.next();
-						}						
-						break;
-				}
-			});
+							break;
+						case 'MediaTrackNext':
+							console.log('Next');
+							if(playlist.playing == true){
+								playlist.next();
+							}						
+							break;
+					}
+				});
+			}
 			
 			//Update these functions with the class changes when you come back to this.
 			miniplayer.audio.on('play', function(){
