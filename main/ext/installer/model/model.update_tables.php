@@ -1,0 +1,40 @@
+<?php
+foreach($change as $table => $fields){
+	foreach($fields as $field => $f){
+		if($f['new'] == true){
+			$sql = 'ALTER TABLE `'.$table.'` ADD `'.$field.'`' $f['Type'];
+			if($f['Null'] == 'NO'){
+				$sql .= ' NOT NULL';
+			}else{
+				$sql .= ' NULL';
+			}
+			if(!empty($f['Default'])){
+				
+				$sql .= ' DEFAULT '.$f['Default'];
+			}
+			if(!empty($f['Extra'])){
+				$sql .= ' '.$f['Extra'];
+			}
+			if($f['prev'] == false){
+				$sql .= ' FIRST';
+			}else{
+				$sql .= ' AFTER `'.$f['prev'].'`';
+			}
+		}else{
+			$sql = 'ALTER TABLE `'.$table.'` MODIFY `'.$field.'`' $f['Type'];
+			if($f['Null'] == 'NO'){
+				$sql .= ' NOT NULL';
+			}else{
+				$sql .= ' NULL';
+			}
+			if(!empty($f['Default'])){
+				
+				$sql .= ' DEFAULT '.$f['Default'];
+			}
+			if(!empty($f['Extra'])){
+				$sql .= ' '.$f['Extra'];
+			}
+		}
+		$db->query($sql);
+	}
+}

@@ -24,6 +24,9 @@ if(!empty($action)){
 		case 'cleanup_data_meta_table':
 			load_controller('cleanup_data_meta_table', [], 'server');
 			break;
+		case 'update':
+			load_controller('update', [], 'installer');
+			break;
 	}
 	
 	//This switch case is because we're repurposing this controller.

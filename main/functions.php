@@ -349,4 +349,14 @@ function trueLoc($file){
 		}
 	}
 }
+
+function ext_root($ext){
+	return ROOT . DIRECTORY_SEPARATOR . 'main' . DIRECTORY_SEPARATOR . 'ext' . DIRECTORY_SEPARATOR . $ext . DIRECTORY_SEPARATOR;
+}
+
+function url2dir($url){
+	$parts = parse_url($url);
+	$path = str_replace(URI, ROOT, $parts['path']);
+	return $path;
+}
 ?>

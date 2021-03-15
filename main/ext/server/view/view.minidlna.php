@@ -1,10 +1,11 @@
 <header><h1>Server Tools</h1></header> 
 <h2>App Identity</h2>
-<?php echo NAME.' version '.VER; ?>
+<?php echo NAME.' version '.VER; ?><br><br>
+<a class="button" href="<?php echo build_slug('update', [], 'server'); ?>">Check For Updates</a>
 <h2>Mini DLNA Server</h2>
-<a class="button" href="<?php echo build_slug('server/restart'); ?>">Restart</a>
-<a class="button" href="<?php echo build_slug('server/start'); ?>">Start</a>
-<a class="button" href="<?php echo build_slug('server/stop'); ?>">Stop</a>
+<a class="button" href="<?php echo build_slug('restart', [], 'server'); ?>">Restart</a>
+<a class="button" href="<?php echo build_slug('start', [], 'server'); ?>">Start</a>
+<a class="button" href="<?php echo build_slug('stop', [], 'server'); ?>">Stop</a>
 <h2>Mass Import</h2>
 <a class="button" href="<?php echo build_slug('server/import'); ?>">Import</a>
 <h2>Tools</h2>

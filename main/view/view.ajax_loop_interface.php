@@ -122,7 +122,8 @@
 						this.progress();
 						this.get(data.next_q);
 					}else if(data.state == undefined){
-						this.output('<span style="color:red;font-weight;bold;">ERROR</span>: Recieved a bad response from the server. If the process was simply interrupted, reload this page and the proceess will attempt to resume.');
+						console.log(data);
+						this.output('<span style="color:red;font-weight;bold;">ERROR</span>: Recieved a bad response from the server. If the process was simply interrupted, reload this page and the process will attempt to resume.');
 					}
 					break;
 			}
