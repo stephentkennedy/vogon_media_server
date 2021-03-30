@@ -8,6 +8,8 @@ The easiest way for us to do that is to look for whatever folder has /main/ in i
 
 The model here recursively does that until it finds the folder, or returns false if it could not find it.
 */
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
 $update_root = ROOT . DIRECTORY_SEPARATOR . 'upload' . DIRECTORY_SEPARATOR . 'update';
 
 $update_root = load_model('find_update_root', ['start_dir' => $update_root], 'installer');
@@ -33,12 +35,14 @@ if($update_root != false){
 	
 	$model_data = [
 		'cur_struct' => load_model('get_struct', ['tables' => $tables], 'installer'),
-		'new_struct' => json_decode(file_get_contents($db_struct), true);
+		'new_struct' => json_decode(file_get_contents($db_struct), true)
 	];
+	
+	//debug_d($model_data);
 	
 	$db_diff = load_model('db_diff', $model_data, 'installer');
 	
 	load_model('install_new_tables', ['new' => $db_diff['new'], 'db_tables' => json_decode(file_get_contents($db_tables), true)], 'installer');
 	
-	load_model('update_tables' ['change' => $db_diff['change']], 'installer');
+	load_model('update_tables', ['change' => $db_diff['change']], 'installer');
 }

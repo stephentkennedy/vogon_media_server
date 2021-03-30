@@ -1,8 +1,11 @@
 <?php
+if(empty($change)){
+	return;
+}
 foreach($change as $table => $fields){
 	foreach($fields as $field => $f){
 		if($f['new'] == true){
-			$sql = 'ALTER TABLE `'.$table.'` ADD `'.$field.'`' $f['Type'];
+			$sql = 'ALTER TABLE `'.$table.'` ADD `'.$field.'`'. $f['Type'];
 			if($f['Null'] == 'NO'){
 				$sql .= ' NOT NULL';
 			}else{
@@ -21,8 +24,11 @@ foreach($change as $table => $fields){
 				$sql .= ' AFTER `'.$f['prev'].'`';
 			}
 		}else{
-			$sql = 'ALTER TABLE `'.$table.'` MODIFY `'.$field.'`' $f['Type'];
-			if($f['Null'] == 'NO'){
+			if(empty($f['Type'])){
+				$f['Type'] = '';
+			}
+			$sql = 'ALTER TABLE `'.$table.'` MODIFY `'.$field.'`'. $f['Type'];
+			if(empty($f['Null']) || $f['Null'] == 'NO'){
 				$sql .= ' NOT NULL';
 			}else{
 				$sql .= ' NULL';

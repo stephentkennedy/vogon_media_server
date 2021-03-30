@@ -1,10 +1,10 @@
 <?php
 
-$new_tables;
-$diff_tables;
+$new_tables = [];
+$diff_tables = [];
 
 foreach($new_struct as $table => $fields){
-	if(!in_array($table, $cur_struct)){
+	if(!in_array($table, array_keys($cur_struct))){
 		$new_tables[] = $table;
 	}else{
 		foreach($fields as $key => $field){
@@ -63,7 +63,7 @@ foreach($new_struct as $table => $fields){
 				}
 				$diff_tables[$table][$field['Field']] = [
 					'change' => $change,
-					'changes' => $changes
+					'changes' => $changes,
 					'new' => false,
 					'prev' => $prev
 				];
