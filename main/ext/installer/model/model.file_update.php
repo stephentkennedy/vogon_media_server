@@ -47,7 +47,7 @@ foreach($files as $u_file){
 		
 		//Move our file
 		rename($u_file, $new_name);
-		chmod($new_name, 0755);
+		chmod($new_name, 0775);
 		//debug_d($u_file);
 		//debug_d($new_name);
 		$count++;

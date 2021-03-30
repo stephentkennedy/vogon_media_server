@@ -1,7 +1,9 @@
 <?php
 load_class('vParse');
 $v = new vParse;
-$new_version = $v->increment($level);
+if(!empty($level) && empty($new_version)){
+	$new_version = $v->increment($level);
+}
 
 $ini_file = ROOT . DIRECTORY_SEPARATOR . 'main' . DIRECTORY_SEPARATOR . 'config.ini';
 
