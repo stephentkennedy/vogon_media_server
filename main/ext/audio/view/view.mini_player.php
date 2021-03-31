@@ -51,7 +51,7 @@ $(document).ready(function(){
 		h_loop: false,
 		h_freq: <?php if(!empty($_SESSION['audio_his_time'])){ echo $_SESSION['audio_his_time']; }else{ echo '10000'; } ?>,
 		sleep_timer: false,
-		animation: miniplayer.<?php if(!empty($_SESSION['def_visual'])){ echo $_SESSION['def_visual']; }else{ echo 'cleanCircle'; } ?>,
+		animation: miniplayer.<?php if(!empty($_SESSION['def_visual'])){ echo $_SESSION['def_visual']; }else{ echo 'noViz'; } ?>,
 		seed: '<div class="mini-player"><header class="mini-player-header"><span class="shadow"></span><span class="controls"><i class="fa fa-window-maximize toggle"></i><i class="fa fa-cog option"></i><i class="fa fa-expand fullscreen"></i><i class="fa fa-times close"></i></span></header><info><a target="_blank" data-target="popup" class="mini-player-label title"></a><a target="_blank" data-target="popup" class="mini-player-label album"></a><a target="_blank" data-target="popup" class="mini-player-label band"></a></info><canvas></canvas><audio class="current-track"><source class="current-source"></source></audio><div class="mini-player-audio-controls"><input type="range" class="seek" value="0" max="" /><span class="mini-player-seek-counter hidden"></span> <span class="mini-player-counter">0:00 / 0:00</span> <br><i class="fa fa-random  fa-fw mini-player-shuffle disable"></i><i class="fa fa-step-backward fa-fw  mini-player-prev disable"></i><i class="fa fa-play fa-fw  mini-player-play"></i><i class="fa fa-step-forward fa-fw  mini-player-next disable"></i><i class="fa fa-retweet fa-fw  mini-player-loop disable"></i><span class="mini-one">1</span></div><i class="fa fa-clock-o sleep-timer"></i><div class="mini-player-playlist"></div></div>',
 		timeFormat : function(duration){
 			// Hours, minutes and seconds
@@ -339,23 +339,63 @@ $(document).ready(function(){
 			};
 		},
 		options: function(){
-			var win = aPopup.newWindow('<label for="visualizer">Visualization</label><select id="visualizer"><option value="spectro">Spectrograph</option><option value="bars">Bars</option><option value="circle">Circle</option><!--option value="burnout">Burn In</option--></select><br><button class="confirm"><i class="fa fa-floppy-o"></i> Save</button>');
+			var viz = {
+				'noViz': {
+					name:'None',
+					func: miniplayer.noViz
+				},
+				'spectro': {
+					name: 'Spectrograph',
+					func: miniplayer.spectro
+				},
+				'bars': {
+					name: 'Bars',
+					func: miniplayer.bars
+				},
+				'circle': {
+					name: 'Warp',
+					func: miniplayer.cleanCircle
+				},
+				/*'burnout': {
+					name: 'Burnout',
+					func: miniplayer.burnout
+				}*/
+			}
+			var string = '<label for="visualizer">Visualization</label><select id="visualizer">';
+			for(i in viz){
+				var selected = '';
+				if(viz[i].func == miniplayer.animation){
+					selected = ' selected';
+				}
+				string += '<option value="'+i+'"'+selected+'>'+viz[i].name+'</option>';
+			}
+			string += '</select><br><button class="confirm"><i class="fa fa-floppy-o"></i> Save</button>';
+			var win = aPopup.newWindow(string);
 			win.find('.confirm').click(function(){
 				var anim = win.find('#visualizer').val();
 				switch(anim){
 					case 'spectro':
 						miniplayer.animation = miniplayer.spectro;
+						window.localStorage.setItem('vizualizer', 'spectro');
 						break;
 					case 'bars':
 						miniplayer.animation = miniplayer.bars;
+						window.localStorage.setItem('vizualizer', 'bars');
 						break;
 					case 'circle':
 						miniplayer.animation = miniplayer.cleanCircle;
+						window.localStorage.setItem('vizualizer', 'cleanCircle');
 						break;
 					case 'burnout':
 						miniplayer.animation = miniplayer.burnout;
+						window.localStorage.setItem('vizualizer', 'burnout');
+						break;
+					case 'noViz':
+						miniplayer.animation = miniplayer.noViz;
+						window.localStorage.setItem('vizualizer', 'noViz');
 						break;
 				}
+				win.remove();
 			});
 		},
 		fullscreen: function(){
@@ -372,6 +412,19 @@ $(document).ready(function(){
 				canvas.width = width;
 				canvas.height = height;
 			}
+		},
+		noViz: function(){
+			if(miniplayer.instance.hasClass('open')){
+				canvas = miniplayer.instance.find('canvas')[0];
+				ctx = canvas.getContext("2d");
+				ctx.globalCompositeOperation = 'source-over';
+				ctx.fillRect(0,0,canvas.width,canvas.height);
+				ctx = canvas.getContext("2d");
+				ctx.globalCompositeOperation = 'source-over';
+				ctx.fillStyle = '#000000';
+				ctx.fillRect(0,0,canvas.width,canvas.height);
+			}
+			window.requestAnimationFrame(miniplayer.animation);
 		},
 		cleanCircle: function (){
 			if(miniplayer.instance.hasClass('open')){
@@ -805,7 +858,11 @@ $(document).ready(function(){
 			
 			frequency_array = new Uint8Array(analyser.frequencyBinCount);
 			miniplayer.binCount = ~~(analyser.frequencyBinCount * miniplayer.binPercent);
-
+			
+			if(window.localStorage.getItem('vizualizer') != undefined){
+				miniplayer.animation = miniplayer[window.localStorage.getItem('vizualizer')];
+			}
+			
 			window['miniplayer']['animation'](); //Variable variables in JavaScript the jank way.
 			
 			$('.mini-player .sleep-timer').click(function(){
@@ -1020,6 +1077,9 @@ $(document).ready(function(){
 			$('.mini-player-audio-controls .seek').mouseleave(function(){
 				$('.mini-player-seek-counter').addClass('hidden');
 			});
+			
+			
+			
 		}
 	};
 	miniplayer.init();

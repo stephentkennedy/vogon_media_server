@@ -4,10 +4,11 @@
 	<select name="viz">
 		<?php
 			$visualizers = [
-				'cleanCircle' => 'Circle',
-				'bars' => 'Bars',
+				'noViz' => 'None',
 				'spectro' => 'Spectrograph',
-				'burnout' => 'Burnout'
+				'bars' => 'Bars',
+				'cleanCircle' => 'Warp',
+				//'burnout' => 'Burnout',
 			];
 			foreach($visualizers as $var => $friendly){
 				$selected = '';
