@@ -10,6 +10,7 @@
 	<div id="title" class="active">
 		<title class="title-bar"><?php echo $title; ?></title>
 		<h1><i class="fa fa-arrow-circle-left back-to-view"></i> <span class="title-text"><?php echo $title; ?></span></h1>
+		<i class="fa fa-picture-o update-thumbnail"></i>
 	</div>
 	<div id="sub-controls" class="<?php if(empty($subtitles)){
 		 echo 'none';
@@ -184,7 +185,7 @@
 		pointer-events: none;
 	}
 	#title{
-		width: 75vw;
+		width: 100vw;
 		position: absolute;
 		top: 0;
 		left: 0;
@@ -219,6 +220,18 @@
 	}
 	#title .back-to-view:hover{
 		opacity: 0.75;
+	}
+	#title .update-thumbnail{
+		padding: 10px;
+		display: inline-block;
+		font-size: 1.5rem;
+		transition: opacity 0.2s linear;
+		opacity 1;
+		margin-top: 25px;
+	}
+	#title .update-thumbnail:hover{
+		opacity: 0.5;
+		cursor: pointer;
 	}
 	::cue{
 		color: #fff;
@@ -367,6 +380,23 @@
 					player.subtitles = false;
 					player.video[0].textTracks[0].mode = 'hidden';
 				}
+			});
+			$('#title i.update-thumbnail').click(function(){
+				$(this).removeClass('fa-picture-o');
+				$(this).addClass('fa-cog').addClass('fa-spin');
+				var seconds = player.video[0].currentTime;
+				$.get(<?php echo "'".build_slug('ajax/ajax_thumbnail/media')."'"; ?>, {id: player.id, seconds: seconds}, function(returned){
+					var string = returned.message;
+					if(returned.thumbnail != ''){
+						string += '<br><img style="max-width: 100%;height:auto;width:auto;" src="'+returned.thumbnail+'"><br>';
+					}
+					string += '<button class="button">Close</button>';
+					var w = aPopup.newWindow(string);
+					$('#title i.update-thumbnail').removeClass('fa-spin').removeClass('fa-cog').addClass('fa-picture-o');
+					w.find('.button').click(function(){
+						w.remove();
+					});
+				});
 			});
 			<?php if($series == ''){?>
 			player.title.find('.back-to-view').click(function(){

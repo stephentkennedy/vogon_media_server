@@ -32,7 +32,7 @@ if(!empty($members['seasons'])){
 				}
 			if(!empty($r['poster'])){
 				$r['poster'] = str_replace(ROOT, '', $r['poster']);
-				echo '<li>'.$r['data_name'].' ('.formatLength($r['length']).')<br><img class="series_poster" data-src="'.$r['poster'].'">';
+				echo '<li>'.$r['data_name'].' ('.formatLength($r['length']).')<br><img class="series_poster" data-src="'.build_slug($r['poster']).'">';
 				
 				//if($r['time'] == false){
 					$percent = 0;
@@ -74,7 +74,7 @@ if(!empty($members['tv'])){
 			}
 		if(!empty($r['poster'])){
 			$r['poster'] = str_replace(ROOT, '', $r['poster']);
-			echo '<li>'.$r['data_name'].' ('.formatLength($r['length']).')<br><img class="series_poster" data-src="'.$r['poster'].'">';
+			echo '<li>'.$r['data_name'].' ('.formatLength($r['length']).')<br><img class="series_poster" data-src="'.build_slug($r['poster']).'">';
 			
 			//if($r['time'] == false){
 				$percent = 0;
@@ -113,7 +113,7 @@ if(!empty($members['movies'])){?>
 			}
 		if(!empty($r['poster'])){
 			$r['poster'] = str_replace(ROOT, '', $r['poster']);
-			echo '<li>'.$r['data_name'].' ('.formatLength($r['length']).')<br><img class="series_poster" data-src="'.$r['poster'].'">';
+			echo '<li>'.$r['data_name'].' ('.formatLength($r['length']).')<br><img class="series_poster" data-src="'.build_slug($r['poster']).'">';
 			
 			//if($r['time'] == false){
 				$percent = 0;

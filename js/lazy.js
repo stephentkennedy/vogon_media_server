@@ -1,6 +1,6 @@
 var lazy = {
 	ident: '',
-	screen_b: 0,
+	screen_b: 300,
 	check: function(dom){
 		var top = $(dom).offset().top;
 		if(top < ($(window).scrollTop() + lazy.screen_b)){

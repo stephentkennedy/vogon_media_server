@@ -78,7 +78,7 @@ $thumb_name = $thumbDir.$name.'.jpg';
 
 //Thumbnail Generation
 try{
-	$vid->frame(FFMpeg\Coordinate\TimeCode::fromSeconds(10))->save($thumb_name);
+	$vid->frame(FFMpeg\Coordinate\TimeCode::fromSeconds(120))->save($thumb_name);
 } catch(Exception $e){
 	$message .= 'Exception when generating thumbnail<br>'.$e->getMessage().'<br>Continuing without thumbnail.<br>';
 	$thumb_name = '';
