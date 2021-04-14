@@ -54,6 +54,7 @@ $metas = [
 	'starring' => $starring,
 	'desc' => $desc,
 	'poster' => $thumb_name,
-	'length' => $length
+	'length' => $length,
+	'animorphic' => $animorphic
 ];
 return $clerk->addRecord($record_data, $metas);

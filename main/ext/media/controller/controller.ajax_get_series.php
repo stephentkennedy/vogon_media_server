@@ -22,11 +22,15 @@ if(!empty($record['meta']['season'])){
 				$cur_id = $k;
 			}
 			$meta = $clerk->getMetas($v['data_id']);
+			if(empty($meta['animorphic'])){
+				$meta['animorphic'] = 0;
+			}
 			$list[] = [
 				'loc' => str_replace(ROOT, '', $v['data_content']),
 				'id' => $v['data_id'],
 				'name' => $v['data_name'],
-				'poster' => str_replace(ROOT, '', $meta['poster'])
+				'poster' => str_replace(ROOT, '', $meta['poster']),
+				'animorphic' => $meta['animorphic']
 			];
 		}
 	}

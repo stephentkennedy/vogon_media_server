@@ -104,9 +104,8 @@ if($length == false){ //This should only happen if the file is too large to read
 $message .= 'Classified as "'.$type.'"<br>';
 
 $message .= 'Adding to database.';
-
 $record_data = [
-	'name' => $name[0],
+	'name' => $name,
 	'slug' => slugify($name),
 	'content' => $f,
 	'type' => $type,

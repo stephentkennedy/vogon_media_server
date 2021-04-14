@@ -16,6 +16,11 @@ if(isset($_POST['action'])){
 					'series' => $_POST['series'],
 					'id' => $_POST['id']
 				];
+				if(!empty($_POST['animorphic'])){
+					$model_data['animorphic'] = 1;
+				}else{
+					$model_data['animorphic'] = 0;
+				}
 				load_model('update_video', $model_data, 'media');
 				$id = $_POST['id'];
 			}else{
@@ -28,6 +33,11 @@ if(isset($_POST['action'])){
 					'desc' => $_POST['desc'],
 					'runtime' => $_POST['runtime'],
 				];
+				if(!empty($_POST['animorphic'])){
+					$model_data['animorphic'] = 1;
+				}else{
+					$model_data['animorphic'] = 0;
+				}
 				$id = load_model('create_video', $model_data, 'media');
 			}
 			break;

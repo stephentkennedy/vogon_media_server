@@ -50,6 +50,7 @@
 	<input type="text" id="starring" name="starring" value="<?php echo $starring; ?>">
 	<label for="desc">Description</label>
 	<textarea id="desc" name="desc"><?php echo $desc; ?></textarea>
+	<input type="checkbox" value="1" id="animorphic" name="animorphic" <?php if(!empty($animorphic)){ echo 'checked'; } ?>> <label class="inline" for="animorphic">Vertical Stretch (Animorphic Widescreen Fix)?</label>
 	<label for="runtime">Runtime (In Minutes)</label>
 	<small>On files smaller than 2GB the server will attempt to calculate a runtime from the file&#39;s meta data. If that fails, the server will then attempt to get the data using FFMPEG, but if that also fails, this number will be used.</small><br><br>
 	<input id="runtime" type="number" name="runtime" value="<?php echo $length / 60; ?>">

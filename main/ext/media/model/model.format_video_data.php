@@ -72,6 +72,9 @@ if(empty($meta['subtitles'])){
 	$meta['subtitles'] = false;
 }
 $meta['poster'] = str_replace(ROOT, '', $meta['poster']);
+if(empty($meta['animorphic'])){
+	$meta['animorphic'] = 0;
+}
 
 return [
 	'title' => $data_name,
@@ -89,5 +92,6 @@ return [
 	'series_id' => $series_id,
 	'time' => $time,
 	'length' => $meta['length'],
-	'subtitles' => $meta['subtitles']
+	'subtitles' => $meta['subtitles'],
+	'animorphic' => $meta['animorphic']
 ];

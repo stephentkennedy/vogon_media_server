@@ -54,6 +54,7 @@ $metas = [
 	'starring' => $starring,
 	'desc' => $desc,
 	'poster' => $poster,
-	'length' => $length
+	'length' => $length,
+	'animorphic' => $animorphic
 ];
 $clerk->updateMetas($id, $metas);
