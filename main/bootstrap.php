@@ -4,7 +4,7 @@ Name: Stephen Kennedy
 Date: 12/4/2018
 Comment: Let's establish what we need for our bootstrap;
 */
-error_reporting(0);
+error_reporting(E_ALL);
 ini_set('display_errors', 1);
 $directories = explode(DIRECTORY_SEPARATOR,__DIR__);
 array_pop($directories);
@@ -50,7 +50,7 @@ foreach($session_vars as $var){
 }
 
 if(isset($_SESSION['error_reporting'])){
-	error_reporting($_SESSION['error_reporting']);
+	//error_reporting($_SESSION['error_reporting']);
 }
 
 //Include our framework functions
@@ -78,5 +78,16 @@ if(empty($_REQUEST['orderby'])){
 //Used by the Filebrowser Ext, comment out if you're not using that ext
 $_SESSION['active_filebrowsers'] = 0;
 
+/*
+Developer: Stephen Kennedy
+Date: 4/23/21
+Comment: While working in WordPress I've discovered how many problems are caused by not having a clean way for people to register filters on an output buffer so we're just gonna add that into the mix
+*/
+
+ob_start('outputFilters');
+
 //Include our router
 include __DIR__.DIRECTORY_SEPARATOR.'router.php';
+
+ob_flush();
+ob_end_clean();

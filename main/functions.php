@@ -360,4 +360,37 @@ function url2dir($url){
 	$path = str_replace(URI, ROOT, $parts['path']);
 	return $path;
 }
-?>
+
+/*
+Developer: Stephen Kennedy
+Date: 4/23/21
+Comment: Hooks support code
+*/
+function register_filter($hook, $model, $ext = false){
+	global $hooks;
+	if(empty($hooks)){
+		$hooks = [];
+	}
+	if(empty($hooks[$hook])){
+		$hooks[$hook] = [];
+	}
+	$hooks[$hook][] = [
+		'model' => $model,
+		'ext' => $ext
+	];
+}
+
+function run_filters($hook, $hook_data){
+	global $hooks;
+	if(!empty($hooks) && !empty($hooks[$hook])){
+		foreach($hooks[$hook] as $h){
+			$hook_data = load_model($h['model'], $hook_data, $h['ext']);
+		}
+	}
+	return $hook_data;
+}
+
+function outputFilters($buffer){
+	$returned = run_filters('output', ['buffer' => $buffer]);
+	return $returned['buffer'];
+}
