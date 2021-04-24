@@ -38,11 +38,11 @@
 		'dir' => $_SESSION['minidlna_dir'],
 		'root' => ''
 	], 'filebrowser'); ?><br><br>
-	<label>Minidlna Daemon Name</label>
-	<small>This is run as a shell command, with -f and -P flags, so don't put anything here that could ruin your server</small><br><br>
+	<label>Minidlna Name</label>
+	<small>In most installs this should be &#39;minidlna&#39; but in cases where you have installed minidlna to be run by a specific user this may be &#39;minidlnad&#39;</small><br><br>
 	<input type="text" name="minidlna" value="<?php 
 		if(empty($_SESSION['minidlna'])){
-			$_SESSION['minidlna'] = 'minidlnad';
+			$_SESSION['minidlna'] = 'minidlna';
 		}
 		echo $_SESSION['minidlna'];
 	?>">

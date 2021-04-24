@@ -40,8 +40,8 @@ if(!empty($series_name) && empty($series_id)){
 }
 
 //Import process
-
-$name = array_pop(explode('/', $f));
+$temp = explode('/', $f);
+$name = array_pop($temp);
 
 $message = 'Checking "'.$name.'"<br>';
 
@@ -87,8 +87,11 @@ unset($vid);
 
 //Get the length of our file.
 $file_info = $getID3->analyze($f);
-$length = $file_info['playtime_seconds'];
-
+if(!empty($file_info['playtime_seconds'])){
+	$length = $file_info['playtime_seconds'];
+}else{
+	$length = 0;
+}
 /*
 Name: Stephen Kennedy
 Date: 9/22/2020
