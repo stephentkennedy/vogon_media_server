@@ -15,4 +15,5 @@ foreach($files as $f){
 }
 $zip = ROOT . DIRECTORY_SEPARATOR . 'upload' . DIRECTORY_SEPARATOR . 'update.zip';
 unlink($zip);
+unlink(ROOT . DIRECTORY_SEPARATOR . 'upload' . DIRECTORY_SEPARATOR . 'update');
 return 'Removed Update Files.';

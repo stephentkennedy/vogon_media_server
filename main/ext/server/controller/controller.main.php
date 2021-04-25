@@ -27,6 +27,15 @@ if(!empty($action)){
 		case 'update':
 			load_controller('update', [], 'installer');
 			break;
+		case 'check-for-updates':
+			load_model('server_update', [], 'server');
+			break;
+		case 'server-restart':
+			load_model('restart_server', [], 'server');
+			break;
+		case 'server-shutdown':
+			load_model('shutdown_server', [], 'server');
+			break;
 	}
 	
 	//This switch case is because we're repurposing this controller.
@@ -34,6 +43,9 @@ if(!empty($action)){
 		case 'stop':
 		case 'start':
 		case 'restart':
+		case 'check-for-updates':
+		case 'server-restart':
+		case 'server-shutdown':
 			$string = $_SERVER['REQUEST_URI'];
 			$array = explode('/', $string);
 			array_pop($array);
