@@ -1,32 +1,32 @@
 <header><h1>Server Tools</h1></header>
 <div class="row">
-	<div class="col col-five">
+	<div class="col col-three">
 		<h2>App Identity</h2>
 		<?php echo NAME.' version '.VER; ?><br><br>
 		<a class="button" href="<?php echo build_slug('update', [], 'server'); ?>">Check For Vogon Updates</a>
 	</div>
-	<div class="col col-five">
+	<div class="col col-three">
 		<h2>Mini DLNA Server</h2>
 		<a class="button" href="<?php echo build_slug('restart', [], 'server'); ?>">Restart</a>
 		<a class="button" href="<?php echo build_slug('start', [], 'server'); ?>">Start</a>
 		<a class="button" href="<?php echo build_slug('stop', [], 'server'); ?>">Stop</a>
 	</div>
-	<div class="col col-five">
+	<div class="col col-three">
 		<h2>Server Controls</h2>
 		<a class="button" href="<?php echo build_slug('check-for-updates', [], 'server'); ?>">Check For Software Updates</a><br><br>
 		<a class="button" href="<?php echo build_slug('server-restart', [], 'server'); ?>">Restart Server</a>
 		<a class="button" href="<?php echo build_slug('server-shutdown', [], 'server'); ?>">Shut Down Server</a>
 	</div>
-	<div class="col col-five">
-		<h2>Mass Import</h2>
+	<div class="col col-three">
+		<h2>Import Media</h2>
 		<a class="button" href="<?php echo build_slug('server/import'); ?>">Import</a>
 	</div>
-	<div class="col col-five">
+	<div class="col col-seven">
 		<h2>Tools</h2>
-		<a class="button" href="<?php echo build_slug('convert_audio', []); ?>" title="Web browsers only understand a small number of audio formats, this tool will attempt to use ffmpeg to convert common audio formats down to .mp3 which is understood by most browsers. This will delete the original files if successful so be sure you have backups.">Convert Audio Files</a><br><br>
-		<a class="button" href="<?php echo build_slug('server/flush_cache'); ?>" title="This will remove all cached data used to assemble pages that are known to take a long time to build. If you are making changes but not seeing them use this tool to empty the cache.">Flush Data Cache</a><br><br>
-		<a class="button" href="<?php echo build_slug('cleanup_data_table', [], 'server'); ?>" title="This may take several minutes to more than an hour depending on the size of your database. It's best to do this and walk away while leaving the browser running.">Cleanup Data Table</a><br><br>
-		<a class="button" href="<?php echo build_slug('cleanup_data_meta_table', [], 'server'); ?>" title="This table can be larger than your Data table by 10x or more, so this process may take several minutes to more than an hour depending on the size of your database. It's best to do this and walk away while leaving the browser running.">Cleanup Data Meta Table</a><br><br>
+		<a class="button" href="<?php echo build_slug('convert_audio', []); ?>" title="Web browsers only understand a small number of audio formats, this tool will attempt to use ffmpeg to convert common audio formats down to .mp3 which is understood by most browsers. This will delete the original files if successful so be sure you have backups.">Convert Audio Files</a> 
+		<a class="button" href="<?php echo build_slug('server/flush_cache'); ?>" title="This will remove all cached data used to assemble pages that are known to take a long time to build. If you are making changes but not seeing them use this tool to empty the cache.">Flush Data Cache</a> 
+		<a class="button" href="<?php echo build_slug('cleanup_data_table', [], 'server'); ?>" title="This may take several minutes to more than an hour depending on the size of your database. It's best to do this and walk away while leaving the browser running.">Cleanup Data Table</a> 
+		<a class="button" href="<?php echo build_slug('cleanup_data_meta_table', [], 'server'); ?>" title="This table can be larger than your Data table by 10x or more, so this process may take several minutes to more than an hour depending on the size of your database. It's best to do this and walk away while leaving the browser running.">Cleanup Data Meta Table</a> 
 		<a class="button" href="<?php echo build_slug('build'); ?>" title="Build a deployable .zip file of Vogon">Build</a>
 	</div>
 	<div class="col col-ten">
