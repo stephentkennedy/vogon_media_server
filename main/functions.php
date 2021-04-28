@@ -177,6 +177,8 @@ function build_slug($uri, $params = [], $ext = false){
 		foreach($params as $key => $value){
 			if(gettype($value) == 'string'){
 				$safe[] = urlencode($key) . '=' . urlencode(trim($value));
+			}else{
+				$safe[] = urlencode($key) . '=' . urlencode($value);
 			}
 		}
 		$safe = implode('&', $safe);
