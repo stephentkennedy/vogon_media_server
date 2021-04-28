@@ -109,10 +109,11 @@ switch($action){
 		break;
 	case 'artist':
 		$id = get_slug_part(2);
-		$view_data = load_model('get_artist', ['artist' => $id], 'audio');
+		$view_data = load_model('get_artist', ['id' => $id], 'audio');
 		load_controller('header', ['title' => $view_data['artist']]);
 		echo load_view('artist', $view_data, 'audio');
 		load_controller('footer');
+		break;
 	default:
 		$type = get_slug_part(1);
 		

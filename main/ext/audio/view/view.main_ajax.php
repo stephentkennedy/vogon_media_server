@@ -1,4 +1,8 @@
-<header><h1>Audio Library</h1></header>
+<?php
+	if(!empty($_GET['t'])){
+		$type = $_GET['t'];
+	}
+?><header><h1>Audio Library</h1></header>
 <style>#ajax-output{
 	padding-top: 20px;
 }</style>
@@ -33,6 +37,7 @@
 	};
 	$(document).ready(function(){
 		$('.nav.audio').removeAttr('href').attr('data-search', 'default');
+		$('.subnav.audio').removeAttr('href');
 		$('#main-nav a.audio').click(function(){
 			var dom = $(this);
 			var search = dom.data('search');
