@@ -331,6 +331,7 @@ function redirect($loc){
 	}else{
 		header('Location: '.$loc);
 	}
+	die();
 }
 
 function trueLoc($file){

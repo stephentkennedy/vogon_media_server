@@ -33,6 +33,7 @@
 		$series = '';
 	}
 ?>
+<header><h1><?php echo $title; ?><?php if(isset($id)){ ?> <a title="Remove" class="open-popup fa fa-times" data-title="Remove <?php echo $title; ?>" data-src="<?php echo build_slug('ajax/delete_confirm/media', ['id' => $id]); ?>"></a><?php } ?></h1></header>
 <form method="post">
 	<input type="hidden" name="action" value="save-film-meta">
 	<?php if(isset($id)){
