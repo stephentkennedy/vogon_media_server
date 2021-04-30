@@ -102,10 +102,19 @@ switch($action){
 		break;
 	case 'album':
 		$id = get_slug_part(2);
-		$view_data = load_model('get_album', ['album' => $id], 'audio');
-		load_controller('header', ['title' => $view_data['album']['data_name']]);
-		echo load_view('album', $view_data, 'audio');
-		load_controller('footer');
+		if(isset($_REQUEST['action'])){
+			switch($_REQUEST['action']){
+				case 'enable_history': //Should only appear as a GET
+				load_model('enable_history', ['id' => $id], 'audio');
+				redirect(build_slug('album/'.$id, [], 'audio'));
+				break;
+			}
+		}else{
+			$view_data = load_model('get_album', ['album' => $id], 'audio');
+			load_controller('header', ['title' => $view_data['album']['data_name']]);
+			echo load_view('album', $view_data, 'audio');
+			load_controller('footer');
+		}
 		break;
 	case 'artist':
 		$id = get_slug_part(2);
