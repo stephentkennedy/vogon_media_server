@@ -27,6 +27,7 @@ $(document).ready(function(){
 	playlist.fetch();
 	playlist.bind();
 	miniplayer = {
+		title: $('title').html(),
 		instance: {},
 		audio: {},
 		id: {},
@@ -75,6 +76,7 @@ $(document).ready(function(){
 				data = returned;
 				miniplayer.header.html('<span>'+data['title']+'</span>');
 				miniplayer.instance.find('.mini-player-label.title').html(data['title']).attr('data-href', data['link']);
+				$('title').html(miniplayer.title + ': ' + data['title']);
 				if(data['artist'] != null && data['artist'] != ''){
 					miniplayer.instance.find('.mini-player-label.band').html(data['artist']);
 				}else{
@@ -109,6 +111,7 @@ $(document).ready(function(){
 				miniplayer.id = data['id'];
 				miniplayer.header.html('<span>'+data['title']+'</span>');
 				miniplayer.instance.find('.mini-player-label.title').html(data['title']).attr('data-href', data['link']);
+				$('title').html(miniplayer.title + ': ' + data['title']);
 				if(data['artist'] != null && data['artist'] != ''){
 					miniplayer.instance.find('.mini-player-label.band').html(data['artist']);
 				}else{

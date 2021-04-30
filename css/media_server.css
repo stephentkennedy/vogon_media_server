@@ -17,6 +17,7 @@ Website: https://stephenkennedy.dev
 	--shadows: #D3D0CB;
 	--rgb-shadows: 211,208,203;
 	--border-radius: 4px;
+	--transition-speed: 0.1s;
 }
 body{
 	font-size: 18px;
@@ -53,7 +54,6 @@ header{
 	z-index: 1;
 	position: relative;
 }
-
 header h1{
 	margin: 0;
 }
@@ -64,6 +64,26 @@ header.main{
 	flex-grow: 0;
 	padding: 0;
 	margin: 0;
+}
+header.main div#logo{
+	max-width: 100%;
+	display: flex;
+	align-items: center;
+	padding-top: .5rem;
+	padding-bottom: .5rem;
+	justify-content: center;
+}
+header.main div#logo img{
+	max-width: 25%;
+	max-height: 75px;
+	display: flex;
+}
+header.main div#logo span#logo-text{
+	display: flex;
+	max-width: 75%;
+	font-weight: bold;
+	padding-left: .5rem;
+	padding-right: .5rem;
 }
 nav{
 	padding: 10px;
@@ -108,7 +128,7 @@ footer{
 button, .button{
 	padding: 5px !important;
 	background-color: transparent;
-	transition: all 0.2s linear;
+	transition: all var(--transition-speed) linear;
 	color: var(--white);
 	border: 1px solid var(--secondary-accent) !important;
 	vertical-align: top !important;
@@ -153,7 +173,7 @@ a:not(.drag), a.open-popup, .open-popup{
 	padding: 5px 7px;
 	border: 1px solid var(--secondary-accent);
 	background-color: var(--black);
-	transition: background-color 0.2s linear, color 0.2s linear;
+	transition: background-color var(--transition-speed) linear, color var(--transition-speed) linear;
 	text-decoration: none;
 	vertical-align: middle;
 	border-radius: var(--border-radius);
@@ -270,7 +290,7 @@ footer{
 	margin-top: 5px;
 	margin-bottom: -5px;
 }
-.video-preview{
+a.video-preview{
 	width: 325px;
 	height: 325px;
 	min-width: 200px;
@@ -278,6 +298,13 @@ footer{
 	vertical-align: middle;
 	margin: 5px;
 	position: relative;
+	z-index: 1;
+	transform: scale(1);
+	transition: background-color var(--transition-speed) linear, color var(--transition-speed) linear, transform var(--transition-speed) ease;
+}
+a.video-preview:hover{
+	z-index: 10;
+	transform: scale(1.05);
 }
 .video-contain{
 	text-align: center;
@@ -316,7 +343,7 @@ footer{
 	padding: 15px;
 	bottom: 0px;
 	background-color: rgba(0,0,0,0.7);
-	transition: all 0.2s ease;
+	transition: all var(--transition-speed) ease;
 	width: 100%;
 	margin-bottom: 0px;
 }
@@ -407,7 +434,7 @@ footer{
 	border-left: 1px solid rgba(var(--rgb-main-accent), 1);
 	border-right: 1px solid rgba(var(--rgb-main-accent), 1);
 	text-align: center;
-	transition: transform 0.2s ease;
+	transition: transform var(--transition-speed) ease;
 	overflow: hidden;
 }
 .mini-player info{
@@ -429,7 +456,7 @@ footer{
 	border: none !important;
 	background-color: transparent !important;
 	box-shadow: none !important;
-	transition: color 0.2s linear;
+	transition: color var(--transition-speed) linear;
 }
 .mini-player .mini-player-label:hover{
 	color: rgba(var(--rgb-white), 0.7);
@@ -444,7 +471,7 @@ footer{
 	padding: 16px;
 	width: 48px;
 	height: 48px;
-	transition: color 0.2s linear, background 0.2s linear;
+	transition: color var(--transition-speed) linear, background var(--transition-speed) linear;
 	background-color: rgba(255,255,255,0);
 }
 .mini-player .sleep-timer{
@@ -454,7 +481,7 @@ footer{
 	width: 48px;
 	height: 48px;
 	padding: 16px;
-	transition: color 0.2s linear, background 0.2s linear;
+	transition: color var(--transition-speed) linear, background var(--transition-speed) linear;
 	background-color: rgba(255,255,255,0);
 }
 .mini-player .playlist-toggle:hover, .mini-player .sleep-timer:hover{
@@ -599,7 +626,7 @@ footer{
 }
 .mini-player-audio-controls .fa{
 	cursor: pointer;
-	transition: all 0.2s linear;
+	transition: all var(--transition-speed) linear;
 	vertical-align: middle;
 	padding: 15px;
 	display: inline-block;
@@ -817,7 +844,7 @@ input[type=range]:focus::-ms-fill-upper {
 }
 .mini-player header .controls i{
 	cursor: pointer;
-	transition: all 0.2s ease;
+	transition: all var(--transition-speed) ease;
 	height: 48px;
 	width: 48px;
 	padding: 17px;
@@ -849,7 +876,7 @@ div + table{
 	padding-top: .5rem;
 }
 #profile_container .col{
-	transition: background 0.2s linear;
+	transition: background var(--transition-speed) linear;
 }
 #profile_container .col:hover{
 	background-color: rgba(var(--rgb-secondary-accent), 0.7);
@@ -885,7 +912,7 @@ a.file-link{
 	left: 0;
 	top: 0;
 	transform: translateX(calc(-100% + 5px));
-	transition: opacity 0.2s linear;
+	transition: opacity var(--transition-speed) linear;
 	background-color: var(--white);
 	color: var(--gray);
 	font-size: .5rem;

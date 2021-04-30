@@ -44,7 +44,9 @@
 		</div>
 		<?php } ?>
 		<header class="main">
-			<div id="logo"><img src="<?php echo $logo; ?>" title="<?php echo $logo_title; ?>" alt="<?php echo $logo_alt; ?>" ></div>
+			<div id="logo"><img src="<?php echo $logo; ?>" title="<?php echo $logo_title; ?>" alt="<?php echo $logo_alt; ?>" ><?php if(!empty($logo_text)){
+				echo '<span id="logo-text">'.$logo_text.'</span>';
+			} ?></div>
 			<nav id="main-nav" class="row">
 				<?php echo $header_nav; ?>
 			</nav>
