@@ -296,13 +296,13 @@ footer{
 	left: 50%;
 	top: 50%;
 	transform: translate(-50%, -50%);
-	min-width: 100%;
+	/*min-width: 100%;*/
 	min-height: 100%;
 	height: auto;
 	width: auto;
 	border: none;
-	max-width: 200%;
-	max-height: 200%;
+	max-width: 355.5555%;
+	max-height: 100%;
 }
 .video-preview .img-contain i {
 	position: absolute;
