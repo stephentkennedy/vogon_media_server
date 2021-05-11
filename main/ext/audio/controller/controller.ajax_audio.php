@@ -9,6 +9,7 @@ if(!empty($track['data_parent'])){
 }
 $src = str_replace(ROOT, '', $track['data_content']);
 $src = str_replace(DIRECTORY_SEPARATOR, '/', $src);
+$src = build_slug(ltrim($src, '/'));
 $mime = mime_content_type($track['data_content']);
 $title = $track['data_name'];
 if(empty($title)){

@@ -49,9 +49,12 @@
 			$('#progress_message').html(this.i + ' / ' + total + ' ( ' + percent + '% )');
 			this.i++;
 		},
-		output: function(output){
+		output: function(output, dont_truncate){
+			if(dont_truncate == undefined){
+				dont_truncate = false;
+			}
 			if(output != undefined && output != null && output != ''){
-				if(this.total < 1000){
+				if(this.total < 1000 || dont_truncate == true){
 					$('#messages').append(output + '<br>');
 					$('#messages').scrollTop($('#messages')[0].scrollHeight);
 				}else{
@@ -102,7 +105,7 @@
 					this.output('<span style="color:green;font-weight:bold;">Finished!</span>');
 					break;
 				case 'error':
-					this.output('<span style="color:red;font-weight:bold;">ERROR</span>: ' + data.error);
+					this.output('<span style="color:red;font-weight:bold;">ERROR</span>: ' + data.error, true);
 					break;
 				case 'initialized':
 					$('#progress_bar').attr('data-total', data.total_tasks);
@@ -123,7 +126,7 @@
 						this.get(data.next_q);
 					}else if(data.state == undefined){
 						console.log(data);
-						this.output('<span style="color:red;font-weight;bold;">ERROR</span>: Recieved a bad response from the server. If the process was simply interrupted, reload this page and the process will attempt to resume.');
+						this.output('<span style="color:red;font-weight;bold;">ERROR</span>: Recieved a bad response from the server. If the process was simply interrupted, reload this page and the process will attempt to resume.', true);
 					}
 					break;
 			}

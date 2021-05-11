@@ -65,16 +65,44 @@ if($mime[0] == 'audio' || substr($f, -4) == '.wma'){
 			$file_info = $getID3->analyze($f);
 			
 			$comments = $file_info['id3v2']['comments'];
-			$title = $comments['title'][0];
-			$track_number = $comments['track_number'][0];
-			$album = $comments['album'][0];
-			$artist = $comments['band'][0];
-			$composer = $comments['composer'][0];
-			$year = $comments['year'][0];
+			if(!empty($comments['title'])){
+				$title = $comments['title'][0];
+			}else{
+				$title = '';
+			}
+			if(!empty($comments['track_number'])){
+				$track_number = $comments['track_number'][0];
+			}else{
+				$track_number = '';
+			}
+			if(!empty($comments['album'])){
+				$album = $comments['album'][0];
+			}else{
+				$album = '';
+			}
+			if(!empty($comments['band'])){
+				$artist = $comments['band'][0];
+			}else{
+				$artist = '';
+			}
+			if(!empty($comments['composer'])){
+				$composer = $comments['composer'][0];
+			}else{
+				$composer = '';
+			}
+			if(!empty($comments['year'])){
+				$year = $comments['year'][0];
+			}else{
+				$year = '';
+			}
 			$length = $file_info['playtime_seconds'];
-			$genre = $comments['genre'][0];
+			if(!empty($comments['genre'])){
+				$genre = $comments['genre'][0];
+			}else{
+				$genre = '';
+			}
 			
-			if(!empty($album)){
+			if(!empty(trim($album))){
 				$message .= 'Checking whether to add or use existing album.<br>';
 				$sql = 'SELECT * FROM data WHERE data_name = :album AND data_type = "album"';
 				$params = [':album' => $album];
