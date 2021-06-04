@@ -41,11 +41,11 @@ $swap['free'] = round_up_mbs($swap['free']);
 	}else{
 		echo ' minute';
 	}
-?><h4>Active Users</h4>
+?><h4>Active Shell Users</h4>
 <?php echo $users; ?>
 <h4>Load Averages</h4>
 <?php echo 'One Minute: '.$one.'<br>Five Minutes: '.$five.'<br>Fifteen Minutes: '.$fifteen; ?>
 <h4>Memory Usage</h4>
-Available: <?php echo $memory['total']; ?>  Used: <?php echo $memory['used'].' ('.$memory['percent'].'%)'; ?>
+Available: <?php echo $memory['total']; ?><br>Used: <?php echo $memory['used'].' ('.$memory['percent'].'%)'; ?>
 <h4>Swap File Usage</h4>
-Available: <?php echo $swap['total']; ?> Used: <?php echo $swap['used'].' ('.$swap['percent'].'%)'; ?>
+Available: <?php echo $swap['total']; ?><br>Used: <?php echo $swap['used'].' ('.$swap['percent'].'%)'; ?>
