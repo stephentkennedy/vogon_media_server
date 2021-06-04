@@ -421,9 +421,6 @@ $(document).ready(function(){
 				canvas = miniplayer.instance.find('canvas')[0];
 				ctx = canvas.getContext("2d");
 				ctx.globalCompositeOperation = 'source-over';
-				ctx.fillRect(0,0,canvas.width,canvas.height);
-				ctx = canvas.getContext("2d");
-				ctx.globalCompositeOperation = 'source-over';
 				ctx.fillStyle = '#000000';
 				ctx.fillRect(0,0,canvas.width,canvas.height);
 			}
@@ -438,6 +435,8 @@ $(document).ready(function(){
 				//canvas.height = ;
 				ctx = canvas.getContext("2d");
 				ctx.globalCompositeOperation = 'source-over';
+				ctx.fillStyle = '#000000';
+				ctx.fillRect(0,0,canvas.width,canvas.height);
 				
 				// find the center of the window
 				center_x = canvas.width / 2;
@@ -606,6 +605,8 @@ $(document).ready(function(){
 				//canvas.height = ;
 				ctx = canvas.getContext("2d");
 				ctx.globalCompositeOperation = 'source-over';
+				ctx.fillStyle = '#000000';
+				ctx.fillRect(0,0,canvas.width,canvas.height);
 				
 				// find the center of the window
 				center_x = canvas.width / 2;
@@ -690,6 +691,8 @@ $(document).ready(function(){
 				//canvas.height = ;
 				ctx = canvas.getContext("2d");
 				ctx.globalCompositeOperation = 'source-over';
+				ctx.fillStyle = '#000000';
+				ctx.fillRect(0,0,canvas.width,canvas.height);
 				
 				// find the center of the window
 				center_x = canvas.width / 2;

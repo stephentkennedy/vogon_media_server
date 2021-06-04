@@ -31,12 +31,12 @@
 	</div>
 	<div class="col col-ten">
 		<h2>Server Information</h2>
-		<h3>File System</h3>
-		<div id="filesystem">
+		<h3>Monitor <span id="status"></span></h3>
+		<div id="serverprocesses">
 		<i class="fa fa-cog fa-spin fa-fw"></i>
 		</div>
-		<h3>Uptime <span id="status"></span></h3>
-		<div id="serverprocesses">
+		<h3>Drives</h3>
+		<div id="filesystem">
 		<i class="fa fa-cog fa-spin fa-fw"></i>
 		</div>
 	</div>
@@ -44,7 +44,7 @@
 <script type="text/javascript">
 	$(document).ready(function(){
 		$.post(<?php echo "'".build_slug('ajax/ajax_drives_status/media')."'"; ?>, function(returned){
-			var string = '<pre>' + returned + '</pre>';
+			var string = '' + returned + '';
 			$('#filesystem').html(string);
 		});
 		uptime();
@@ -53,7 +53,7 @@
 	function uptime(){
 		$('#status').html('<i class="fa fa-cog fa-spin fa-fw"></i>');
 		$.post(<?php echo "'".build_slug('ajax/ajax_top/media')."'"; ?>, function(returned){
-			var string = '<pre>' + returned + '</pre>';
+			var string = '' + returned + '';
 			$('#serverprocesses').html(string);
 			$('#status').html('');
 		});
