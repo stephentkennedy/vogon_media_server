@@ -53,7 +53,7 @@ $(document).ready(function(){
 		h_freq: <?php if(!empty($_SESSION['audio_his_time'])){ echo $_SESSION['audio_his_time']; }else{ echo '10000'; } ?>,
 		sleep_timer: false,
 		animation: miniplayer.<?php if(!empty($_SESSION['def_visual'])){ echo $_SESSION['def_visual']; }else{ echo 'noViz'; } ?>,
-		seed: '<div class="mini-player"><header class="mini-player-header"><span class="shadow"></span><span class="controls"><i class="fa fa-window-maximize toggle"></i><i class="fa fa-cog option"></i><i class="fa fa-expand fullscreen"></i><i class="fa fa-times close"></i></span></header><info><a target="_blank" data-target="popup" class="mini-player-label title"></a><a target="_blank" data-target="popup" class="mini-player-label album"></a><a target="_blank" data-target="popup" class="mini-player-label band"></a></info><canvas></canvas><audio class="current-track"><source class="current-source"></source></audio><div class="mini-player-audio-controls"><input type="range" class="seek" value="0" max="" /><span class="mini-player-seek-counter hidden"></span> <span class="mini-player-counter">0:00 / 0:00</span> <br><i class="fa fa-random  fa-fw mini-player-shuffle disable"></i><i class="fa fa-step-backward fa-fw  mini-player-prev disable"></i><i class="fa fa-play fa-fw  mini-player-play"></i><i class="fa fa-step-forward fa-fw  mini-player-next disable"></i><i class="fa fa-retweet fa-fw  mini-player-loop disable"></i><span class="mini-one">1</span></div><i class="fa fa-clock-o sleep-timer"></i><div class="mini-player-playlist"></div></div>',
+		seed: '<div class="mini-player"><header class="mini-player-header"><span class="shadow"></span><span class="controls"><i class="fa fa-window-maximize toggle"></i><i class="fa fa-cog option"></i><i class="fa fa-expand fullscreen"></i><i class="fa fa-times close"></i></span></header><info><a target="_blank" data-target="popup" class="mini-player-label title"></a><a target="_blank" data-target="popup" class="mini-player-label album"></a><a target="_blank" data-target="popup" class="mini-player-label band"></a></info><canvas></canvas><audio class="current-track"><source class="current-source" onerror="miniplayer.error"></source></audio><div class="mini-player-audio-controls"><input type="range" class="seek" value="0" max="" /><span class="mini-player-seek-counter hidden"></span> <span class="mini-player-counter">0:00 / 0:00</span> <br><i class="fa fa-random  fa-fw mini-player-shuffle disable"></i><i class="fa fa-step-backward fa-fw  mini-player-prev disable"></i><i class="fa fa-play fa-fw  mini-player-play"></i><i class="fa fa-step-forward fa-fw  mini-player-next disable"></i><i class="fa fa-retweet fa-fw  mini-player-loop disable"></i><span class="mini-one">1</span></div><i class="fa fa-clock-o sleep-timer"></i><div class="mini-player-playlist"></div></div>',
 		timeFormat : function(duration){
 			// Hours, minutes and seconds
 			var hrs = ~~(duration / 3600);
@@ -843,6 +843,10 @@ $(document).ready(function(){
 				
 			}
 			window.requestAnimationFrame(miniplayer.animation);
+		},
+		error: function(e){
+			var string = 'There has been an issue loading: ' + miniplayer.instance.find('.mini-player-label.title').html() + '<br><br>(Line ' + e.lineno + '): ' + e.message;
+			var w = aPipup.newWindow(string);
 		},
 		init: function(){
 			
