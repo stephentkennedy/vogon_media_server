@@ -123,7 +123,7 @@
 					if(data.continue == true){
 						this.output(data.message);
 						this.progress();
-						this.get(data.next_q);
+						setTimeout(this.get(data.next_q), 50); //Throttled to avoid issues with accessing location api too quickly
 					}else if(data.state == undefined){
 						console.log(data);
 						this.output('<span style="color:red;font-weight;bold;">ERROR</span>: Recieved a bad response from the server. If the process was simply interrupted, reload this page and the process will attempt to resume.', true);

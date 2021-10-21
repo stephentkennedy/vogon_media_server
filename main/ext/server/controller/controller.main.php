@@ -24,6 +24,12 @@ if(!empty($action)){
 		case 'cleanup_data_meta_table':
 			load_controller('cleanup_data_meta_table', [], 'server');
 			break;
+		case 'find_orphan_entries':
+			load_controller('find_orphan_entries', [], 'server');
+			break;
+		case 'patch_series':
+			load_controller('patch_series', [], 'server');
+			break;
 		case 'update':
 			load_controller('update', [], 'installer');
 			break;

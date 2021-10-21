@@ -19,7 +19,8 @@
 	$files = [
 		'index.php',
 		'.htaccess',
-		'installer.php'
+		'installer.php',
+		'change_log'
 	];
 	foreach($files as $f){
 		$zip->addFile(ROOT . DIRECTORY_SEPARATOR . $f, $f);

@@ -13,26 +13,26 @@ switch($format){
 				$filename = explode(DIRECTORY_SEPARATOR, $filename);
 				$r['data_name'] = array_pop($filename);
 			}
-			if(empty($r['meta']['artist'])){
+			if(empty($r['artist'])){
 				$artist = '[Unknown]';
 			}else{
-				$artist = $r['meta']['artist'];
+				$artist = $r['artist'];
 			}
-			if(empty($r['meta']['length'])){
+			if(empty($r['length'])){
 				$length = '[Unknown]';
 			}else{
-				$length = formatLength($r['meta']['length']);
+				$length = formatLength($r['length']);
 			}
-			if(empty($r['meta']['genre'])){
+			if(empty($r['genre'])){
 				$genre = '[Unknown]';
 			}else{
-				$genre = $r['meta']['genre'];
+				$genre = $r['genre'];
 			}
 			$output['items'][] = [
 				'id' => $r['data_id'],
 				'name' => $r['data_name'],
 				'file' => $r['data_content'],
-				'album' => $r['album'],
+				'album' => $r['parent_data_name'],
 				'artist' => $artist,
 				'length' => $length,
 				'genre' => $genre
@@ -64,36 +64,36 @@ switch($format){
 			</div>';
 		foreach($search_results as $r){
 			//debug_d($r);
-			if(empty($r['album'])){
-				$r['album'] = '';
+			if(empty($r['parent_data_name'])){
+				$r['parent_data_name'] = '';
 			}
 			if(empty($r['data_name'])){
 				$filename = $r['data_content'];
 				$filename = explode(DIRECTORY_SEPARATOR, $filename);
 				$r['data_name'] = array_pop($filename);
 			}
-			if(empty($r['meta']['artist'])){
+			if(empty($r['artist'])){
 				$artist = '[Unknown]';
 			}else{
-				$artist = $r['meta']['artist'];
+				$artist = $r['artist'];
 			}
-			if(empty($r['meta']['length'])){
+			if(empty($r['length'])){
 				$length = '[Unknown]';
 			}else{
-				$length = formatLength($r['meta']['length']);
+				$length = formatLength($r['length']);
 			}
-			if(empty($r['meta']['genre'])){
+			if(empty($r['genre'])){
 				$genre = '[Unknown]';
 			}else{
-				$genre = $r['meta']['genre'];
+				$genre = $r['genre'];
 			}
 			//$table .= '<tr>';
 			$table .= '<div class="result-row flex-row">';
 			//$table .= '<td>'.$r['data_name'].'</td>';
 			$table .= '<span class="result-one">'.$r['data_name'].'</span>';
-			if(!empty($r['album'])){
+			if(!empty($r['parent_data_name'])){
 				//$table .= '<td><a href="'.build_slug('album/'.$r['data_parent'],[],'audio').'">'.$r['album'].'</a></td>';
-				$table .= '<span class="result-two"><a href="'.build_slug('album/'.$r['data_parent'],[],'audio').'">'.$r['album'].'</a></span>';
+				$table .= '<span class="result-two"><a href="'.build_slug('album/'.$r['data_parent'],[],'audio').'">'.$r['parent_data_name'].'</a></span>';
 			}else{
 				//$table .= '<td>[Unknown]</td>';
 				$table .= '<span class="result-two">[Unknown]</span>';

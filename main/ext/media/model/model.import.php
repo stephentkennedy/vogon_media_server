@@ -26,9 +26,20 @@ if(!empty($_GET['series_name'])){
 }
 if(!empty($_GET['series_id'])){
 	$series_id = $_GET['series_id'];
+}else if (!empty($series_name)){
+	/*
+	Name: Stephen Kennedy
+	Date: 10/17/21
+	Comment: This logic is inside a loop, now we need to account for the possibility that an earlier branch of this loop already created the series.
+	*/
+	$check = $clerk->getRecord(['name' => $series_name, 'type' => 'series']);
+	if(!empty($check)){
+		$series_id = $check['data_id'];
+	}
 }
 
 if(!empty($series_name) && empty($series_id)){
+	
 	$parent = $clerk->addRecord([
 		'name' => $series_name,
 		'type' => 'series'

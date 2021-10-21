@@ -64,6 +64,8 @@
 			$new = $v->increment('hotfix');
 			echo $new;
 		?>">
+		<label for="changelog">Change Log</label>
+		<textarea id="changelog" name="changelog"></textarea>
 		<script type="text/javascript">
 			$(document).ready(function(){
 				$('#increment_level').change(function(){

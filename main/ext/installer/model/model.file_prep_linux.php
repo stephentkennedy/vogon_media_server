@@ -14,7 +14,8 @@
 	$files = [
 		'index.php',
 		'.htaccess',
-		'installer.php'
+		'installer.php',
+		'change_log'
 	];
 	if(file_exists(ROOT . DIRECTORY_SEPARATOR . 'composer.json')){
 		$files[] = 'composer.json';

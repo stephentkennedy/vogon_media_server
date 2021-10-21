@@ -20,6 +20,9 @@ switch($slug){
 			$level = $_POST['increment_level'];
 			$version = load_model('increment_version', ['level' => $level], 'installer');
 		}
+		if(!empty($_POST['changelog'])){
+			load_model('write_changelog', ['changelog' => $_POST['changelog']], 'installer');
+		}
 		load_controller('header');
 		echo '<header><h1>Building Archive</h1></header>';
 		$table_data = load_model('parsetables', ['include' => $_POST['include'], 'tables' => $_POST['tables']], 'installer');
