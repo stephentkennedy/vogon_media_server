@@ -1,145 +1,71 @@
 <?php
-
-class meta_link_db_handler extends db_handler{
+/*
+Name: Stephen Kennedy
+Date: 10/22/21
+Comment: At this point we are joining a meta join with a direct join, we're just not going to support any transactions except selects to make our lives easier.
+*/
+class meta_to_direct_link_db_handler extends meta_link_db_handler {
 	public $root;
 	public $child;
-	public $backup_structure;
-	public $link_field = false;
-	public $meta_key_field;
-	public $meta_value_field;
+	public $linked;
+	public $primary_friendly;
+	public $parent_join_key = false;
+	public $child_primary_key = false;
 	
 	public function __construct($options){
-		if(empty($options['parent']) || empty($options['child']) || empty($options['meta_key_field']) || empty($options['meta_value_field'])){
+		if(empty($options['parent']) || empty($options['child'])){
 			return false;
 		}
-		if(!empty($options['link_field'])){
-			$this->link_field = $options['link_field'];
-		}
-		$this->root = $options['parent'];
-		$this->child = $options['child'];
-		$this->meta_key_field = $options['meta_key_field'];
-		$this->meta_value_field = $options['meta_value_field'];
+		$this->root = $options['parent']->root;
+		$this->child = $options['parent']->child;
+		$this->linked = $options['child'];
+		$this->link_field = $options['parent']->link_field;
+		$this->meta_key_field = $options['parent']->meta_key_field;
+		$this->meta_value_field = $options['parent']->meta_value_field;
 		$this->db = $this->root->db;
-		return $this->init();
+		if(!empty($options['join_key'])){
+			$this->parent_join_key = $options['join_key'];
+		}
+		if(!empty($options['linked_join_key'])){
+			$this->linked_join_key = $options['linked_join_key'];
+		}
+		$this->init();
 	}
 	
-	
 	private function init(){
-		$pri = $this->root->primary_key;
-		if(!empty($this->link_field)){
-			$pri = $this->link_field;
+		if(empty($this->parent_join_key)){
+			$pri = $this->root->primary_key;
+			$this->parent_join_key = $pri;
 		}else{
-			$this->link_field = $pri;
+			$pri = $this->parent_join_key;
 		}
-		if(empty($this->child->structure[$pri])){
-			return false;
+		if(empty($this->linked_join_key)){
+			$this->linked_join_key = $this->parent_join_key;
 		}
-		$this->structure = [];
+		$this->structure = $this->root->structure;
 		foreach($this->root->structure as $key => $value){
 			$value['machine_name'] = 
 			'`'.$this->root->table.'`.`'.$value['machine_name'].'`';
 			$this->structure[$key] = $value;
 		}
-		$this->backup_structure = $this->structure;
-		$this->primary_key = $this->root->primary_key;
+		foreach($this->linked->structure as $key => $value){
+			if($value['machine_name'] == $pri){
+				continue;
+			}
+			$safe_key = 'link_'.$key;
+			if(!empty($this->structure[$safe_key])){
+				$safe_key = 'link_'.$safe_key;
+			}
+			$value['machine_name'] = 
+			'`'.$this->linked->table.'`.`'.$value['machine_name'].'`';
+			$this->structure[$safe_key] = $value;
+		}
 		return true;
 	}
 	
-	public function getRecords($options){
-		if(is_numeric($options)){
-			return $this->getRecord(['id' => $options]);
-		}
-		if(empty($options['meta'])){
-			return $this->root->getRecords($options);
-		}
-		$sql = 'SELECT `'.$this->root->table.'`.*, ';
-		$mj = $this->metaJoin($options['meta']);
-		if(!empty($options['self_join'])){
-			$sj = $this->selfJoin($options['self_join']);
-			if(!empty($sj)){
-				foreach($sj['select'] as $select){
-					$mj['select'][] = $select;
-				}
-				foreach($sj['joins'] as $join){
-					$mj['joins'][] = $join;
-				}
-			}
-			unset($options['self_join']);
-		}
-		if(isset($options['groupby']) && !empty($this->structure[$options['groupby']]['machine_name'])){
-			$sql .= 'COUNT('.$this->structure[$options['groupby']]['machine_name'].') as "count", ';
-		}
-		unset($options['meta']);
-		$sql .= implode(', ', $mj['select']) . ' FROM `'.$this->root->table.'` '. implode(' ', $mj['joins']);
-		if(isset($options['limit'])){
-			$cql = 'SELECT COUNT(*) as `count` FROM `'.$this->root->table.'` '. implode(' ', $mj['joins']);
-		}
-		$this->query_mode = 'AND';
-		if(!empty($options['query_mode'])){
-			$this->query_mode = $options['query_mode'];
-			unset($options['query_mode']);
-		}
-		$this->where = [];
-		$this->params = [];
-		$this->depth = 0;
-		$this->parse_select_options($options);
-		if(isset($options['sub_query'])){
-			$this->parse_where_statement($options['sub_query']);
-		}
-		if(count($this->where) > 0){
-			$where = implode(' '. $this->query_mode .' ', $this->where);
-			$sql .= ' WHERE '.$where;
-			if(isset($cql)){
-				$cql .= ' WHERE '.$where;
-			}
-		}
-		if(isset($cql)){
-			$count = $this->db->query($cql, $this->params)->fetch()['count'];
-			$this->total_count = $count;
-		}
-		if(isset($options['groupby']) && !empty($this->structure[$options['groupby']])){
-			$sql .= ' GROUP BY '.$this->structure[$options['groupby']]['machine_name'];
-		}
-		if(isset($options['orderby']) && !empty($this->structure[$options['orderby']])){	
-			$sql .= ' ORDER BY '.$this->structure[$options['orderby']]['machine_name'];
-			
-			if(!empty($options['orderby_int'])){
-				$sql .= ' + 0';
-			}
-			
-			if(!empty($options['orderby_dir'])){
-				switch(strtolower($options['orderby_dir'])){
-					default:
-						$sql .= ' ASC';
-						break;
-					case 'desc':
-						$sql .= ' DESC';
-						break;
-				}
-			}
-		}
-		if(isset($options['limit']) && is_numeric($options['limit'])){
-			$sql .= ' LIMIT ';
-			if(isset($options['offset']) && is_numeric($options['offset'])){
-				$sql .= $options['offset'].',';
-			}
-			$sql .= $options['limit'];
-		}
-		$this->sql = $sql;
-		$query = $this->db->query($sql, $this->params);
-		if($query != false){
-			$records = $query->fetchAll();
-		}else{
-			$records = [];
-		}
-		return $records;
-	}
-	
 	public function getRecord($options){
-		if(empty($options['meta'])){
-			return $this->root->getRecord($options);
-		}
-		$sql = 'SELECT `'.$this->root->table.'`.*, ';
+		$this->backup_structure = $this->structure;
+		$sql = 'SELECT `'.$this->root->table.'`.*, `'.$this->linked->table.'`.*, ';
 		$mj = $this->metaJoin($options['meta']);
 		if(!empty($options['self_join'])){
 			$sj = $this->selfJoin($options['self_join']);
@@ -154,7 +80,7 @@ class meta_link_db_handler extends db_handler{
 			unset($options['self_join']);
 		}
 		unset($options['meta']);
-		$sql .= implode(', ', $mj['select']). 'FROM `'.$this->root->table.'` '.implode(' ', $mj['joins']);
+		$sql .= implode(', ', $mj['select']). 'FROM `'.$this->root->table.'` '.implode(' ', $mj['joins']).', `'.$this->linked->table.'`';
 		$this->where = [];
 		$this->params = [];
 		$this->depth = 0;
@@ -168,15 +94,16 @@ class meta_link_db_handler extends db_handler{
 			$this->query_mode = $options['query_mode'];
 			unset($options['query_mode']);
 		}
+		unset($options['meta']);
 		$this->parse_select_options($options);
 		if(isset($options['sub_query'])){
 			$this->parse_where_statement($options['sub_query']);
 		}
+		$this->where[] = '`'.$this->root->table.'`.`'.$this->parent_join_key.'` = `'.$this->linked->table.'`.`'.$this->linked_join_key.'`';
 		$sql .= ' WHERE ' . implode(' '. $this->query_mode .' ', $this->where);
 		
 		if(isset($options['orderby']) && !empty($this->structure[$options['orderby']])){
 			$sql .= ' ORDER BY '.$this->structure[$options['orderby']]['machine_name'];
-			
 			if(!empty($options['orderby_int'])){
 				$sql .= ' + 0';
 			}
@@ -200,33 +127,97 @@ class meta_link_db_handler extends db_handler{
 		return $records;
 	}
 	
-	public function removeRecord($id){
-		$sql = 'DELETE FROM `'.$this->child->table.'` WHERE `'.$this->root->primary_key.'` = :id';
-		$this->params = [
-			':id' => $id
-		];
-		$this->sql = $sql;
-		$this->db->query($sql, $this->params);
-		$this->root->removeRecord($id);
-	}
-	
-	public function addRecord($values){
-		$parent_id = $this->root->addRecord($values);
-		$meta_values = $this->filter_values($values, $parent_id);
-		
-		$this->child->addRecord($meta_values);
-		return $parent_id;
-	}
-	
-	public function updateRecord($values, $record_id = false){
-		return false;
-		if($record_id == false){
-			return $this->addRecord($values);
+	public function getRecords($options){
+		$this->backup_structure = $this->structure;
+		if(is_numeric($options)){
+			return $this->getRecord(['id' => $options]);
 		}
-		$this->root->updateRecord($values);
+		$sql = 'SELECT `'.$this->root->table.'`.*, `'.$this->linked->table.'`.*, ';
+		$mj = $this->metaJoin($options['meta']);
+		if(!empty($options['self_join'])){
+			$sj = $this->selfJoin($options['self_join']);
+			if(!empty($sj)){
+				foreach($sj['select'] as $select){
+					$mj['select'][] = $select;
+				}
+				foreach($sj['joins'] as $join){
+					$mj['joins'][] = $join;
+				}
+			}
+			unset($options['self_join']);
+		}
+		if(isset($options['groupby']) && !empty($this->structure[$options['groupby']]['machine_name'])){
+			$sql .= 'COUNT('.$this->structure[$options['groupby']]['machine_name'].') as "count", ';
+		}
+		unset($options['meta']);
+		$sql .= implode(', ', $mj['select']) . ' FROM `'.$this->root->table.'` '. implode(' ', $mj['joins']).', `'.$this->linked->table.'`';
+		if(isset($options['limit'])){
+			$cql = 'SELECT COUNT(*) as `count` FROM `'.$this->root->table.'` '. implode(' ', $mj['joins']).', `'.$this->linked->table.'`';
+		}
+		$this->query_mode = 'AND';
+		if(!empty($options['query_mode'])){
+			$this->query_mode = $options['query_mode'];
+			unset($options['query_mode']);
+		}
+		$this->where = [];
+		$this->params = [];
+		$this->depth = 0;
+		unset($options['meta']);
+		$this->parse_select_options($options);
+		if(isset($options['sub_query'])){
+			$this->parse_where_statement($options['sub_query']);
+		}
+		$this->where[] = '`'.$this->root->table.'`.`'.$this->parent_join_key.'` = `'.$this->linked->table.'`.`'.$this->linked_join_key.'`';
+		if(count($this->where) > 0){
+			$where = implode(' '. $this->query_mode .' ', $this->where);
+			$sql .= ' WHERE '.$where;
+			if(isset($cql)){
+				$cql .= ' WHERE '.$where;
+			}
+		}
+		if(isset($cql)){
+			$count = $this->db->query($cql, $this->params)->fetch()['count'];
+			$this->total_count = $count;
+		}
+		if(isset($options['groupby']) && !empty($this->structure[$options['groupby']])){
+			$sql .= ' GROUP BY '.$this->structure[$options['groupby']]['machine_name'];
+		}
 		
+		if(isset($options['orderby']) && !empty($this->structure[$options['orderby']])){
+			$sql .= ' ORDER BY '.$this->structure[$options['orderby']]['machine_name'];
+			if(!empty($options['orderby_int'])){
+				$sql .= ' + 0';
+			}
+			if(!empty($options['orderby_dir'])){
+				switch(strtolower($options['orderby_dir'])){
+					default:
+						$sql .= ' ASC';
+						break;
+					case 'desc':
+						$sql .= ' DESC';
+						break;
+				}
+			}
+		}
+		
+		if(isset($options['limit']) && is_numeric($options['limit'])){
+			$sql .= ' LIMIT ';
+			if(isset($options['offset']) && is_numeric($options['offset'])){
+				$sql .= $options['offset'].',';
+			}
+			$sql .= $options['limit'];
+		}
+		$this->sql = $sql;
+		$query = $this->db->query($sql, $this->params);
+		if($query != false){
+			$records = $query->fetchAll();
+		}else{
+			$records = [];
+		}
+		return $records;
 	}
 	
+	//Inherited but may need to be modified
 	private function filter_values($values, $parent_id = false){
 		$meta_values = [];
 		if($parent_id != false){
@@ -242,6 +233,7 @@ class meta_link_db_handler extends db_handler{
 			}
 			$meta_values[$safe_key] = $values[$key];
 		}
+		debug_d($meta_values);
 		return $meta_values;
 	}
 	
@@ -297,7 +289,7 @@ class meta_link_db_handler extends db_handler{
 				$f = 'meta_'.$f;
 			}
 			$select[] = 'm'.$i.'.`'.$this->meta_value_field.'` AS `'.$key.'`';
-			$joins[] = 'LEFT JOIN (SELECT * FROM `'.$this->child->table.'` WHERE `'.$this->meta_key_field.'` = "'.$key.'") m'.$i.' on `'.$this->root->table.'`.`'.$this->primary_key.'` = m'.$i.'.`'.$this->link_field.'`';
+			$joins[] = 'LEFT JOIN (SELECT * FROM `'.$this->child->table.'` WHERE `'.$this->meta_key_field.'` = "'.$key.'") m'.$i.' on `'.$this->root->table.'`.`'.$this->root->primary_key.'` = m'.$i.'.`'.$this->link_field.'`';
 			
 			$this->structure[$f] = [
 				'machine_name' => 'm'.$i.'.`'.$this->meta_value_field.'`',
@@ -338,19 +330,5 @@ class meta_link_db_handler extends db_handler{
 			'select' => $select,
 			'joins' => $joins
 		];
-	}
-	
-	public function direct_link(db_handler $child, $options = false){
-		load_class('meta_to_direct_link_db_handler');
-		if(class_exists('meta_to_direct_link_db_handler')){
-			if(empty($options)){
-				$options = [];
-			}
-			$options['parent'] = $this;
-			$options['child'] = $child;
-			return new meta_to_direct_link_db_handler($options);
-		}else{
-			return false;
-		}
 	}
 }

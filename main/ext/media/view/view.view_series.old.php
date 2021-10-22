@@ -9,11 +9,11 @@
 //debug_d($data);
 if(!empty($members['seasons'])){
 	foreach($members['seasons'] as $s){?>
-		<div class="col col-ten">
-			<h2><?php echo $s['data_name']; ?></h2>
-		</div>
-		<ol class="video-list row">
+		<div class="col col-five">
+		<h2><?php echo $s['name']; ?></h2>
+		<ol class="video-list">
 <?php foreach($s['episodes'] as $r){
+			//debug_d($r);die();
 			if(empty($r['series'])){
 				$r['series'] = '';
 			}
@@ -32,7 +32,7 @@ if(!empty($members['seasons'])){
 				}
 			if(!empty($r['poster'])){
 				$r['poster'] = str_replace(ROOT, '', $r['poster']);
-				echo '<li class="col col-three">'.$r['data_name'].' ('.formatLength($r['length']).')<br><img class="series_poster" data-src="'.build_slug($r['poster']).'">';
+				echo '<li>'.$r['data_name'].' ('.formatLength($r['length']).')<br><img class="series_poster" data-src="'.build_slug($r['poster']).'">';
 				
 				//if($r['time'] == false){
 					$percent = 0;
@@ -47,15 +47,15 @@ if(!empty($members['seasons'])){
 			}
 		} ?>
 		</ol>
+		</div>
 <?php }
 }
-if(!empty($members['loose'])){
+if(!empty($members['tv'])){
 ?>
-<div class="col col-ten">
-<h2>Unsorted:</h2>
-</div>
-<ol class="video-list row"><?php
-	foreach($members['loose'] as $r){
+<div class="col col-five">
+<h2>Unsorted Episodes:</h2>
+<ol class="video-list"><?php
+	foreach($members['tv'] as $r){
 		if(empty($r['series'])){
 			$r['series'] = '';
 		}
@@ -68,13 +68,13 @@ if(!empty($members['loose'])){
 			$r['data_name'] = array_pop($filename);
 		}
 		if($r['data_type'] == 'video'){
-			$class = 'movie';
-		}else{
-			$class = 'tv-series';
-		}
+				$class = 'movie';
+			}else{
+				$class = 'tv-series';
+			}
 		if(!empty($r['poster'])){
 			$r['poster'] = str_replace(ROOT, '', $r['poster']);
-			echo '<li class="col col-three">'.$r['data_name'].' ('.formatLength($r['length']).')<br><img class="series_poster" data-src="'.build_slug($r['poster']).'">';
+			echo '<li>'.$r['data_name'].' ('.formatLength($r['length']).')<br><img class="series_poster" data-src="'.build_slug($r['poster']).'">';
 			
 			//if($r['time'] == false){
 				$percent = 0;

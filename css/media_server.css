@@ -351,13 +351,12 @@ a.video-preview:hover{
 	background-color: rgba(255,255,255,0.5);
 }
 .video-list{
-	margin-left: 1rem;
+	margin-left: 0rem;
 	display: inline-block;
 	vertical-align: top;
 	list-style-position: inner;
 }
 .video-list li{
-	width: calc(100% - 1rem);
 	display: inline-block;
 	font-size: 1.05rem;
 	font-style: italic;
@@ -371,8 +370,9 @@ a.video-preview:hover{
 	margin-top: 5px;
 	font-style: normal;
 }
-.video-list li + li{
-	margin-top: 20px;
+.video-list li{
+	margin-bottom: 20px;
+	vertical-align: bottom !important;
 }
 .poster-preview{
 	width: 50vw;

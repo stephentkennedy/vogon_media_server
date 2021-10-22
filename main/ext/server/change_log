@@ -1,0 +1,8 @@
+*Hotfixes*
+-Fixed series import for video. Now it will not generate a new series for each episode found.
+
+*Updates*
+-Updated update system to include changelogs to preview what updates do before users install them.
+
+*Additions*
+-Added tool to merge duplicate series.

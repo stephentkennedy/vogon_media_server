@@ -9,8 +9,8 @@
 	}
 	
 	$files_to_add = array_reverse($files_to_add, true);
-	debug_d($files_to_add);
 	foreach($files_to_add as $real => $relative){
+		echo 'Adding: '.$real.'<br>';
 		$zip->addFile($real, $relative);
 	}
 	$zip->addFromString('new_install', 'You have not installed your copy of vogon yet');

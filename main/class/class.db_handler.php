@@ -238,6 +238,20 @@ class db_handler {
 		}
 		if(isset($options['orderby']) && !empty($this->structure[$options['orderby']])){
 			$sql .= ' ORDER BY '.$this->structure[$options['orderby']]['machine_name'];
+			
+			if(!empty($options['orderby_int'])){
+				$sql .= ' + 0';
+			}
+			if(!empty($options['orderby_dir'])){
+				switch(strtolower($options['orderby_dir'])){
+					default:
+						$sql .= ' ASC';
+						break;
+					case 'desc':
+						$sql .= ' DESC';
+						break;
+				}
+			}
 		}
 		if(isset($options['groupby']) && !empty($this->structure[$options['groupby']])){
 			$sql .= ' GROUP BY '.$this->structure[$options['groupby']]['machine_name'];
@@ -291,6 +305,20 @@ class db_handler {
 		$sql .= ' WHERE ' . implode(' ' . $this->query_mode . ' ', $this->where);
 		if(isset($options['orderby']) && !empty($this->structure[$options['orderby']])){
 			$sql .= ' ORDER BY '.$this->structure[$options['orderby']]['machine_name'];
+			
+			if(!empty($options['orderby_int'])){
+				$sql .= ' + 0';
+			}
+			if(!empty($options['orderby_dir'])){
+				switch(strtolower($options['orderby_dir'])){
+					default:
+						$sql .= ' ASC';
+						break;
+					case 'desc':
+						$sql .= ' DESC';
+						break;
+				}
+			}
 		}
 		$this->sql = $sql;
 		

@@ -79,6 +79,9 @@ class direct_link_db_handler extends db_handler{
 		}
 		if(isset($options['orderby']) && !empty($this->structure[$options['orderby']])){
 			$sql .= ' ORDER BY '.$this->structure[$options['orderby']]['machine_name'];
+			if(!empty($options['orderby_int'])){
+				$sql .= ' + 0';
+			}
 			if(!empty($options['orderby_dir'])){
 				switch(strtolower($options['orderby_dir'])){
 					default:
@@ -114,6 +117,9 @@ class direct_link_db_handler extends db_handler{
 		
 		if(isset($options['orderby']) && !empty($this->structure[$options['orderby']])){
 			$sql .= ' ORDER BY '.$this->structure[$options['orderby']]['machine_name'];
+			if(!empty($options['orderby_int'])){
+				$sql .= ' + 0';
+			}
 			if(!empty($options['orderby_dir'])){
 				switch(strtolower($options['orderby_dir'])){
 					default:
