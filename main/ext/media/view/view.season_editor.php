@@ -1,3 +1,6 @@
+<?php 
+//debug_d($members);
+?>
 <style>
 	#unsorted{
 		max-height: calc(100vh);
@@ -38,7 +41,7 @@
 	<div id="unsorted" class="col col-three">
 		<h2>Unsorted</h2>
 		<div class="sortable">
-		<?php foreach($members['tv'] as $r){
+		<?php foreach($members['loose'] as $r){
 			echo '<a class="episode" data-id="'.$r['data_id'].'">'.$r['data_name'].'</a>';
 		} ?>
 		</div>
