@@ -1,1 +1,2 @@
-Updated season editor to account for changes made to data model in 0.16.1a
+-Added ability to favorite & unfavorite audio
+-Added ability to shuffle play favorites

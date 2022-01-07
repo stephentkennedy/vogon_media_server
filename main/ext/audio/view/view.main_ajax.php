@@ -58,10 +58,17 @@
 			});
 			$('.miniplayer-server-shuffle').click(function(){
 				$(this).append(' ... <i class="fa fa-fw fa-cog fa-spin"></i>');
-				$(this).attr('disabled', 'true');
+				$(this).prop('disabled', true);
 				playlist.playing = false;
 				playlist.currentChunk = false;
 				playlist.serverShuffle();
+			});
+			$('.miniplayer-server-fav-shuffle').click(function(){
+				$(this).append(' ... <i class="fa fa-fw fa-cog fa-spin"></i>');
+				$(this).prop('disabled', true);
+				playlist.playing = false;
+				playlist.currentChunk = false;
+				playlist.serverFavShuffle();
 			});
 			$('.ajax-form').off().click(function(){
 				if($(this).data('href') != ''){

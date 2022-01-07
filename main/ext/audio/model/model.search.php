@@ -1,4 +1,5 @@
 <?php
+global $user;
 load_class('db_handler');
 $hand = new db_handler('data');
 $meta = new db_handler('data_meta');
@@ -18,7 +19,8 @@ $search_options = [
 		'genre',
 		'artist',
 		'length',
-		'history'
+		'history',
+		'fav_'.$user['user_key'],
 	],
 	'type' => 'audio',
 	'sub_query' => [

@@ -1,6 +1,7 @@
 <?php
 error_reporting(0);
 ini_set('display_errors', 0);
+global $user;
 $id = get_slug_part(3);
 $clerk = new clerk;
 $track = $clerk->getRecord($id, true);
@@ -16,6 +17,9 @@ if(empty($title)){
 	$temp = explode('/', $src);
 	$title = array_pop($temp);
 }
+if(empty($track['meta']['fav_'.$user['user_key']])){
+	$track['meta']['fav_'.$user['user_key']] = 0;
+}
 $return = [
 	'title' => $title,
 	'id' => $track['data_id'],
@@ -23,7 +27,8 @@ $return = [
 	'src' => $src,
 	'mime' => $mime,
 	'duration' => $track['meta']['length'],
-	'artist' => $track['meta']['artist']
+	'artist' => $track['meta']['artist'],
+	'favorite' => $track['meta']['fav_'.$user['user_key']],
 ];
 if(!empty($album)){
 	$return['album'] = $album['data_name'];
