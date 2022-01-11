@@ -1,2 +1,5 @@
--Added ability to favorite & unfavorite audio
--Added ability to shuffle play favorites
+-Added favorite button to audio items list view
+-Added label refresh to audio items list view
+-Linked label refresh in miniplayer and items list view
+-Adjusted CSS to account for new icon in actions column
+-Added logic to search through favorite items

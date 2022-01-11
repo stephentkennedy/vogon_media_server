@@ -21,6 +21,7 @@
 			'default': '<?php echo build_slug("ajax/ajax_search/audio"); ?>',
 			'artists': '<?php echo build_slug("ajax/ajax_search_artist/audio"); ?>',
 			'albums': '<?php echo build_slug("ajax/ajax_search_album/audio"); ?>',
+			'favorites': '<?php echo build_slug("ajax/ajax_search_favorites/audio"); ?>',
 			'genre': ''
 		},
 		active_url: '<?php switch($type){
@@ -30,10 +31,39 @@
 							case 'albums':
 								echo 'albums';
 								break;
+							case 'favorites';
+								echo 'favorites';
+								break;
 							default: 
 								echo 'default'; 
 								break; 
-						} ?>'
+						} ?>',
+		refresh_labels: function(id){
+			$.get('<?php echo build_slug('ajax/ajax_audio/audio'); ?>/' + id, function(data){
+				var row = $('div.result-row[data-id="'+id+'"]');
+				var name = row.find('span.result-one');
+				var album = row.find('span.result-two');
+				var artist = row.find('span.result-three');
+				var length = row.find('span.result-four');
+				var actions = row.find('span.result-five');
+				name.html(data['title']);
+				if(data['artist'] != null && data['artist'] != ''){
+					artist.html(data['artist']);
+				}else{
+					artist.html('[Unknown]');
+				}
+				if(data['album'] != null && data['album'] != ''){
+					album.html('<a href="'+data['album_link']+'">'+data['album']+'</a>');
+				}else{
+					album.html('[Unknown]');
+				}
+				if(data['favorite'] != undefined && data['favorite'] == true){
+					actions.find('.ajax-like i').removeClass('fa-heart-o').removeClass('fa-heart').addClass('fa-heart');
+				}else{
+					actions.find('.ajax-like i').removeClass('fa-heart-o').removeClass('fa-heart').addClass('fa-heart-o');
+				}
+			});
+		}
 	};
 	$(document).ready(function(){
 		$('.nav.audio').removeAttr('href').attr('data-search', 'default');
@@ -75,10 +105,26 @@
 					var data = {
 						format: 'ajax_form'
 					};
+					var id = $(this).data('id');
 					$.get($(this).data('href'), data, function( returned ){
-						app.ajax_form(returned);
+						app.ajax_form(returned, function(){
+							controller.refresh_labels(id);
+							if(miniplayer.cur_id == id){
+								miniplayer.refresh_labels();
+							}
+						});
 					});
 				}
+			});
+			$('.ajax-like').off().click(function(){
+				var id = $(this).data('id');
+				var i = $(this).find(i);
+				$.get('<?php echo build_slug('ajax/ajax_toggle_favorite/audio'); ?>', {id: id}, function(){
+					controller.refresh_labels(id);
+					if(miniplayer.cur_id == id){
+						miniplayer.refresh_labels();
+					}
+				});
 			});
 			playlist.bind();
 		}

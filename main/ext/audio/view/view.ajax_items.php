@@ -1,5 +1,5 @@
 <?php
-
+global $user;
 switch($format){
 	case 'JSON':
 	
@@ -88,7 +88,7 @@ switch($format){
 				$genre = $r['genre'];
 			}
 			//$table .= '<tr>';
-			$table .= '<div class="result-row flex-row">';
+			$table .= '<div class="result-row flex-row" data-id="'.$r['data_id'].'">';
 			//$table .= '<td>'.$r['data_name'].'</td>';
 			$table .= '<span class="result-one">'.$r['data_name'].'</span>';
 			if(!empty($r['parent_data_name'])){
@@ -104,9 +104,14 @@ switch($format){
 			$table .= '<span class="result-four">'.$length.'</span>';
 			//$table .= '<td>';
 			$table .= '<span class="result-five">';
+			$cls = 'fa-heart-o';
+			if(!empty($r['fav_'.$user['user_key']])){
+				$cls = 'fa-heart';
+			}
+			$table .= '<a class="button ajax-like" data-id="'.$r['data_id'].'"><i class="fa '.$cls.'"></i></a> ';
 			$table .= '<a class="button miniplayer-play" data-id="'.$r['data_id'].'"><i class="fa fa-play"></i></a>';
 			$table .= '<a class="button playlist-add" data-id="'.$r['data_id'].'"><i class="fa fa-plus"></i></a>';
-			$table .= '<a class="button ajax-form" data-href="'.build_slug('edit/'.$r['data_id'], [], 'audio').'"><i class="fa fa-pencil"></i></a>';
+			$table .= '<a class="button ajax-form" data-href="'.build_slug('edit/'.$r['data_id'], [], 'audio').'" data-id="'.$r['data_id'].'"><i class="fa fa-pencil"></i></a>';
 			//$table .= '</td>';
 			$table .= '</span>';
 			//$table .= '</tr>';

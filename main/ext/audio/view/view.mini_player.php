@@ -137,6 +137,7 @@ $(document).ready(function(){
 							$('.mini-player-label.title').html(html);
 							app.ajax_form(returned, function(){
 								miniplayer.refresh_labels();
+								controller.refresh_labels(miniplayer.cur_id);
 								$('.mini-player-label.title').html();
 							});
 						});
@@ -255,6 +256,7 @@ $(document).ready(function(){
 			$.get('<?php echo build_slug('ajax/ajax_toggle_favorite/audio'); ?>', data, function(content){
 				if(content['saved'] != undefined && content['saved'] == true){
 					miniplayer.refresh_labels();
+					controller.refresh_labels(miniplayer.id);
 				}else{
 					alert(content);
 				}

@@ -93,6 +93,10 @@ nav a{
 	color: var(--white);
 	background-color: rgba(var(--rgb-black), 0.5);
 }
+nav a.subnav{
+	margin-left: 1rem;
+	width: calc(100% - 1rem);
+}
 header nav a{
 	width: 100%;
 	margin-bottom: 5px;
@@ -965,7 +969,7 @@ Comment: Flex tables
 }
 
 #audio-library-main .flex-row > span.result-four, #audio-library-main .flex-row > span.result-five{
-	max-width: 9rem;
+	max-width: 12rem;
 }
 #audio-library-main .flex-row > span.result-one{
 	flex-grow: 2;

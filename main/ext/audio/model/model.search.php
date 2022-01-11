@@ -34,6 +34,11 @@ $search_options = [
 	'limit' => $rpp,
 	'offset' => (($page - 1) * $rpp)
 ];
+if($type == 'favorites'){
+	$search_options['sub_query'][] = [
+		'meta_fav_'.$user['user_key'] => 1
+	];
+}
 if(!empty($search)){
 	$search_options['sub_query'][] = [
 		'query_mode' => 'OR',
