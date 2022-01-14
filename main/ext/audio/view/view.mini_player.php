@@ -18,6 +18,7 @@
 		</div>
 	</div>
 </div>
+<audio class="miniplayer-preload" preload="true"><source class="next-source"></source></audio>
 <script type="text/javascript">
 var miniplayer = {
 };
@@ -30,6 +31,8 @@ $(document).ready(function(){
 		audio: {},
 		id: {},
 		cur_id: false,
+		next_id: false,
+		next: {},
 		src: {},
 		header: {},
 		trueColor: {
@@ -95,104 +98,135 @@ $(document).ready(function(){
 				}
 			});
 		},
+		preload: function(id){
+			var loader = $('.miniplayer-preload .next-source');
+			if(id != false && id != miniplayer.cur_id){
+				miniplayer.next_id = id;
+				$.get('<?php echo build_slug("ajax/ajax_audio/audio/"); ?>' + id, function( returned ){
+					data = returned;
+					loader.prop('src', data['src']);
+					if(data['mime'] == 'application/octet-stream'){
+						//then we have a bad mime-header somewhere
+						//As documented elsewhere this happens most often with mp3 files.
+						//So we'll just override the bad mime with the correct one for mp3 files.
+						data['mime'] = 'audio/mpeg';
+					}
+					loader.prop('type', data['mime']);
+					miniplayer.next = data;
+				});
+			}else{
+				miniplayer.next_id = false;
+				miniplayer.next = {};
+				loader.prop('src', '');
+				loader.prop('type', '');
+			}
+		},
 		load: function(id){
 			if(miniplayer.instance == false){
 				miniplayer.init();
 			}
-			$.get('<?php echo build_slug("ajax/ajax_audio/audio/"); ?>' + id, function( returned ){
-				data = returned;
-				miniplayer.cur_id = data['id'];
-				miniplayer.audio[0].pause();
-				miniplayer.src.prop('src', data['src']);
-				if(data['mime'] == 'application/octet-stream'){
-					//then we have a bad mime-header somewhere
-					//As documented elsewhere this happens most often with mp3 files.
-					//So we'll just override the bad mime with the correct one for mp3 files.
-					data['mime'] = 'audio/mpeg';
-				}
-				miniplayer.src.prop('type', data['mime']);
-				miniplayer.id = data['id'];
-				miniplayer.header.html('<span>'+data['title']+'</span>');
-				miniplayer.instance.find('.mini-player-label.title').html(data['title']).attr('data-href', data['link']);
-				$('title').html(miniplayer.title + ': ' + data['title']);
-				if(data['artist'] != null && data['artist'] != ''){
-					miniplayer.instance.find('.mini-player-label.band').html(data['artist']);
-				}else{
-					miniplayer.instance.find('.mini-player-label.band').html('');
-				}
-				if(data['album'] != null && data['album'] != ''){
-					miniplayer.instance.find('.mini-player-label.album').html(data['album']).attr('href', data['album_link']);
-				}else{
-					miniplayer.instance.find('.mini-player-label.album').html('').attr('href', '');
-				}
-				$('.mini-player-label.title').off().click(function(){
-					if($(this).attr('data-href') != ''){
-						$(this).prepend('<i class="fa fa-fw fa-cog fa-spin"></i> ... ');
-						var data = {
-							format: 'ajax_form'
-						};
-						$.get($(this).attr('data-href'), data, function( returned ){
-							var html = $('.mini-player-label.title').html();
-							html = html.replace('<i class="fa fa-fw fa-cog fa-spin"></i> ... ', '');
-							$('.mini-player-label.title').html(html);
-							app.ajax_form(returned, function(){
-								miniplayer.refresh_labels();
-								controller.refresh_labels(miniplayer.cur_id);
-								$('.mini-player-label.title').html();
-							});
-						});
-					}
+			if(miniplayer.next_id != false && miniplayer.next_id == id){
+				miniplayer.load_bind(miniplayer.next);
+				miniplayer.preload(false);
+			}else{
+				$.get('<?php echo build_slug("ajax/ajax_audio/audio/"); ?>' + id, function( returned ){
+					miniplayer.load_bind(returned);
 				});
-				if(miniplayer.header.find('span').width() > miniplayer.header.width()){
-					miniplayer.header.find('span').addClass('marquee');
+			}
+		},
+		load_bind: function(returned){
+			data = returned;
+			miniplayer.cur_id = data['id'];
+			miniplayer.audio[0].pause();
+			miniplayer.src.prop('src', data['src']);
+			if(data['mime'] == 'application/octet-stream'){
+				//then we have a bad mime-header somewhere
+				//As documented elsewhere this happens most often with mp3 files.
+				//So we'll just override the bad mime with the correct one for mp3 files.
+				data['mime'] = 'audio/mpeg';
+			}
+			miniplayer.src.prop('type', data['mime']);
+			miniplayer.id = data['id'];
+			miniplayer.header.html('<span>'+data['title']+'</span>');
+			miniplayer.instance.find('.mini-player-label.title').html(data['title']).attr('data-href', data['link']);
+			$('title').html(miniplayer.title + ': ' + data['title']);
+			if(data['artist'] != null && data['artist'] != ''){
+				miniplayer.instance.find('.mini-player-label.band').html(data['artist']);
+			}else{
+				miniplayer.instance.find('.mini-player-label.band').html('');
+			}
+			if(data['album'] != null && data['album'] != ''){
+				miniplayer.instance.find('.mini-player-label.album').html(data['album']).attr('href', data['album_link']);
+			}else{
+				miniplayer.instance.find('.mini-player-label.album').html('').attr('href', '');
+			}
+			$('.mini-player-label.title').off().click(function(){
+				if($(this).attr('data-href') != ''){
+					$(this).prepend('<i class="fa fa-fw fa-cog fa-spin"></i> ... ');
+					var data = {
+						format: 'ajax_form'
+					};
+					$.get($(this).attr('data-href'), data, function( returned ){
+						var html = $('.mini-player-label.title').html();
+						html = html.replace('<i class="fa fa-fw fa-cog fa-spin"></i> ... ', '');
+						$('.mini-player-label.title').html(html);
+						app.ajax_form(returned, function(){
+							miniplayer.refresh_labels();
+							controller.refresh_labels(miniplayer.cur_id);
+							$('.mini-player-label.title').html();
+						});
+					});
 				}
-				miniplayer.audio[0].load();
-				if(data['duration'] !== undefined){
-					var duration = Number(data['duration']);
-					miniplayer.fDur = miniplayer.timeFormat(duration);
-				}
-				if(data['time'] == undefined || data['time'] == 0){
+			});
+			if(miniplayer.header.find('span').width() > miniplayer.header.width()){
+				miniplayer.header.find('span').addClass('marquee');
+			}
+			miniplayer.audio[0].load();
+			if(data['duration'] !== undefined){
+				var duration = Number(data['duration']);
+				miniplayer.fDur = miniplayer.timeFormat(duration);
+			}
+			if(data['time'] == undefined || data['time'] == 0){
+				miniplayer.currentTime = 0.0;
+				miniplayer.audio[0].currentTime = 0.0;
+				miniplayer.instance.find('.mini-player-counter').html('0:00 / ' + miniplayer.fDur);
+			}else{
+				var min = 60;
+				if(data['time'] <= (data['duration'] - .5 * min)){
+					miniplayer.currentTime = data['time'];
+					miniplayer.audio[0].currentTime = data['time'];
+				}else{
 					miniplayer.currentTime = 0.0;
 					miniplayer.audio[0].currentTime = 0.0;
-					miniplayer.instance.find('.mini-player-counter').html('0:00 / ' + miniplayer.fDur);
-				}else{
-					var min = 60;
-					if(data['time'] <= (data['duration'] - .5 * min)){
-						miniplayer.currentTime = data['time'];
-						miniplayer.audio[0].currentTime = data['time'];
-					}else{
-						miniplayer.currentTime = 0.0;
-						miniplayer.audio[0].currentTime = 0.0;
-					}
-					var friendly = miniplayer.timeFormat(miniplayer.audio[0].currentTime);
-					miniplayer.instance.find('.mini-player-counter').html(friendly + ' / ' + miniplayer.fDur);
 				}
-				if(data['time'] == undefined){
-					miniplayer.track = false;
-				}else{
-					miniplayer.track = true;
+				var friendly = miniplayer.timeFormat(miniplayer.audio[0].currentTime);
+				miniplayer.instance.find('.mini-player-counter').html(friendly + ' / ' + miniplayer.fDur);
+			}
+			if(data['time'] == undefined){
+				miniplayer.track = false;
+			}else{
+				miniplayer.track = true;
+			}
+			if(data['favorite'] != undefined && data['favorite'] == true){
+				miniplayer.instance.find('.favorite').removeClass('fa-heart-o').addClass('fa-heart');
+			}else{
+				miniplayer.instance.find('.favorite').removeClass('fa-heart').addClass('fa-heart-o');
+			}
+			miniplayer.audio[0].play();
+			if('mediaSession' in navigator){
+				navigator.mediaSession.metadata = new MediaMetadata({
+					title: data['title'],
+					artist: data['artist'],
+					album: data['album']
+				});
+				if('MediaPositionState' in navigator.mediaSession){
+					navigator.mediaSession.setPositionState({
+					duration: miniplayer.audio[0].duration,
+					playbackRate: 1,
+					position: miniplayer.audio[0].currentTime
+				});
 				}
-				if(data['favorite'] != undefined && data['favorite'] == true){
-					miniplayer.instance.find('.favorite').removeClass('fa-heart-o').addClass('fa-heart');
-				}else{
-					miniplayer.instance.find('.favorite').removeClass('fa-heart').addClass('fa-heart-o');
-				}
-				miniplayer.audio[0].play();
-				if('mediaSession' in navigator){
-					navigator.mediaSession.metadata = new MediaMetadata({
-						title: data['title'],
-						artist: data['artist'],
-						album: data['album']
-					});
-					if('MediaPositionState' in navigator.mediaSession){
-						navigator.mediaSession.setPositionState({
-						duration: miniplayer.audio[0].duration,
-						playbackRate: 1,
-						position: miniplayer.audio[0].currentTime
-					});
-					}
-				}
-			});			
+			}
 		},
 		chooseColor: function(){
 			var r = Math.floor(Math.random() * 155) + 100;
@@ -971,6 +1005,12 @@ $(document).ready(function(){
 						playbackRate: 1,
 						position: miniplayer.audio[0].currentTime
 					});
+				}
+				if(playlist.playing == true && playlist.list[playlist.i + 1] != undefined){
+					var check = (miniplayer.audio[0].currentTime / miniplayer.audio[0].duration);
+					if(check >= 0.5 && miniplayer.next_id == false){
+						miniplayer.preload(playlist.list[playlist.i + 1]);
+					}
 				}
 			});
 			miniplayer.audio[0].onended = function(){

@@ -10,7 +10,7 @@
 			}
 		?>
 		<link rel="icon" type="image/png" href="<?php echo URI; ?>/upload/favicon.png">
-		<link rel="stylesheet" href="<?php echo URI . '/' . $stylesheet; ?>" type="text/css">
+		<link rel="stylesheet" href="<?php echo URI . '/' . $stylesheet . '?version=' . date('m_d_Y'); ?>" type="text/css">
 		<link rel="stylesheet" href="<?php echo URI; ?>/fonts/font-awesome.min.css" type="text/css">
 		<?php if(!empty($title)){ ?>
 		<title><?php echo $title; ?></title>

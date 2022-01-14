@@ -965,7 +965,7 @@ Comment: Flex tables
 }
 
 #audio-library-main .flex-row > span.result-five{
-	min-width: 160px;
+	min-width: 200px;
 }
 
 #audio-library-main .flex-row > span.result-four, #audio-library-main .flex-row > span.result-five{
@@ -1018,8 +1018,9 @@ Comment: Flex tables
 		width: 100%;
 		margin-bottom: 10px;
 	}
-	header nav a{
+	header nav a, header nav a.subnav{
 		width: auto;
+		margin: 0.25rem;
 	}
 	header, footer, header nav, footer nav{
 		text-align: center;
