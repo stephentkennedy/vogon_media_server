@@ -2,23 +2,21 @@
 	<thead>
 		<tr>
 			<th>Mount Point</th>
-			<th>Size</th>
-			<th>Available</th>
-			<th>Full</th>
+			<th>Status</th>
 		</tr>
 	</thead>
 	<tbody>
 <?php foreach($drives as $drive){ ?>
 		<tr>
 			<td><?php echo $drive['Mounted']; ?></td>
-			<td><?php echo $drive['Size']; ?></td>
-			<td><?php echo $drive['Avail']; ?></td>
-			<td><?php echo $drive['Use%']; ?> <meter value="<?php 
+			<td><?php 
 				$percent = trim($drive['Use%']);
 				$percent = str_replace('%', '', $percent);
-				$percent = (int)$percent / 100;
-				echo $percent;
-			?>"></meter></td>
+				echo load_view('percentage_bar', [
+					'percent' => $percent,
+					'label' => $drive['Avail'].' free out of '.$drive['Size'].' ('.$drive['Use%'].' Full)'
+				], 'server');
+			?></td>
 		</tr>
 <?php } ?>
 	</tbody>

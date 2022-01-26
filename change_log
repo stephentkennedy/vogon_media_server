@@ -1,7 +1,3 @@
-*New*
--Added preload system for audio playing in a playlist to reduce time between one track ending and the next playing
-
 *Updated*
--Updated mobile CSS on audio search views to account for the extra space the "favorite" button uses
--Updated mobile CSS to adjust the new .subnav styles on mobile.
--Updated view.header.php to include the date as the version for the loaded CSS so that CSS changes are easier to push out if browsers cache aggressively.
+-Reworked monitor views to better utilize meters & colors to communicate more information at a glance
+-Moved math done on top data to the ajax controller to make it more independent of the view
