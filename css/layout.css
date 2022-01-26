@@ -340,10 +340,11 @@ Comment: Tray system
 }
 .tray > .container > .content{
 	display: block;
-	height: calc(100vh - 5rem);
+	height: calc(100vh - 5.5rem);
 	padding-left: 2rem;
 	padding-right: 2rem;
-	overflow: auto;
+	overflow-y: auto;
+	overflow-x: hidden;
 }
 .tray > .container > h1, .tray > .container > h2, .tray > .container > h3, .tray > .container > h4, .tray > .container > h5, .tray > .container > h6{
 	margin: 0px;
@@ -379,6 +380,12 @@ Comment: Tray system
 	}
 	.col, .col-one, .col-two, .col-three, .col-four, .col-five, .col-six, .col-seven, .col-eight, .col-nine, .col-ten{
 		width: 100% !important;
+	}
+	.tray{
+		height: calc(100vh - 3rem);
+	}
+	.tray > .container > .content{
+		height: calc(100vh - 8.5rem);
 	}
 	#content{
 		max-width: 100vw;

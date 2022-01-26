@@ -1,3 +1,5 @@
+*Added*
+-New server monitor tray, available from any page
+
 *Updated*
--Reworked monitor views to better utilize meters & colors to communicate more information at a glance
--Moved math done on top data to the ajax controller to make it more independent of the view
+-Modified CSS to better allow trays to work on mobile

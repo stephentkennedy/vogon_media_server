@@ -1,4 +1,4 @@
-<div class="tray right col col-three">
+<div class="tray right second col col-three">
 	<div class="controls">
 		<i class="fa fa-list tray-expand" title="Playlists"></i>
 	</div>
@@ -8,7 +8,7 @@
 		</div>
 	</div>
 </div>
-<div id="current" class="tray right second col col-three">
+<div id="current" class="tray right third col col-three">
 	<div class="controls">
 		<i class="fa fa-list-alt tray-expand" title="Now Playing"></i><span class="counter hidden"></span>
 	</div>

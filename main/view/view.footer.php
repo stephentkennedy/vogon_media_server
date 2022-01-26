@@ -1,3 +1,13 @@
+			<div id="server-status-tray" class="tray right col col-three">
+				<div class="controls">
+					<i class="fa fa-tachometer tray-expand" title="Status"></i>
+				</div>
+				<div class="container">
+					<h2>Server Status</h2>
+					<div id="server-status" class="content row">
+					</div>
+				</div>
+			</div>
 		</div><!-- End of #content Div -->
 		<div id="popup"></div>
 		<footer>
@@ -19,8 +29,22 @@
 					});
 				});
 				var backgroundVid = $('#video-background')[0];
-				backgroundVid.playbackRate = 0.3;
-				backgroundVid.play();
+				if(backgroundVid != undefined){
+					backgroundVid.playbackRate = 0.3;
+					backgroundVid.play();
+				}
+				$.post("<?php echo build_slug('ajax/ajax_top/media');?>", function(returned){
+					var string = '' + returned + '';
+					$('#server-status-tray #server-status').html(string);
+				});
+				setInterval(function(){
+					if($('#server-status-tray').hasClass('open')){
+						$.post("<?php echo build_slug('ajax/ajax_top/media');?>", function(returned){
+							var string = '' + returned + '';
+							$('#server-status-tray #server-status').html(string);
+						});
+					}
+				}, 5000);
 			});
 			<?php 
 				//Easiest way to clear out get variables so we don't have to worry about them later.

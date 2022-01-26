@@ -124,7 +124,7 @@ footer{
 	flex: 1 100%;
 	text-align: right;
 	position: relative;
-	z-index: 1;
+	z-index: 0;
 }
 .row{
 	padding: 10px;
@@ -433,7 +433,7 @@ a.video-preview:hover{
 	bottom: 0;
 	transform: translateY(260px);
 	left: 0;
-	z-index: 50;
+	z-index: 1;
 	background-color: var(--black);
 	border-left: 1px solid rgba(var(--rgb-main-accent), 1);
 	border-right: 1px solid rgba(var(--rgb-main-accent), 1);
