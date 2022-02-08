@@ -61,6 +61,7 @@ $exts = dir_contents(__DIR__ . DIRECTORY_SEPARATOR . 'ext');
 $_SESSION['loaded_extensions'] = $exts;
 
 //Comment this out if you don't want vogon to be password protected
+global $user;
 $user = [];
 //load_controller('session', [], 'user');
 

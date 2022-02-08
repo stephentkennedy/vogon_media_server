@@ -33,6 +33,8 @@
 		}
 		
 		if(isset($_POST['user_email']) && $user_data['user_key'] == $user_data['user_key']){
+			debug_d('hello');
+			die();
 			$new_data = [
 				'user_key' => $_POST['user_key'],
 				'user_email' => $_POST['user_email'],

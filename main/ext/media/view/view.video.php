@@ -28,7 +28,7 @@
 	</div>
 	<div id="controls" class="active">
 		<input type="range" class="seek" value="0" max="" /><span class="seek-counter hidden"></span><span id="time">0:00 / 0:00</span><br>
-		<i class="fa fa-fw fa-play play"></i><i class="fa fa-fw fa-volume-up mute"></i><input type="range" class="volume" value="100" max="100" /><i class="fa fa-fw fa-expand fullscreen" title="Toggle Fullscreen"></i><i class="fa fa-fw fa-arrows-v animorphic-toggle" title="Toggle Animorphic Widescreen Display"></i>
+		<i class="fa fa-step-backward back-thirty"></i><i class="fa fa-fw fa-play play"></i><i class="fa fa-step-forward forward-thirty"></i><i class="fa fa-fw fa-volume-up mute"></i><input type="range" class="volume" value="100" max="100" /><i class="fa fa-fw fa-expand fullscreen" title="Toggle Fullscreen"></i><i class="fa fa-fw fa-arrows-v animorphic-toggle" title="Toggle Animorphic Widescreen Display"></i>
 	</div>
 </div>
 <style>
@@ -324,6 +324,19 @@
 						player.play_started = true;
 						player.activeFade();
 					}
+				}
+			});
+			player.controls.find('.forward-thirty').click(function(){
+				if((player.video[0].currentTime + 30) < player.video[0].duration){
+					player.video[0].currentTime += 30;
+				}
+			});
+			
+			player.controls.find('.back-thirty').click(function(){
+				if((player.video[0].currentTime - 30) > 0){
+					player.video[0].currentTime += -30;
+				}else{
+					player.video[0].currentTime = 0;
 				}
 			});
 			
