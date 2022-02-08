@@ -1,2 +1,3 @@
-*Added*
--Step by 30s buttons to video player
+*Fixes*
+-Switched Ajax Pagination elements to Buttons for better non-standard interface interactions (controllers on console web browsers)
+-Switched video player controls to Button elements

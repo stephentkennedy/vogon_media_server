@@ -11,13 +11,13 @@
 	</video>
 	<div id="title" class="active">
 		<title class="title-bar"><?php echo $title; ?></title>
-		<h1><i class="fa fa-arrow-circle-left back-to-view"></i> <span class="title-text"><?php echo $title; ?></span></h1>
-		<i class="fa fa-picture-o update-thumbnail"></i>
+		<h1><button class="fa fa-arrow-circle-left back-to-view"></button> <span class="title-text"><?php echo $title; ?></span></h1>
+		<button class="fa fa-picture-o update-thumbnail"></button>
 	</div>
 	<div id="sub-controls" class="<?php if(empty($subtitles)){
 		 echo 'none';
 	} ?>">
-		<i class="fa fa-comment subtitles"></i>
+		<button class="fa fa-comment subtitles"></button>
 	</div>
 	<div id="video_preview">
 		<h3 id="video_title">Next:</h3>
@@ -28,10 +28,14 @@
 	</div>
 	<div id="controls" class="active">
 		<input type="range" class="seek" value="0" max="" /><span class="seek-counter hidden"></span><span id="time">0:00 / 0:00</span><br>
-		<i class="fa fa-step-backward back-thirty"></i><i class="fa fa-fw fa-play play"></i><i class="fa fa-step-forward forward-thirty"></i><i class="fa fa-fw fa-volume-up mute"></i><input type="range" class="volume" value="100" max="100" /><i class="fa fa-fw fa-expand fullscreen" title="Toggle Fullscreen"></i><i class="fa fa-fw fa-arrows-v animorphic-toggle" title="Toggle Animorphic Widescreen Display"></i>
+		<button class="fa fa-step-backward back-thirty"></button><button class="fa fa-fw fa-play play"></button><button class="fa fa-step-forward forward-thirty"></button><button class="fa fa-fw fa-volume-up mute"></button><input type="range" class="volume" value="100" max="100" /><button class="fa fa-fw fa-expand fullscreen" title="Toggle Fullscreen"></button><button class="fa fa-fw fa-arrows-v animorphic-toggle" title="Toggle Animorphic Widescreen Display"></button>
 	</div>
 </div>
 <style>
+	button.fa{
+		border: none !important;
+		vertical-align: middle !important;
+	}
 	video{
 		width: 100vw;
 		height: 100vh;
