@@ -1,3 +1,2 @@
-*Fixes*
--Switched Ajax Pagination elements to Buttons for better non-standard interface interactions (controllers on console web browsers)
--Switched video player controls to Button elements
+*Updated*
+-Changed miniplayer fullscreen height value from 100vh to 100% to ensure it works more correctly with android devices with the url bar set to hide on scroll (the default setting)
