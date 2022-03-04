@@ -411,18 +411,18 @@
 					player.video[0].textTracks[0].mode = 'hidden';
 				}
 			});
-			$('#title i.update-thumbnail').click(function(){
+			$('#title button.update-thumbnail').click(function(){
 				$(this).removeClass('fa-picture-o');
 				$(this).addClass('fa-cog').addClass('fa-spin');
 				var seconds = player.video[0].currentTime;
 				$.get(<?php echo "'".build_slug('ajax/ajax_thumbnail/media')."'"; ?>, {id: player.id, seconds: seconds}, function(returned){
 					var string = returned.message;
 					if(returned.thumbnail != ''){
-						string += '<br><img style="max-width: 100%;height:auto;width:auto;" src="'+returned.thumbnail+'"><br>';
+						string += '<br><img style="max-width: 100%;height:auto;width:auto;" src="'+returned.thumbnail+'?time=<?php echo time(); ?>"><br>';
 					}
 					string += '<button class="button">Close</button>';
 					var w = aPopup.newWindow(string);
-					$('#title i.update-thumbnail').removeClass('fa-spin').removeClass('fa-cog').addClass('fa-picture-o');
+					$('#title button.update-thumbnail').removeClass('fa-spin').removeClass('fa-cog').addClass('fa-picture-o');
 					w.find('.button').click(function(){
 						w.remove();
 					});
