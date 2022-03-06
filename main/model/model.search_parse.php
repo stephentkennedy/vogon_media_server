@@ -1,6 +1,6 @@
 <?php
 /*
-Name: Stephen Kennedy
+Name: Steph Kennedy
 Date: 12/2/19
 Comment: This model is supposed to take search input from the user, parse it for special symbols, and modify our search logic accordingly
 

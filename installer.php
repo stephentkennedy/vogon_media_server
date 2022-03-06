@@ -3,7 +3,7 @@ if(!defined('NEW')){
 	die('The installer is not directly accessed');
 }
 /*
-Name: Stephen Kennedy
+Name: Steph Kennedy
 Date: 2/17/21
 Comment: We now allow the installer to be run from the command line so we can install and configure via bash script.
 */
@@ -151,7 +151,7 @@ HERE;
 	load_model('rebuild_nav', ['type' => 'foot']);
 	
 	/*
-	Name: Stephen Kennedy
+	Name: Steph Kennedy
 	Date: 9/25/2020
 	Comment: The below code is how we used to generate menu navigation, however it's a little out of date now. By including the functions.php, we should be able to use the rebuild_nav model and just reuse the same code we use for the settings menu. If that works, the below code will be removed.
 	*/

@@ -69,7 +69,7 @@ foreach($new_struct as $table => $fields){
 				];
 			}
 			/*
-			Name: Stephen Kennedy
+			Name: Steph Kennedy
 			Date: 3/15/21
 			Comment: We need to modify this logic to check if a field exists further on in the current structure so I think we're going to switch to loop through the current structure.
 			*/

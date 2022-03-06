@@ -4,7 +4,7 @@ $u_dir = ROOT . DIRECTORY_SEPARATOR . 'upload' . DIRECTORY_SEPARATOR;
 $filename = $u_dir . 'zip_code_database.csv';
 $h = fopen($filename, 'r');
 /*
-Name: Stephen Kennedy
+Name: Steph Kennedy
 Date: 5/12/2020
 Comment: Post Office Zipcode Database
 */

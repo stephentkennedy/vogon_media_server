@@ -3,7 +3,7 @@ if(!isset($uri)){
 	$uri = $_SERVER['REQUEST_URI'];
 }
 /*
-Name: Stephen Kennedy
+Name: Steph Kennedy
 Date: 7/29/2020
 Comment: This model will be passed in data to save to the cache table in a variable called $cache
 */

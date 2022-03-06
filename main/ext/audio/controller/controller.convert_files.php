@@ -1,6 +1,6 @@
 <?php
 /*
-Name: Stephen Kennedy
+Name: Steph Kennedy
 Date: 2/21/21
 Comment: Audiophiles might be mad at this choice, but browsers only really understand a limited subset of audio files: .mp3 .ogg .flac
 

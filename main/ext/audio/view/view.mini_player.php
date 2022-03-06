@@ -547,7 +547,7 @@ $(document).ready(function(){
 				var level = 0;
 				
 				/*
-				Name: Stephen Kennedy
+				Name: Steph Kennedy
 				Date: 2/17/21
 				Comment: Right now the visualizers only sample the top of the array, they need to be modified to sample the whole array so that we get visualization of the highs, mids, and lows, when right now we're just getting highs and some mides.
 				*/
@@ -632,7 +632,7 @@ $(document).ready(function(){
 				var level = 0;
 				
 				/*
-				Name: Stephen Kennedy
+				Name: Steph Kennedy
 				Date: 2/17/21
 				Comment: Right now the visualizers only sample the top of the array, they need to be modified to sample the whole array so that we get visualization of the highs, mids, and lows, when right now we're just getting highs and some mides.
 				*/
@@ -717,7 +717,7 @@ $(document).ready(function(){
 				var level = 0;
 				
 				/*
-				Name: Stephen Kennedy
+				Name: Steph Kennedy
 				Date: 2/17/21
 				Comment: Right now the visualizers only sample the top of the array, they need to be modified to sample the whole array so that we get visualization of the highs, mids, and lows, when right now we're just getting highs and some mides.
 				*/
@@ -801,7 +801,7 @@ $(document).ready(function(){
 				var level = 0;
 				
 				/*
-				Name: Stephen Kennedy
+				Name: Steph Kennedy
 				Date: 2/17/21
 				Comment: Right now the visualizers only sample the top of the array, they need to be modified to sample the whole array so that we get visualization of the highs, mids, and lows, when right now we're just getting highs and some mides.
 				*/
@@ -1457,7 +1457,7 @@ $(document).ready(function(){
 			}else{
 			
 				/*
-				Name: Stephen Kennedy
+				Name: Steph Kennedy
 				Date: 8/5/2020
 				Comment: This works when in focus, but we don't need to use it if we use the mediaSession API, so it has been moved here as a fallback if we don't have access to the API.
 				*/
@@ -1512,7 +1512,7 @@ $(document).ready(function(){
 				var span = $('.mini-player-seek-counter');
 				
 				/*
-				Name: Stephen Kennedy
+				Name: Steph Kennedy
 				Date: 2/22/21
 				Comment: Now we do math to see what percentage we are in the bar.
 				*/

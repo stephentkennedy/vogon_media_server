@@ -1,6 +1,6 @@
 <?php
 /*
-Name: Stephen Kennedy
+Name: Steph Kennedy
 Date: 3/15/21
 Comment: First things first, we want to be able to install updates that are generated in multiple ways so we need to find our root directory of the update we're looking to install.
 

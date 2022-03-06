@@ -1,6 +1,6 @@
 <?php
 /*
-Name: Stephen Kennedy
+Name: Steph Kennedy
 Date: 3/12/21
 Comment: Unlike some of the other loops we've been doing this one isn't a dynamic array because we're basically going to load a different model based on which step we're on.
 

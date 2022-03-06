@@ -24,7 +24,7 @@ if($return == false){
 
 
 	/*
-	Name: Stephen Kennedy
+	Name: Steph Kennedy
 	Date: 8/5/2020
 	Comment: Previously we were doing a lot of this manually, and avoiding more than one join at a time.
 	

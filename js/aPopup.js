@@ -1,6 +1,6 @@
 /*
 Date: 11/22/2019
-Name: Stephen Kennedy
+Name: Steph Kennedy
 Comment: This document powers the Almost Simple Popup system.
 */
 var aPopup = {};

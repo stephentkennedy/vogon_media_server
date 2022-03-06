@@ -1,6 +1,6 @@
 <?php
 /*
-Name: Stephen Kennedy
+Name: Steph Kennedy
 Date: 10/22/21
 Comment: At this point we are joining a meta join with a direct join, we're just not going to support any transactions except selects to make our lives easier.
 */

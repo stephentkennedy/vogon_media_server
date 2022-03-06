@@ -1,7 +1,7 @@
 <?php
 $video_slug = get_slug_part(1);
 /*
-Name: Stephen Kennedy
+Name: Steph Kennedy
 Date: 5/25/20
 Comment: Once we have a database we'll do the lookup here, for now we're just hardcoding our result.
 */

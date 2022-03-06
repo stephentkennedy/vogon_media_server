@@ -439,7 +439,7 @@
 				var span = $('.seek-counter');
 				
 				/*
-				Name: Stephen Kennedy
+				Name: Steph Kennedy
 				Date: 2/22/21
 				Comment: Now we do math to see what percentage we are in the bar.
 				*/

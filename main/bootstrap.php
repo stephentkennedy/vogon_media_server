@@ -1,6 +1,6 @@
 <?php
 /*
-Name: Stephen Kennedy
+Name: Steph Kennedy
 Date: 12/4/2018
 Comment: Let's establish what we need for our bootstrap;
 */
@@ -80,7 +80,7 @@ if(empty($_REQUEST['orderby'])){
 $_SESSION['active_filebrowsers'] = 0;
 
 /*
-Developer: Stephen Kennedy
+Developer: Steph Kennedy
 Date: 4/23/21
 Comment: While working in WordPress I've discovered how many problems are caused by not having a clean way for people to register filters on an output buffer so we're just gonna add that into the mix
 */
