@@ -1,6 +1,6 @@
 <?php
 /*
-Developer: Stephen Kennedy
+Developer: Steph Kennedy
 Date: 3/3/21
 Comment: This is to allow us an easy interface for doing looped tasks via ajax so we can have a clean updating output & progress bars rather than just sitting and waiting for things to load, and without abusing output flushing so we don't have to wait for things like the footer to load.
 */

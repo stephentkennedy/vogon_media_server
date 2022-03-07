@@ -1,6 +1,6 @@
 <?php
 /*
-	Name: Stephen Kennedy
+	Name: Steph Kennedy
 	Date: 11/21/19
 	Comment: This model is a little more complicated than our add because it's intended to accepts variable data. The idea being that we can use the same model for any kind of update and multiple forms.
 */

@@ -353,7 +353,7 @@ class clerk {
 		$params = [];
 		
 		/*
-		Name: Stephen Kennedy
+		Name: Steph Kennedy
 		Date: 8/5/2020
 		Comment: Since we're joining here, we're only allowing a subset of the options we offer in the main function.
 		*/

@@ -18,7 +18,7 @@
 		
 		//We don't allow people to take over sessions on different devices
 		/*
-		Name: Stephen Kennedy
+		Name: Steph Kennedy
 		Date: 7/28/2020
 		Comment: Consider re-examining this. It makes sense because you don't want someone on one device messing with the activity of someone else who is actively watching, but with the logic as it is currently, all that will happen is it will ask the new device to start a new session and then kick the currently watching device out.
 		

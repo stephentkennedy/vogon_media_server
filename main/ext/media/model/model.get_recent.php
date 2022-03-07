@@ -14,7 +14,7 @@ if(empty($limit)){
 }
 
 /*
-Name: Stephen Kennedy
+Name: Steph Kennedy
 Date: 10/22/21
 Comment: This is a complex join of a meta_join_db_handler and a direct_link_db_handler. It looks a little gross, but it looks a lot less gross than the original.
 */

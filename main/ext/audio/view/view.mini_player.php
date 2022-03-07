@@ -297,10 +297,13 @@ $(document).ready(function(){
 			});
 		},
 		rgbMe: function(colorObj){
-			var string = 'rgb(' + colorObj.r + ',' + colorObj.g + ',' + colorObj.b + ')';
+			if(colorObj.a == undefined){
+				colorObj.a = 1;
+			}
+			var string = 'rgba(' + colorObj.r + ',' + colorObj.g + ',' + colorObj.b + ',' + colorObj.a + ')';
 			return string;
 		},
-		drawBar: function (x1, y1, x2, y2, width,frequency){
+		drawBar: function (x1, y1, x2, y2, width, frequency){
 			var freq_temp = frequency / 255;
 			if(freq_temp > 1){
 				freq_temp = 1;
@@ -308,7 +311,8 @@ $(document).ready(function(){
 			var color = {
 				r: freq_temp * miniplayer.curColor.r,
 				g: freq_temp * miniplayer.curColor.g,
-				b: freq_temp * miniplayer.curColor.b
+				b: freq_temp * miniplayer.curColor.b,
+				a: freq_temp * 1
 			}
 			
 			//var lineColor = "rgb(" + color.r + ", " + color.g + ", " + color.b + ")";
@@ -414,14 +418,30 @@ $(document).ready(function(){
 					name: 'Bars',
 					func: miniplayer.bars
 				},
+				'solidBar':{
+					name: 'Solid Bars',
+					func: miniplayer.solidBars
+				},
+				'pipBar':{
+					name: 'Pips',
+					func: miniplayer.pipBars
+				},
 				'circle': {
-					name: 'Warp',
+					name: 'Circle',
 					func: miniplayer.cleanCircle
 				},
-				/*'burnout': {
-					name: 'Burnout',
+				'solid':{
+					name: 'Solid Circle',
+					func: miniplayer.solidCircle
+				},
+				'pip':{
+					name: 'Pip Circle',
+					func: miniplayer.pipCircle
+				},
+				'burnout': {
+					name: 'Warp',
 					func: miniplayer.burnout
-				}*/
+				}
 			}
 			var string = '<label for="visualizer">Visualization</label><select id="visualizer">';
 			for(i in viz){
@@ -448,9 +468,25 @@ $(document).ready(function(){
 						miniplayer.animation = miniplayer.cleanCircle;
 						window.localStorage.setItem('vizualizer', 'cleanCircle');
 						break;
+					case 'solid':
+						miniplayer.animation = miniplayer.solidCircle;
+						window.localStorage.setItem('vizualizer', 'solidCircle');
+						break;
+					case 'pip':
+						miniplayer.animation = miniplayer.pipCircle;
+						window.localStorage.setItem('vizualizer', 'pipCircle');
+						break;
 					case 'burnout':
 						miniplayer.animation = miniplayer.burnout;
 						window.localStorage.setItem('vizualizer', 'burnout');
+						break;
+					case 'solidBar':
+						miniplayer.animation = miniplayer.solidBars;
+						window.localStorage.setItem('vizualizer', 'solidBars');
+						break;
+					case 'pipBar':
+						miniplayer.animation = miniplayer.pipBars;
+						window.localStorage.setItem('vizualizer', 'pipBars');
 						break;
 					case 'noViz':
 						miniplayer.animation = miniplayer.noViz;
@@ -511,7 +547,7 @@ $(document).ready(function(){
 				var level = 0;
 				
 				/*
-				Name: Stephen Kennedy
+				Name: Steph Kennedy
 				Date: 2/17/21
 				Comment: Right now the visualizers only sample the top of the array, they need to be modified to sample the whole array so that we get visualization of the highs, mids, and lows, when right now we're just getting highs and some mides.
 				*/
@@ -523,7 +559,6 @@ $(document).ready(function(){
 						i = miniplayer.binCount - 1;
 					}
 					level += frequency_array[i];
-					//console.log(i, frequency_array[i]);
 				}
 				level = Math.floor(level / bars);
 				radius = Math.floor(level / 8);
@@ -540,9 +575,9 @@ $(document).ready(function(){
 				
 				//draw a circle
 				//ctx.strokeStyle = 'rgba(150,0,100,1)';
-				ctx.beginPath();
-				ctx.arc(center_x,center_y,radius,0,2*Math.PI);
-				ctx.stroke();
+				//ctx.beginPath();
+				//ctx.arc(center_x,center_y,radius,0,2*Math.PI);
+				//ctx.stroke();
 				var angle = 0;
 				for(var i = 0; i < miniplayer.binCount; i += bar_increment){
 					if(i >= miniplayer.binCount){
@@ -552,21 +587,26 @@ $(document).ready(function(){
 					rads = Math.PI * 2 / (miniplayer.binCount / bar_increment);
 					
 					bar_height = frequency_array[i]*(center_y / center_x) + ((center_y / 2) - radius);
+					bar_height_2 = frequency_array[i]*(center_y / center_x) + ((center_y / 2) - (radius + 2));
+					
 					
 					// set coordinates
 					x = center_x + Math.cos(rads * angle) * (radius);
-				y = center_y + Math.sin(rads * angle) * (radius);
+					y = center_y + Math.sin(rads * angle) * (radius);
 					x_end = center_x + Math.cos(rads * angle)*(radius + bar_height);
 					y_end = center_y + Math.sin(rads * angle)*(radius + bar_height);
+					x_tick_end = center_x + Math.cos(rads * angle)*(radius + bar_height_2);
+					y_tick_end = center_y + Math.sin(rads * angle)*(radius + bar_height_2);
 					
 					//draw a bar
 					miniplayer.drawBar(x, y, x_end, y_end, bar_width,frequency_array[i]);
+					miniplayer.drawBarSolid(x_end, y_end, x_tick_end, y_tick_end, bar_width, frequency_array[i]);
 					angle++;
 				}
 			}
 			window.requestAnimationFrame(miniplayer.animation);
 		},
-		burnout: function(){
+		solidCircle: function (){
 			if(miniplayer.instance.hasClass('open')){
 				miniplayer.colorControl();
 				// set to the size of device
@@ -575,6 +615,8 @@ $(document).ready(function(){
 				//canvas.height = ;
 				ctx = canvas.getContext("2d");
 				ctx.globalCompositeOperation = 'source-over';
+				ctx.fillStyle = '#000000';
+				ctx.fillRect(0,0,canvas.width,canvas.height);
 				
 				// find the center of the window
 				center_x = canvas.width / 2;
@@ -589,6 +631,12 @@ $(document).ready(function(){
 				
 				var level = 0;
 				
+				/*
+				Name: Steph Kennedy
+				Date: 2/17/21
+				Comment: Right now the visualizers only sample the top of the array, they need to be modified to sample the whole array so that we get visualization of the highs, mids, and lows, when right now we're just getting highs and some mides.
+				*/
+				
 				var bar_increment = ~~(miniplayer.binCount / bars);
 				
 				for(var i = 0; i < miniplayer.binCount; i += bar_increment){
@@ -597,56 +645,212 @@ $(document).ready(function(){
 					}
 					level += frequency_array[i];
 				}
-				level = Math.floor((level / bars) / 4);
-				
-				radius = level;
-				
-				var temp_width = canvas.width + .01;
-				var temp_height = canvas.height + .01;
-				
-				ctx.translate(center_x, center_y);
-				miniplayer.angle += 0.00005;
-				if(miniplayer.angle > 360){
-					miniplayer.angle = 0;
-				}
-				var radian = miniplayer.angle * Math.PI / 180;
-				ctx.rotate(radian);
-				ctx.drawImage(canvas, Math.floor(temp_width / 2) * -1, Math.floor(temp_height / 2) * -1, temp_width, temp_height);
-				ctx.globalCompositeOperation = 'source-over';
-				ctx.rotate(-1 * radian);
-				ctx.setTransform(1, 0, 0, 1, 0, 0);
+				level = Math.floor(level / bars);
+				radius = Math.floor(level / 8);
 				
 				var comp = miniplayer.getCompliment(miniplayer.curColor);
-				var lvl_temp = level / 255;
+				var lvl_temp = ~~(level / 2) / 255;
 				
 				gradient.addColorStop(0,"rgba("+(comp.r * lvl_temp)+","+(comp.g * lvl_temp)+", "+(comp.b * lvl_temp)+", 1)");
-				gradient.addColorStop(1,"rgba(0, 0, 0, 0)");
+				
+				gradient.addColorStop(1,"rgba(0, 0, 0, 1)");
 				ctx.fillStyle = gradient;
-				//ctx.fillRect(0,0,canvas.width,canvas.height);
+				ctx.fillRect(0,0,canvas.width,canvas.height);
 				ctx.fillStyle = 'transparent';
 				
 				//draw a circle
-				ctx.filleStyle = 'rgba(0,0,0,1)';
-				ctx.beginPath();
-				ctx.arc(center_x,center_y,radius,0,2*Math.PI);
-				ctx.fill();
+				//ctx.strokeStyle = 'rgba(150,0,100,1)';
+				//ctx.beginPath();
+				//ctx.arc(center_x,center_y,radius,0,2*Math.PI);
+				//ctx.stroke();
 				var angle = 0;
 				for(var i = 0; i < miniplayer.binCount; i += bar_increment){
-					
 					if(i >= miniplayer.binCount){
 						i = miniplayer.binCount - 1;
 					}
-					
 					//divide a circle into equal parts
 					rads = Math.PI * 2 / (miniplayer.binCount / bar_increment);
 					
-					bar_height = frequency_array[i]*0.7 + (150 - level);
+					bar_height = frequency_array[i]*(center_y / center_x) + ((center_y / 2) - radius);
+					bar_height_2 = frequency_array[i]*(center_y / center_x) + ((center_y / 2) - (radius + 2));
+					
 					
 					// set coordinates
 					x = center_x + Math.cos(rads * angle) * (radius);
-					y = center_y + Math.sin(rads *anglei) * (radius);
+					y = center_y + Math.sin(rads * angle) * (radius);
 					x_end = center_x + Math.cos(rads * angle)*(radius + bar_height);
 					y_end = center_y + Math.sin(rads * angle)*(radius + bar_height);
+					x_tick_end = center_x + Math.cos(rads * angle)*(radius + bar_height_2);
+					y_tick_end = center_y + Math.sin(rads * angle)*(radius + bar_height_2);
+					
+					//draw a bar
+					miniplayer.drawBarSolid(x, y, x_end, y_end, bar_width,frequency_array[i]);
+					miniplayer.drawBarSolid(x_end, y_end, x_tick_end, y_tick_end, bar_width, frequency_array[i]);
+					angle++;
+				}
+			}
+			window.requestAnimationFrame(miniplayer.animation);
+		},
+		pipCircle: function (){
+			if(miniplayer.instance.hasClass('open')){
+				miniplayer.colorControl();
+				// set to the size of device
+				canvas = miniplayer.instance.find('canvas')[0];
+				//canvas.width = miniplayer.instance.find('canvas').width();
+				//canvas.height = ;
+				ctx = canvas.getContext("2d");
+				ctx.globalCompositeOperation = 'source-over';
+				ctx.fillStyle = '#000000';
+				ctx.fillRect(0,0,canvas.width,canvas.height);
+				
+				// find the center of the window
+				center_x = canvas.width / 2;
+				center_y = canvas.height / 2;
+				
+				
+				// style the background
+				
+				analyser.getByteFrequencyData(frequency_array);
+				
+				var gradient = ctx.createLinearGradient(0,0,0,canvas.height);
+				
+				var level = 0;
+				
+				/*
+				Name: Steph Kennedy
+				Date: 2/17/21
+				Comment: Right now the visualizers only sample the top of the array, they need to be modified to sample the whole array so that we get visualization of the highs, mids, and lows, when right now we're just getting highs and some mides.
+				*/
+				
+				var bar_increment = ~~(miniplayer.binCount / bars);
+				
+				for(var i = 0; i < miniplayer.binCount; i += bar_increment){
+					if(i >= miniplayer.binCount){
+						i = miniplayer.binCount - 1;
+					}
+					level += frequency_array[i];
+				}
+				level = Math.floor(level / bars);
+				radius = Math.floor(level / 8);
+				
+				var comp = miniplayer.getCompliment(miniplayer.curColor);
+				var lvl_temp = ~~(level / 2) / 255;
+				
+				gradient.addColorStop(0,"rgba("+(comp.r * lvl_temp)+","+(comp.g * lvl_temp)+", "+(comp.b * lvl_temp)+", 1)");
+				
+				gradient.addColorStop(1,"rgba(0, 0, 0, 1)");
+				ctx.fillStyle = gradient;
+				ctx.fillRect(0,0,canvas.width,canvas.height);
+				ctx.fillStyle = 'transparent';
+				
+				//draw a circle
+				//ctx.strokeStyle = 'rgba(150,0,100,1)';
+				//ctx.beginPath();
+				//ctx.arc(center_x,center_y,radius,0,2*Math.PI);
+				//ctx.stroke();
+				var angle = 0;
+				for(var i = 0; i < miniplayer.binCount; i += bar_increment){
+					if(i >= miniplayer.binCount){
+						i = miniplayer.binCount - 1;
+					}
+					//divide a circle into equal parts
+					rads = Math.PI * 2 / (miniplayer.binCount / bar_increment);
+					
+					bar_height = frequency_array[i]*(center_y / center_x) + ((center_y / 2) - radius);
+					bar_height_2 = frequency_array[i]*(center_y / center_x) + ((center_y / 2) - (radius + 2));
+					
+					
+					// set coordinates
+					x = center_x + Math.cos(rads * angle) * (radius);
+					y = center_y + Math.sin(rads * angle) * (radius);
+					x_end = center_x + Math.cos(rads * angle)*(radius + bar_height);
+					y_end = center_y + Math.sin(rads * angle)*(radius + bar_height);
+					x_tick_end = center_x + Math.cos(rads * angle)*(radius + bar_height_2);
+					y_tick_end = center_y + Math.sin(rads * angle)*(radius + bar_height_2);
+					
+					//draw a bar
+					miniplayer.drawBarSolid(x_end, y_end, x_tick_end, y_tick_end, bar_width, frequency_array[i]);
+					angle++;
+				}
+			}
+			window.requestAnimationFrame(miniplayer.animation);
+		},
+		burnout: function(){
+			if(miniplayer.instance.hasClass('open')){
+				miniplayer.colorControl();
+				// set to the size of device
+				canvas = miniplayer.instance.find('canvas')[0];
+				//canvas.width = miniplayer.instance.find('canvas').width();
+				//canvas.height = ;
+				ctx = canvas.getContext("2d");
+				ctx.globalCompositeOperation = 'source-over';
+				ctx.fillStyle = '#000000';
+				ctx.fillRect(0,0,canvas.width,canvas.height);
+				
+				// find the center of the window
+				center_x = canvas.width / 2;
+				center_y = canvas.height / 2;
+				
+				
+				// style the background
+				
+				analyser.getByteFrequencyData(frequency_array);
+				
+				var gradient = ctx.createLinearGradient(0,0,0,canvas.height);
+				
+				var level = 0;
+				
+				/*
+				Name: Steph Kennedy
+				Date: 2/17/21
+				Comment: Right now the visualizers only sample the top of the array, they need to be modified to sample the whole array so that we get visualization of the highs, mids, and lows, when right now we're just getting highs and some mides.
+				*/
+				
+				var bar_increment = ~~(miniplayer.binCount / bars);
+				
+				for(var i = 0; i < miniplayer.binCount; i += bar_increment){
+					if(i >= miniplayer.binCount){
+						i = miniplayer.binCount - 1;
+					}
+					level += frequency_array[i];
+				}
+				level = Math.floor(level / bars);
+				radius = Math.floor(level / 8);
+				
+				var comp = miniplayer.getCompliment(miniplayer.curColor);
+				var lvl_temp = ~~(level / 2) / 255;
+				
+				gradient.addColorStop(0,"rgba("+(comp.r * lvl_temp)+","+(comp.g * lvl_temp)+", "+(comp.b * lvl_temp)+", 1)");
+				
+				gradient.addColorStop(1,"rgba(0, 0, 0, 1)");
+				ctx.fillStyle = gradient;
+				ctx.fillRect(0,0,canvas.width,canvas.height);
+				ctx.fillStyle = 'transparent';
+				
+				//draw a circle
+				//ctx.strokeStyle = 'rgba(150,0,100,1)';
+				//ctx.beginPath();
+				//ctx.arc(center_x,center_y,radius,0,2*Math.PI);
+				//ctx.stroke();
+				var angle = 0;
+				for(var i = 0; i < miniplayer.binCount; i += bar_increment){
+					if(i >= miniplayer.binCount){
+						i = miniplayer.binCount - 1;
+					}
+					//divide a circle into equal parts
+					rads = Math.PI * 2 / (miniplayer.binCount / bar_increment);
+					
+					bar_height = frequency_array[i]*(center_y / center_x) + ((center_y / 2) - radius);
+					bar_height_2 = frequency_array[i]*(center_y / center_x) + ((center_y / 2) - (radius + 2));
+					
+					
+					// set coordinates
+					x = center_x + Math.cos(rads * angle) * (radius);
+					y = center_y + Math.sin(rads * angle) * (radius);
+					x_end = center_x + Math.cos(rads * angle)*(radius + bar_height);
+					y_end = center_y + Math.sin(rads * angle)*(radius + bar_height);
+					x_tick_end = center_x + Math.cos(rads * angle)*(radius + bar_height_2);
+					y_tick_end = center_y + Math.sin(rads * angle)*(radius + bar_height_2);
 					
 					//draw a bar
 					miniplayer.drawBar(x, y, x_end, y_end, bar_width,frequency_array[i]);
@@ -730,10 +934,184 @@ $(document).ready(function(){
 					x = cur_x;
 					y = canvas.height;
 					x_end = cur_x;
-					y_end = canvas.height - bar_height;
+					y_end = y - bar_height;
 					
 					//draw a bar
 					miniplayer.drawBar(x, y, x_end, y_end, bar_width,frequency_array[i]);
+					miniplayer.drawBarSolid(x_end, y_end, x_end, y_end - 4, bar_width, frequency_array[i]);
+					
+					cur_x += bar_width + 1;
+				
+				}
+			}
+			window.requestAnimationFrame(miniplayer.animation);
+		},
+		solidBars: function(){
+			if(miniplayer.instance.hasClass('open')){
+				miniplayer.colorControl();
+				// set to the size of device
+				canvas = miniplayer.instance.find('canvas')[0];
+				//canvas.width = miniplayer.instance.find('canvas').width();
+				//canvas.height = ;
+				ctx = canvas.getContext("2d");
+				ctx.globalCompositeOperation = 'source-over';
+				ctx.fillStyle = '#000000';
+				ctx.fillRect(0,0,canvas.width,canvas.height);
+				
+				// find the center of the window
+				center_x = canvas.width / 2;
+				center_y = canvas.height / 2;
+				
+				// Let's find out how tall we want our items to be
+				var bar_ratio = 256 / canvas.height;
+				
+				if(bars > center_x){
+					var use_bars = center_x;
+				}else{
+					var use_bars = bars;
+				}
+				
+				//use_bars = Math.floor(use_bars / 4);
+				
+				var bar_width = Math.ceil(canvas.width / use_bars) - 1;
+				
+				
+				// style the background
+				
+				analyser.getByteFrequencyData(frequency_array);
+				
+				var gradient = ctx.createLinearGradient(0,0,0,canvas.height);
+				
+				var level = 0;
+				
+				var bar_increment = ~~(miniplayer.binCount / bars);
+				
+				var use_increment = ~~(miniplayer.binCount / use_bars);
+				
+				for(var i = 0; i < miniplayer.binCount; i += bar_increment){
+					if(i >= miniplayer.binCount){
+						i = miniplayer.binCount - 1;
+					}
+					level += frequency_array[i];
+				}
+				level = Math.floor((level / bars) / 2);
+				
+				radius = level;
+				var comp = miniplayer.getCompliment(miniplayer.curColor);
+				var lvl_temp = level / 255;
+				
+				gradient.addColorStop(0,"rgba("+(comp.r * lvl_temp)+","+(comp.g * lvl_temp)+", "+(comp.b * lvl_temp)+", 1)");
+				gradient.addColorStop(1,"rgba(0, 0, 0, 1)");
+				ctx.fillStyle = gradient;
+				ctx.fillRect(0,0,canvas.width,canvas.height);
+				ctx.fillStyle = 'transparent';
+				
+				var cur_x = 0;
+				
+				for(var i = 0; i < miniplayer.binCount; i += use_increment){
+					if(i >= miniplayer.binCount){
+						i = miniplayer.binCount - 1;
+					}
+					//divide a circle into equal parts
+					//rads = Math.PI * 2 / bars;
+					
+					bar_height = frequency_array[i] / bar_ratio;
+					
+					// set coordinates
+					x = cur_x;
+					y = canvas.height;
+					x_end = cur_x;
+					y_end = y - bar_height;
+					
+					//draw a bar
+					miniplayer.drawBarSolid(x, y, x_end, y_end, bar_width,frequency_array[i]);
+					miniplayer.drawBarSolid(x_end, y_end, x_end, y_end - 4, bar_width, frequency_array[i]);
+					
+					cur_x += bar_width + 1;
+				
+				}
+			}
+			window.requestAnimationFrame(miniplayer.animation);
+		},
+		pipBars: function(){
+			if(miniplayer.instance.hasClass('open')){
+				miniplayer.colorControl();
+				// set to the size of device
+				canvas = miniplayer.instance.find('canvas')[0];
+				//canvas.width = miniplayer.instance.find('canvas').width();
+				//canvas.height = ;
+				ctx = canvas.getContext("2d");
+				ctx.globalCompositeOperation = 'source-over';
+				ctx.fillStyle = '#000000';
+				ctx.fillRect(0,0,canvas.width,canvas.height);
+				
+				// find the center of the window
+				center_x = canvas.width / 2;
+				center_y = canvas.height / 2;
+				
+				// Let's find out how tall we want our items to be
+				var bar_ratio = 256 / canvas.height;
+				
+				if(bars > center_x){
+					var use_bars = center_x;
+				}else{
+					var use_bars = bars;
+				}
+				
+				//use_bars = Math.floor(use_bars / 4);
+				
+				var bar_width = Math.ceil(canvas.width / use_bars) - 1;
+				
+				
+				// style the background
+				
+				analyser.getByteFrequencyData(frequency_array);
+				
+				var gradient = ctx.createLinearGradient(0,0,0,canvas.height);
+				
+				var level = 0;
+				
+				var bar_increment = ~~(miniplayer.binCount / bars);
+				
+				var use_increment = ~~(miniplayer.binCount / use_bars);
+				
+				for(var i = 0; i < miniplayer.binCount; i += bar_increment){
+					if(i >= miniplayer.binCount){
+						i = miniplayer.binCount - 1;
+					}
+					level += frequency_array[i];
+				}
+				level = Math.floor((level / bars) / 2);
+				
+				radius = level;
+				var comp = miniplayer.getCompliment(miniplayer.curColor);
+				var lvl_temp = level / 255;
+				
+				gradient.addColorStop(0,"rgba("+(comp.r * lvl_temp)+","+(comp.g * lvl_temp)+", "+(comp.b * lvl_temp)+", 1)");
+				gradient.addColorStop(1,"rgba(0, 0, 0, 1)");
+				ctx.fillStyle = gradient;
+				ctx.fillRect(0,0,canvas.width,canvas.height);
+				ctx.fillStyle = 'transparent';
+				
+				var cur_x = 0;
+				
+				for(var i = 0; i < miniplayer.binCount; i += use_increment){
+					if(i >= miniplayer.binCount){
+						i = miniplayer.binCount - 1;
+					}
+					//divide a circle into equal parts
+					//rads = Math.PI * 2 / bars;
+					
+					bar_height = frequency_array[i] / bar_ratio;
+					
+					// set coordinates
+					x = cur_x;
+					y = canvas.height;
+					x_end = cur_x;
+					y_end = y - bar_height;
+					
+					//draw a bar
+					miniplayer.drawBarSolid(x_end, y_end, x_end, y_end - 4, bar_width, frequency_array[i]);
 					
 					cur_x += bar_width + 1;
 				
@@ -1079,7 +1457,7 @@ $(document).ready(function(){
 			}else{
 			
 				/*
-				Name: Stephen Kennedy
+				Name: Steph Kennedy
 				Date: 8/5/2020
 				Comment: This works when in focus, but we don't need to use it if we use the mediaSession API, so it has been moved here as a fallback if we don't have access to the API.
 				*/
@@ -1134,7 +1512,7 @@ $(document).ready(function(){
 				var span = $('.mini-player-seek-counter');
 				
 				/*
-				Name: Stephen Kennedy
+				Name: Steph Kennedy
 				Date: 2/22/21
 				Comment: Now we do math to see what percentage we are in the bar.
 				*/

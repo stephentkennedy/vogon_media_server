@@ -1,6 +1,6 @@
 <?php
 /*
-Name: Stephen Kennedy
+Name: Steph Kennedy
 Date: 12/30/2019
 Comment: If all goes according to plan, we should be passing this model a pre-parsed search query in the form of an array.
 That array should look like this.

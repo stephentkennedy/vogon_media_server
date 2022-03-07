@@ -1,2 +1,3 @@
-*Updated*
--Changed miniplayer fullscreen height value from 100vh to 100% to ensure it works more correctly with android devices with the url bar set to hide on scroll (the default setting)
+Updated:
+-Added alpha levels to draw bar function of the miniplayer
+-Added several new visualizers to the audio player, most are simple tweaks of existing visualizers to let the user configure it how they like.

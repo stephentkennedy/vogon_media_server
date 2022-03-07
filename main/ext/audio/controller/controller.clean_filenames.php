@@ -1,6 +1,6 @@
 <?php
 /*
-Name: Stephen Kennedy
+Name: Steph Kennedy
 Date: 2/5/2021
 Comment: Can't have url unsafe symbols in filenames, so we need to have a script that will clean them up.
 */

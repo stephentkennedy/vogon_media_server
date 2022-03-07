@@ -29,7 +29,7 @@
 		}
 		
 		/*
-		Name: Stephen Kennedy
+		Name: Steph Kennedy
 		Date: 2/26/2021
 		Comment: When we update the season order, we'll need to clear the cache for that series.
 		*/

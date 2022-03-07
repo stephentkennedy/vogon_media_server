@@ -63,7 +63,7 @@ function load_controller($controller, $data = [], $ext = false){
 		$controller_file = ROOT . DIRECTORY_SEPARATOR . 'main' . DIRECTORY_SEPARATOR . 'ext' . DIRECTORY_SEPARATOR . $ext . DIRECTORY_SEPARATOR . 'controller' . DIRECTORY_SEPARATOR . 'controller.' . $controller;
 	}
 	/*
-	Name: Stephen Kennedy
+	Name: Steph Kennedy
 	Date: 2/2/2021
 	Comment: In order to better enforce the best practice of POST REDIRECT GET on our forms, this function is now going to attempt to load special controller.[controller_name].post.php files if a $_POST array is detected. Then, once that processing is done, it will redirect to the same slug, clearing the $_POST array.
 	
@@ -376,7 +376,7 @@ function url2dir($url){
 }
 
 /*
-Developer: Stephen Kennedy
+Developer: Steph Kennedy
 Date: 4/23/21
 Comment: Hooks support code
 */

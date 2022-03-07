@@ -7,8 +7,12 @@
 				'noViz' => 'None',
 				'spectro' => 'Spectrograph',
 				'bars' => 'Bars',
+				'solidBars' => 'Solid Bars',
+				'pipBars' => 'Pips',
 				'cleanCircle' => 'Warp',
-				//'burnout' => 'Burnout',
+				'solidCircle' => 'Solid Circle'
+				'pipCircle' => 'Pip Circle'
+				'burnout' => 'Burnout',
 			];
 			foreach($visualizers as $var => $friendly){
 				$selected = '';

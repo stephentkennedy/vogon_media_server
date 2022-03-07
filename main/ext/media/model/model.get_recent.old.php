@@ -31,7 +31,7 @@ if(!empty($user) && !empty($user['user_key'])){
 		$results = $query->fetchAll();
 		
 		/*
-		Name: Stephen Kennedy
+		Name: Steph Kennedy
 		Date: 8/12/2020
 		Comment: MySQL doesn't really order grouped queries effectively so we're going to order our results
 		*/

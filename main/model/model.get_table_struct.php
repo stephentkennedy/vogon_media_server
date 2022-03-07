@@ -1,6 +1,6 @@
 <?php
 /*
-Name: Stephen Kennedy
+Name: Steph Kennedy
 Date: 12/30/2019
 Comment: This should obtain the table structure for tables we are searching from the database, so that we can pass it to code that needs it.
 */

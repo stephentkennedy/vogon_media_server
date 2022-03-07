@@ -1,6 +1,6 @@
 <?php
 /*
-Name: Stephen Kennedy
+Name: Steph Kennedy
 Date: 12/30/20
 Comment: It's long since time we gave this module some love.
 

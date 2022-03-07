@@ -24,7 +24,7 @@ if($series != false && count($series) > 0){
 }
 
 /*
-Name: Stephen Kennedy
+Name: Steph Kennedy
 Date: 7/25/20
 Comment: Fetch the history for this user and this item
 */

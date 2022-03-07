@@ -1,6 +1,6 @@
 <?php
 /*
-Name: Stephen Kennedy
+Name: Steph Kennedy
 Date: 11/7/18
 Comment: This is the Babel Fish, or Fish for short. Named after the plot convenience from Douglas Adam's Hitchhiker's Guide, it's job is to allow us to communicate with the outside world via the CURL library, with limited fallback on file(http://) if CURL is not enabled.
 */

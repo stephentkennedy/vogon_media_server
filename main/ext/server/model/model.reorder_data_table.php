@@ -2,7 +2,7 @@
 $old_id = $row['data_id'];
 $new_id = $_GET['offset'] + 1;
 /*
-Name: Stephen Kennedy
+Name: Steph Kennedy
 Date: 3/5/21
 Comment: Tables we need to update:
 -data

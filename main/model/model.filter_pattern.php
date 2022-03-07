@@ -1,6 +1,6 @@
 <?php
 /*
-Name: Stephen Kennedy
+Name: Steph Kennedy
 Date: 12/30/2019
 Comment: This model should search a string for all instances of a regular expression, return the string minus those instances, and return the instances in an array of matches.
 */

@@ -37,7 +37,7 @@ switch($location){
 			echo load_view('view_video', $view_data, 'media');
 		}else if($record['data_type'] == 'series'){
 			/*
-			Name: Stephen Kennedy
+			Name: Steph Kennedy
 			Date: 7/29/20 
 			Comment: We're having a lot of slowdown on the first load of this page. After that first load, the built in MySQL caching is speeding it up significantly, but that only lasts for around 12 hours. We need something that work similarly, but for longer.
 			

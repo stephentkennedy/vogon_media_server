@@ -1,6 +1,6 @@
 <?php
 /*
-Name: Stephen Kennedy
+Name: Steph Kennedy
 Date: 12/30/19
 Comment: For working for searches, we need to remove words that will give us too many false positives, the list below was compiled by http://xpo6.com/list-of-english-stop-words/
 I'm not sure if I fully agree, but everything needs a starting point.

@@ -20,7 +20,7 @@ $_REQUEST['page'] = (int) $_REQUEST['page'];
 $_REQUEST['rpp'] = (int) $_REQUEST['rpp'];
 
 /*
-Name: Stephen Kennedy
+Name: Steph Kennedy
 Date: 2/7/2020
 Comment: This is rife for SQL injection. You need to fix this before you upload it to a live server.
 */

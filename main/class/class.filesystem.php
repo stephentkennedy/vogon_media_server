@@ -162,7 +162,7 @@ HERE;
 	
 	
 	/*
-	Name: Stephen Kennedy
+	Name: Steph Kennedy
 	Date: 12/9/18
 	Comment: This is always a problem. Sometimes images aren't what they pretend to be, waiting for some other script to either modify the .htaccess to make them executable or another script to rename them.
 	
@@ -193,7 +193,7 @@ HERE;
 	
 	//Base level functions pulled from other sources.
 	/*
-	Name: Stephen Kennedy
+	Name: Steph Kennedy
 	Date: 12/9/18
 	Comment: Original function from http://php.net/manual/en/function.filesize.php first comment from "rommel at rommelsantor dot com", as the comment says, it's extremely simple, and from my experiences dependable, no reason to reinvent the wheel.
 	*/
@@ -204,7 +204,7 @@ HERE;
 	}
 	
 	/*
-	Name: Stephen Kennedy
+	Name: Steph Kennedy
 	Date: 12/9/18
 	Comment: This was pieced together from a number of comments from: https://stackoverflow.com/questions/3856293/how-to-convert-seconds-to-time-format
 	*/
@@ -220,7 +220,7 @@ HERE;
 	}
 	
 	/*
-	Name: Stephen Kennedy
+	Name: Steph Kennedy
 	Date: 12/9/18
 	Comment: Taken from Abhinav bhardwaj's comment from: https://stackoverflow.com/questions/2556345/detect-base64-encoding-in-php ,
 	function renamed and stripped of comments.
@@ -234,7 +234,7 @@ HERE;
 	}
 	
 	/*
-	Name: Stephen Kennedy
+	Name: Steph Kennedy
 	Date: 12/9/18
 	Comment: Could have sworn this was from the php.net entry on glob, down in the comments, but the only function close to it I could find is one that doesn't support Glob Brace. Please, if you know who came up with this, give me a shout out. The only backup copy I had was minified so my original comment of attribution was missing.
 	*/

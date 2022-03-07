@@ -28,7 +28,7 @@ if(!empty($_GET['series_id'])){
 	$series_id = $_GET['series_id'];
 }else if (!empty($series_name)){
 	/*
-	Name: Stephen Kennedy
+	Name: Steph Kennedy
 	Date: 10/17/21
 	Comment: This logic is inside a loop, now we need to account for the possibility that an earlier branch of this loop already created the series.
 	*/
@@ -104,7 +104,7 @@ if(!empty($file_info['playtime_seconds'])){
 	$length = 0;
 }
 /*
-Name: Stephen Kennedy
+Name: Steph Kennedy
 Date: 9/22/2020
 Comment: To make things a little easier, we're going to attempt to automatically categorize files based on their length
 */
@@ -126,7 +126,7 @@ $record_data = [
 	'parent' => $parent
 ];
 /*
-Name: Stephen Kennedy
+Name: Steph Kennedy
 Date: 9/22/2020
 Comment: We can support subtitles upon import if they are named the same as the video, but with a text extension. The format itself is in a little bit of flux so we can't guarantee the extension it will use, so instead we'll look for a text mimetype on the file itself and assume. It will be up to the user to ensure the format is correct.
 

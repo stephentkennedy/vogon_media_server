@@ -6,7 +6,7 @@ $params = [];
 $clerk = new clerk;
 
 /*
-Name: Stephen Kennedy
+Name: Steph Kennedy
 Date: 7/2/2020
 Comment: When writing the audio search, I set it up, much like this, so that you could break down and only search certain fields. However, the interface I put into place only supports the general search, so for the moment I'm just writing that and leaving room to add these in later. I think I'd still like the power, but in the interest of keeping moving I'm backburnering them.
 */
