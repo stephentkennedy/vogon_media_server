@@ -10,8 +10,8 @@
 				'solidBars' => 'Solid Bars',
 				'pipBars' => 'Pips',
 				'cleanCircle' => 'Warp',
-				'solidCircle' => 'Solid Circle'
-				'pipCircle' => 'Pip Circle'
+				'solidCircle' => 'Solid Circle',
+				'pipCircle' => 'Pip Circle',
 				'burnout' => 'Burnout',
 			];
 			foreach($visualizers as $var => $friendly){

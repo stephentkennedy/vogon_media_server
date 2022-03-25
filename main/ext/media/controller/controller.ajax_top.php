@@ -27,10 +27,21 @@ $cpus = (int)trim(shell_exec('nproc --all'));
 $temp = preg_split('/\s+/', $uptime[0]);
 $timestamp = $temp[0];
 $days = $temp[2];
+if(stristr($days, ':') !== false){
+	$timestamp = $temp[2];
+	$days = 0;
+	$uptime[5] = $uptime[4];
+	$uptime[4] = $uptime[3];
+	$uptime[2] = $uptime[1];
+}
 $temp = explode(':', $timestamp);
 $hours = $temp[0];
 $minutes = $temp[1];
-$seconds = $temp[2];
+if(!empty($temp[2])){
+	$seconds = $temp[2];
+}else{
+	$seconds = 0;
+}
 $temp = preg_split('/\s+/', $uptime[2]);
 $users = $temp[0];
 $one = str_replace('load average: ', '', $uptime[3]);

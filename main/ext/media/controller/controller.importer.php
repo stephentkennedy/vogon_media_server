@@ -17,6 +17,13 @@ if(!empty($_POST['action'])){
 			], 'audio');
 			load_controller('footer');
 			break;
+		case 'ebook':
+			load_controller('header');
+			load_controller('ajax_scan', [
+				'dir' => $_POST['dir']
+			], 'ebooks');
+			load_controller('footer');
+			break;
 	}
 	//Clean filenames and rename files as needed
 	load_controller('clean_filenames', [], 'audio');

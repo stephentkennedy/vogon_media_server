@@ -18,6 +18,8 @@ Website: https://Stephkennedy.dev
 	--rgb-shadows: 211,208,203;
 	--border-radius: 4px;
 	--transition-speed: 0.1s;
+	--success: green;
+	--error: red;
 }
 body{
 	font-size: 18px;

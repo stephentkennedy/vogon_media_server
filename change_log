@@ -1,3 +1,3 @@
-Updated:
--Added alpha levels to draw bar function of the miniplayer
--Added several new visualizers to the audio player, most are simple tweaks of existing visualizers to let the user configure it how they like.
+**Fixed**
+-Syntax error introduced to settings view when visualizers were updates
+-Top output processing for when the device has been active for less than a day

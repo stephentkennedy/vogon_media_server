@@ -5,6 +5,7 @@
 	<label>Files to import</label>
 	<label for="type-video"><input id="type-video" type="radio" name="type" value="video" checked> Video</label>
 	<label for="type-audio"><input id="type-audio" type="radio" name="type" value="audio"> Audio</label>
+	<label for="type-ebook"><input id="type-ebook" type="radio" name="type" value="ebook"> E-Book</label>
 	<fieldset>
 		<label>Series Name (optional)</label>
 		<input id="series_id" type="hidden" name="series_id" value="0">
