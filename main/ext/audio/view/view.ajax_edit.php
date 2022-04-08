@@ -18,7 +18,7 @@ ob_start();
 	<label for="data_name">Name</label>
 	<input id="data_name" type="text" name="data_name" value="<?php echo $data_name; ?>">
 	<label for="data_content">Location</label>
-	<input id="data_content" type="text" name="data_content" readonly disabled value="<?php echo $data_content; ?>">
+	<input id="data_content" type="text" readonly disabled value="<?php echo $data_content; ?>">
 	<label for="meta_artist">Artist</label>
 	<input id="meta_artist" type="text" name="meta_artist" value="<?php echo $meta['artist']; ?>">
 	<label for="meta_album">Album</label>

@@ -13,7 +13,7 @@ if(isset($_REQUEST['action'])){
 			load_model('enable_history', ['id' => $id], 'audio');
 			redirect(build_slug('album/'.$id, [], 'audio'));
 			break;
-		case 'disable_history': //SHould only appear as a GET
+		case 'disable_history': //Should only appear as a GET
 			$id = get_slug_part(2);
 			load_model('enable_history', ['id' => $id], 'audio');
 			redirect(build_slug('album/'.$id, [], 'audio'));

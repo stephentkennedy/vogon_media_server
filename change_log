@@ -1,3 +1,2 @@
-**Fixed**
--Syntax error introduced to settings view when visualizers were updates
--Top output processing for when the device has been active for less than a day
+*Added*
+-EBooks Extension (import was added a few versions ago, but now it is usable by the user)

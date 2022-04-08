@@ -1,0 +1,1 @@
+<iframe src="<?php echo str_replace(ROOT, '', $item['data_content']); ?>" style="width: 100%; height: 100vh;"></iframe>
