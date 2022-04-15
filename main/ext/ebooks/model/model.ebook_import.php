@@ -25,6 +25,19 @@ switch(strtolower(substr($f, -4))){
 		}
 	
 		break;
+	case '.cbz':
+		$search = [
+			'content' => $f,
+			'type' => 'cbz'
+		];
+		$check = $hand->getRecord($search);
+		if(empty($check)){
+			$hand->addRecord($search);
+			$message .= 'Adding to database.';
+		}else{
+			$message .= 'File already exists in database.<br>Skipping.';
+		}
+		break;
 	default:
 		$message .= 'File is not a known ebook format.<br>Skipping.';
 		break;

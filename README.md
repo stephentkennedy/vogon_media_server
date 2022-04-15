@@ -24,6 +24,10 @@ It's a prototyping and developing framework for PHP. You can find the framework 
 * Turn individual audio tracks into a coherent audio book
 * History tracking allows resuming across devices
 
+**E-Book Support**
+* Use your browser's built in PDF reader (or download it if you're on mobile)
+* Use the entirely web based CBZ reader (still very much in alpha)
+
 **Custom HTML5 Video Player Interface:**
 * Autoplay next episode for items categorized as part of a TV series
 * History tracking for media resuming across devices

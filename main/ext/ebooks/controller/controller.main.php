@@ -16,14 +16,7 @@ switch($action){
 		}
 		break;
 	case 'view':
-		$id = get_slug_part(2);
-		if(empty($id)){
-			redirect('/');
-		}
-		$item = load_model('get_item_by_id', ['id' => $id], 'ebooks');
-		load_controller('header', ['title' => $item['data_name'], 'view' => 'mini']);
-		echo load_view('pdf_viewer', ['item' => $item],'ebooks');
-		load_controller('footer', ['view'=>'mini']);
+		load_controller('comic_book_reader', [], 'ebooks');
 		break;
 	default:
 		load_controller('header', ['title' => 'E-Book Library']);
