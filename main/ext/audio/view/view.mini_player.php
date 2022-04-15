@@ -441,6 +441,10 @@ $(document).ready(function(){
 				'burnout': {
 					name: 'Warp',
 					func: miniplayer.burnout
+				},
+				'orchid': {
+					name: 'Space Orchid',
+					func: miniplayer.orchid
 				}
 			}
 			var string = '<label for="visualizer">Visualization</label><select id="visualizer">';
@@ -492,6 +496,10 @@ $(document).ready(function(){
 						miniplayer.animation = miniplayer.noViz;
 						window.localStorage.setItem('vizualizer', 'noViz');
 						break;
+					case 'orchid':
+						miniplayer.animation = miniplayer.orchid;
+						window.localStorage.setItem('vizualizer', 'orchid');
+						break;
 				}
 				win.remove();
 			});
@@ -518,6 +526,99 @@ $(document).ready(function(){
 				ctx.globalCompositeOperation = 'source-over';
 				ctx.fillStyle = '#000000';
 				ctx.fillRect(0,0,canvas.width,canvas.height);
+			}
+			window.requestAnimationFrame(miniplayer.animation);
+		},
+		orchid:  function (){
+			if(miniplayer.instance.hasClass('open')){
+				miniplayer.colorControl();
+				// set to the size of device
+				canvas = miniplayer.instance.find('canvas')[0];
+				//canvas.width = miniplayer.instance.find('canvas').width();
+				//canvas.height = ;
+				ctx = canvas.getContext("2d");
+				ctx.globalCompositeOperation = 'source-over';
+				ctx.fillStyle = '#000000';
+				ctx.fillRect(0,0,canvas.width,canvas.height);
+				
+				// find the center of the window
+				center_x = canvas.width / 2;
+				center_y = canvas.height / 2;
+				
+				
+				// style the background
+				
+				analyser.getByteFrequencyData(frequency_array);
+				
+				var gradient = ctx.createLinearGradient(0,0,0,canvas.height);
+				
+				var level = 0;
+				
+				/*
+				Name: Steph Kennedy
+				Date: 2/17/21
+				Comment: Right now the visualizers only sample the top of the array, they need to be modified to sample the whole array so that we get visualization of the highs, mids, and lows, when right now we're just getting highs and some mides.
+				*/
+				
+				var bar_increment = ~~(miniplayer.binCount / bars);
+				
+				for(var i = 0; i < miniplayer.binCount; i += bar_increment){
+					if(i >= miniplayer.binCount){
+						i = miniplayer.binCount - 1;
+					}
+					level += frequency_array[i];
+				}
+				level = Math.floor(level / bars);
+				radius = Math.floor(level / 8);
+				
+				var comp = miniplayer.getCompliment(miniplayer.curColor);
+				var lvl_temp = ~~(level / 2) / 255;
+				
+				gradient.addColorStop(0,"rgba("+(comp.r * lvl_temp)+","+(comp.g * lvl_temp)+", "+(comp.b * lvl_temp)+", 1)");
+				
+				gradient.addColorStop(1,"rgba(0, 0, 0, 1)");
+				ctx.fillStyle = gradient;
+				ctx.fillRect(0,0,canvas.width,canvas.height);
+				ctx.fillStyle = 'transparent';
+				
+				//draw a circle
+				//ctx.strokeStyle = 'rgba(150,0,100,1)';
+				//ctx.beginPath();
+				//ctx.arc(center_x,center_y,radius,0,2*Math.PI);
+				//ctx.stroke();
+				var angle = 0;
+				for(var i = 0; i < miniplayer.binCount; i += (bar_increment * 2)){
+					if(i >= miniplayer.binCount){
+						i = miniplayer.binCount - 1;
+					}
+					//divide a circle into equal parts
+					rads = Math.PI * 2 / (miniplayer.binCount / bar_increment);
+					
+					bar_height = frequency_array[i]*(center_y / center_x) + ((center_y / 2) - radius);
+					bar_height_2 = frequency_array[i]*(center_y / center_x) + ((center_y / 2) - (radius + 2));
+					
+					
+					// set coordinates
+					x = center_x + Math.cos(rads * angle) * (radius);
+					i_x = center_x - (x - center_x);
+					y = center_y + Math.sin(rads * angle) * (radius);
+					i_y = center_y - (y - center_y);
+					x_end = center_x + Math.cos(rads * angle)*(radius + bar_height);
+					i_x_end = center_x - (x_end - x);
+					y_end = center_y + Math.sin(rads * angle)*(radius + bar_height);
+					i_y_end = center_y - (y_end - y);
+					x_tick_end = center_x + Math.cos(rads * angle)*(radius + bar_height_2);
+					i_x_tick_end = center_x - (x_tick_end - x);
+					y_tick_end = center_y + Math.sin(rads * angle)*(radius + bar_height_2);
+					i_y_tick_end = center_y - (y_tick_end - y);
+					
+					//draw a bar
+					miniplayer.drawBar(x, y, x_end, y_end, bar_width,frequency_array[i]);
+					miniplayer.drawBarSolid(x_end, y_end, x_tick_end, y_tick_end, bar_width, frequency_array[i]);
+					miniplayer.drawBar(x, i_y, x_end, i_y_end, bar_width,frequency_array[i]);
+					miniplayer.drawBarSolid(x_end, i_y_end, x_tick_end, i_y_tick_end, bar_width, frequency_array[i]);
+					angle++;
+				}
 			}
 			window.requestAnimationFrame(miniplayer.animation);
 		},
