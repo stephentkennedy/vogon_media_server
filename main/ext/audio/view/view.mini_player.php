@@ -1384,7 +1384,7 @@ $(document).ready(function(){
 		},
 		error: function(e){
 			var string = 'There has been an issue loading: ' + miniplayer.instance.find('.mini-player-label.title').html() + '<br><br>(Line ' + e.lineno + '): ' + e.message;
-			var w = aPipup.newWindow(string);
+			var w = aPopup.newWindow(string);
 		},
 		init: function(){
 			
@@ -1396,23 +1396,25 @@ $(document).ready(function(){
 			miniplayer.header = $('.mini-player .mini-player-header .title');
 			
 			miniplayer.animation = miniplayer.<?php if(!empty($_SESSION['def_visual'])){ echo $_SESSION['def_visual']; }else{ echo 'cleanCircle'; } ?>;
-	
-			context = new (window.AudioContext || window.webkitAudioContext)();
-			analyser = context.createAnalyser();
-			
-			source = context.createMediaElementSource(miniplayer.audio[0]);
-			source.connect(analyser);
-			analyser.connect(context.destination);
-			
-			frequency_array = new Uint8Array(analyser.frequencyBinCount);
-			miniplayer.binCount = ~~(analyser.frequencyBinCount * miniplayer.binPercent);
-			
-			if(window.localStorage.getItem('vizualizer') != undefined){
-				miniplayer.animation = miniplayer[window.localStorage.getItem('vizualizer')];
+			try{
+				context = new (window.AudioContext || window.webkitAudioContext)();
+				analyser = context.createAnalyser();
+				
+				source = context.createMediaElementSource(miniplayer.audio[0]);
+				source.connect(analyser);
+				analyser.connect(context.destination);
+				
+				frequency_array = new Uint8Array(analyser.frequencyBinCount);
+				miniplayer.binCount = ~~(analyser.frequencyBinCount * miniplayer.binPercent);
+				
+				if(window.localStorage.getItem('vizualizer') != undefined){
+					miniplayer.animation = miniplayer[window.localStorage.getItem('vizualizer')];
+				}
+						
+			}catch(error){
+				miniplayer.animation = 'noViz';
 			}
-			
 			window['miniplayer']['animation'](); //Variable variables in JavaScript the jank way.
-			
 			miniplayer.instance.find('.favorite').click(function(){
 				miniplayer.toggleFavorite();
 			});

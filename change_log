@@ -1,2 +1,3 @@
-*Added*
--Support for cbz files with in-process reader web-app.
+*Fixed*
+-Added natural sorting logic to cbz reader, should ensure all archives are read in order
+-Added logic to skip directories if the archive is nested (right now this only goes 1 deep, but it could be made recursive if need be)

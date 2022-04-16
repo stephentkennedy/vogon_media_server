@@ -1,7 +1,23 @@
 <?php 
 $zip = new ZipArchive;
 if($zip->open($item['data_content'])){
-    $image_data = $zip->getFromIndex($page);
+    $count = $zip->count();
+    $array = [];
+    for($i=0; $i <= $count; $i++){
+        $name = $zip->getNameIndex($i);
+        if(!empty($name)){
+            $array[] = $name;
+        }
+    }
+    //Because some of these archives use human sortable filenames
+    natsort($array);
+    $array = array_values($array);
+    //If our first entry is a folder, skip it.
+    if(substr($array[0], -1) == '/' ){
+        $page += 1;
+        $count += -1;
+    }
+    $image_data = $zip->getFromName($array[$page]);
     if($image_data != false){
         $file_info = new finfo(FILEINFO_MIME);
         $mime = $file_info->buffer($image_data);
@@ -12,7 +28,8 @@ if($zip->open($item['data_content'])){
             $to_return = [
                 'image_data' => 'data:'.$mime.';base64,'.$image_data,
                 'mime' => $mime,
-                'count' => $zip->count()
+                'count' => $count,
+                'array' => $array
             ];
         }else{
             $to_return = ['content' => $image_data];
@@ -21,7 +38,8 @@ if($zip->open($item['data_content'])){
     }
     return [
         'error' => true,
-        'message' => 'No data at that index'
+        'message' => 'No data at that index',
+        'array' => $array
     ];
 }else{
     return [
