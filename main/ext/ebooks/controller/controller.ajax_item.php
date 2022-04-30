@@ -12,7 +12,8 @@ $search = [
     'meta' => [
         'year',
 		'genre',
-		'author'
+		'author',
+		'sub_series',
     ],
     'self_join' => [
 		'index_field' => 'data_parent',
@@ -26,5 +27,10 @@ $search = [
 $record = $dwm->getRecord($search);
 if(!empty($record['parent_data_id'])){
     $record['series_link'] = build_slug('series/'.$record['parent_data_id'], [], 'ebooks');
+}
+if($record['data_type'] == 'pdf'){
+	$record['icon'] = 'file-pdf-o';
+}else{
+	$record['icon'] = 'newspaper-o';
 }
 echo load_view('json', $record);

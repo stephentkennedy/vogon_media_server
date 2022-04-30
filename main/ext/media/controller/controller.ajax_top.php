@@ -45,8 +45,16 @@ if(!empty($temp[2])){
 $temp = preg_split('/\s+/', $uptime[2]);
 $users = $temp[0];
 $one = str_replace('load average: ', '', $uptime[3]);
-$five = $uptime[4];
+if(!empty($uptime[4])){
+	$five = $uptime[4];
+}else{
+	$five = 0;
+}
+if(!empty($uptime[5])){
 $fifteen = $uptime[5];
+}else{
+$fifteen = 0;
+}
 
 //Memory Stuff
 $free = shell_exec('free -m');

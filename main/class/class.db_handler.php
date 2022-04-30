@@ -199,7 +199,7 @@ class db_handler {
 			return $this->getRecord(['id' => $options]);
 		}
 		if(isset($options['limit'])){
-			$cql = 'SELECT COUNT(*) as `count` FROM `'.$this->table.'`';
+			$cql = 'SELECT COUNT(*) as `count`';
 		}
 		$sql = 'SELECT `'.$this->table.'`.*';
 		if(isset($options['groupby']) && !empty($this->structure[$options['groupby']]['machine_name'])){
@@ -208,10 +208,17 @@ class db_handler {
 		if(!empty($options['self_join'])){
 			$sql .= ', ';
 			$sj = $this->selfJoin($options['self_join']);
-			$sql .= implode(', ', $sj['select']). 'FROM `'.$this->table.'` '.implode(' ', $sj['joins']);
+			$sql .= implode(', ', $sj['select']). ' FROM `'.$this->table.'` '.implode(' ', $sj['joins']);
+			if(!empty($cql)){
+				$cql .= ', ';
+				$cql .= implode(', ', $sj['select']). ' FROM `'.$this->table.'` '.implode(' ', $sj['joins']);
+			}
 			unset($options['self_join']);
 		}else{
 			$sql .= ' FROM `'.$this->table.'`';
+			if(!empty($cql)){
+				$cql .= ' FROM `'.$this->table.'`';
+			}
 		}
 		$this->query_mode = 'AND';
 		if(!empty($options['query_mode'])){
@@ -233,8 +240,17 @@ class db_handler {
 			}
 		}
 		if(isset($cql)){
-			$count = $this->db->query($cql, $this->params)->fetch()['count'];
-			$this->total_count = $count;
+			$query = $this->db->query($cql, $this->params);
+			if(!empty($query)){
+				$count = $query->fetch()['count'];
+				$this->total_count = $count;
+			}else{
+				debug_d($sql);
+				debug_d($cql);
+				debug_d($this->params);
+				debug_d($this->db->error);
+				die();
+			}
 		}
 		if(isset($options['orderby']) && !empty($this->structure[$options['orderby']])){
 			$sql .= ' ORDER BY '.$this->structure[$options['orderby']]['machine_name'];
@@ -383,8 +399,13 @@ class db_handler {
 				if($this->depth > 0){
 					$key .= '__'.$this->depth;
 				}
-				$temp_where [] = '`'.$this->table.'`.`'.$field.'` '.$compare.' :'.$friendly.'_'.$key;
-				$this->params[':'.$friendly.'_'.$key] = $type;
+				if($type !== null){
+					$temp_where [] = $field.' '.$compare.' :'.$friendly.'_'.$key;
+					$this->params[':'.$friendly.'_'.$key] = $type;
+				}else{
+					$temp_where [] = $field.' IS NULL ';
+				}
+				
 			}
 			$temp_where = implode(' OR ', $temp_where);
 			$temp_where = '( '.$temp_where .' )';

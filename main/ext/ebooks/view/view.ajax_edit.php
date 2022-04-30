@@ -8,10 +8,14 @@
     <input id="data_content" type="text" readonly disabled value="<?php echo $item['data_content']; ?>">
     <label for="series">Series</label>
     <input id="series" name="series" type="text" value="<?php echo $item['parent_data_name']; ?>">
+    <label for="sub_series">Sub Series</label>
+    <input id="sub_series" name="sub_series" type="text" value="<?php echo $item['sub_series']; ?>">
     <label for="author">Author</label>
     <input id="author" name="author" type="text" value="<?php echo $item['author']; ?>">
     <label for="year">Year</label>
     <input id="year" name="year" type="text" value="<?php echo $item['year']; ?>">
+    <label for="order">Order</label>
+    <input id="order" name="order" value="<?php echo $item['order']; ?>">
     <button type="button" class="submit"><i class="fa fa-floppy-o"></i> Save</button>
 </form>
 <script type="text/javascript">
@@ -35,6 +39,18 @@
 						return{
 							label: item.data_name,
 							value: item.data_name
+						}
+					}));
+                })
+            }
+        });
+        $('#sub_series').autocomplete({
+            source: function(request, response){
+                $.get('<?php echo build_slug('ajax/ajax_sub_series/ebooks'); ?>', {'search': request.term}).done(function(data){
+                    response($.map(data, function(item){
+						return{
+							label: item.data_meta_content,
+							value: item.data_meta_content
 						}
 					}));
                 })

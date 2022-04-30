@@ -17,10 +17,12 @@ $search_options = [
 	'meta' => [
 		'year',
 		'genre',
-		'author'
+		'author',
+		'sub_series',
+		'order'
 	],
-	'type' => ['pdf', 'cbz', 'cbr'],
-	'orderby' => 'name',
+	'type' => ['pdf', 'cbz'],
+	'orderby' => ['parent_data_name', 'meta_sub_series', 'meta_order + 0', 'name'],
 	'limit' => $rpp,
 	'offset' => (($page - 1) * $rpp)
 ];

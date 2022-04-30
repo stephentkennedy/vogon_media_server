@@ -30,10 +30,11 @@
                 var row = $('div.result-row[data-id="'+id+'"]');
 				var name = row.find('span.result-one');
 				var series = row.find('span.result-two');
-				var author = row.find('span.result-three');
-				var actions = row.find('span.result-four');
+                var sub_series = row.find('span.result-three');
+				var author = row.find('span.result-four');
+				var actions = row.find('span.result-five');
                 console.log(data);
-                name.html(data['data_name']);
+                name.html('<i class="fa fa-'+data['icon']+'"></i>&nbsp;'+data['data_name']);
                 if(data['series_link'] != null){
                     series.html('<a href="' + data['series_link'] + '">' + data['parent_data_name'] + '</a>');
                 }else{
@@ -43,6 +44,11 @@
                     author.html(data['author']);
                 }else{
                     author.html('[Unknown]');
+                }
+                if(data['sub_series'] != null && data['sub_series'] != ''){
+                    sub_series.html(data['sub_series']);
+                }else{
+                    sub_series.html('[Unknown]');
                 }
             });
         },

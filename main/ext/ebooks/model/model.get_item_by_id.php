@@ -11,7 +11,9 @@ $search = [
     'meta' => [
         'year',
 		'genre',
-		'author'
+		'author',
+		'sub_series',
+		'order'
     ],
     'self_join' => [
 		'index_field' => 'data_parent',

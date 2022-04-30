@@ -100,13 +100,43 @@ class meta_link_db_handler extends db_handler{
 		if(isset($options['groupby']) && !empty($this->structure[$options['groupby']])){
 			$sql .= ' GROUP BY '.$this->structure[$options['groupby']]['machine_name'];
 		}
-		if(isset($options['orderby']) && !empty($this->structure[$options['orderby']])){	
+		if(isset($options['orderby']) 
+		&& is_string($options['orderby']) 
+		&& !empty($this->structure[$options['orderby']])){
 			$sql .= ' ORDER BY '.$this->structure[$options['orderby']]['machine_name'];
 			
 			if(!empty($options['orderby_int'])){
 				$sql .= ' + 0';
 			}
-			
+			if(!empty($options['orderby_dir'])){
+				switch(strtolower($options['orderby_dir'])){
+					default:
+						$sql .= ' ASC';
+						break;
+					case 'desc':
+						$sql .= ' DESC';
+						break;
+				}
+			}
+		}else if (
+			isset($options['orderby']) 
+			&& is_array($options['orderby'])
+		){
+			$order_by = [];
+			foreach($options['orderby'] as $column){
+				if(!empty($this->structure[rtrim($column, ' + 0')])){
+					$clean_column = rtrim($column, ' + 0');
+					if($clean_column == $column){
+						$order_by[] = $this->structure[$clean_column]['machine_name'];
+					}else{
+						$order_by[] = $this->structure[$clean_column]['machine_name'].' + 0';
+					}
+
+				}
+			}
+			if(!empty($order_by)){
+				$sql .= ' ORDER BY '.implode(', ', $order_by);
+			}
 			if(!empty($options['orderby_dir'])){
 				switch(strtolower($options['orderby_dir'])){
 					default:
@@ -174,7 +204,9 @@ class meta_link_db_handler extends db_handler{
 		}
 		$sql .= ' WHERE ' . implode(' '. $this->query_mode .' ', $this->where);
 		
-		if(isset($options['orderby']) && !empty($this->structure[$options['orderby']])){
+		if(isset($options['orderby']) 
+		&& is_string($options['orderby']) 
+		&& !empty($this->structure[$options['orderby']])){
 			$sql .= ' ORDER BY '.$this->structure[$options['orderby']]['machine_name'];
 			
 			if(!empty($options['orderby_int'])){
@@ -190,7 +222,31 @@ class meta_link_db_handler extends db_handler{
 						break;
 				}
 			}
+		}else if (
+			isset($options['orderby']) 
+			&& is_array($options['orderby'])
+		){
+			$order_by = [];
+			foreach($options['orderby'] as $column){
+				if(!empty($this->structure[rtrim($column, ' + 0')])){
+					$order_by[] = $column;
+				}
+			}
+			if(!empty($order_by)){
+				$sql .= ' ORDER BY '.implode(', ', $order_by);
+			}
+			if(!empty($options['orderby_dir'])){
+				switch(strtolower($options['orderby_dir'])){
+					default:
+						$sql .= ' ASC';
+						break;
+					case 'desc':
+						$sql .= ' DESC';
+						break;
+				}
+			}
 		}
+		$this->sql = $sql;
 		$query = $this->db->query($sql, $this->params);
 		if($query != false){
 			$records = $query->fetch();
@@ -255,8 +311,12 @@ class meta_link_db_handler extends db_handler{
 				if($this->depth > 0){
 					$key .= '__'.$this->depth;
 				}
-				$temp_where [] = ''.$field.' '.$compare.' :'.$friendly.'_'.$key;
-				$this->params[':'.$friendly.'_'.$key] = $type;
+				if($type !== null){
+					$temp_where [] = $field.' '.$compare.' :'.$friendly.'_'.$key;
+					$this->params[':'.$friendly.'_'.$key] = $type;
+				}else{
+					$temp_where [] = $field.' IS NULL ';
+				}
 			}
 			$temp_where = implode(' OR ', $temp_where);
 			$temp_where = '( '.$temp_where .' )';

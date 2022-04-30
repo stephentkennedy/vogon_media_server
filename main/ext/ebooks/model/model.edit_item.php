@@ -2,7 +2,9 @@
 $clerk = new clerk;
 $meta_data = [
     'author' => $author,
-    'year' => $year
+    'year' => $year,
+	'sub_series' => $sub_series,
+	'order' => $order
 ];
 $clerk->updateMetas($id, $meta_data);
 $sql = 'SELECT * FROM data WHERE data_type = "series" AND data_name = :search ORDER BY data_id ASC LIMIT 1';

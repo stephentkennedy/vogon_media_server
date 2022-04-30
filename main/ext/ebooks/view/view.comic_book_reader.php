@@ -86,6 +86,11 @@
         c_id: <?php echo $item['data_id']; ?>,
         c_format: '<?php echo $item['data_type']; ?>',
         page_url: '<?php echo build_slug('ajax/ajax_cb_image_data/ebooks'); ?>',
+        next_issue_url: '<?php echo build_slug('ajax/ajax_get_next_issue/ebooks'); ?>',
+        root_url: '<?php echo build_slug('view', [], 'ebooks'); ?>',
+        save_history_url: '<?php echo build_slug('ajax/ajax_save_history/ebooks'); ?>',
+        get_history_url: '<?php echo build_slug('ajax/ajax_get_history/ebooks'); ?>',
+        next_issue: false,
         page: new Image(),
         scale: 1,
         current_page: false,
@@ -180,6 +185,8 @@
                 if(cb_reader.page_index < (cb_reader.current_page.count - 1)){
                     cb_reader.get_page(cb_reader.page_index + 1);
                     $(window).scrollTop(0);
+                }else if(cb_reader.page_index >= (cb_reader.current_page.count - 1) && cb_reader.next_issue != false){
+                    window.location = cb_reader.next_issue;
                 }
             });
             $('#zoom-in').click(function(){
@@ -211,11 +218,19 @@
             }
             cb_reader.get_page(page);
         },
+        get_next_issue: function(){
+            $.get(cb_reader.next_issue_url, {id: cb_reader.c_id}, function(returned){
+                if(returned.error != false){
+                    cb_reader.next_issue = cb_reader.root_url + '/' + returned['data_id'];
+                }
+            });
+        },
         init: function(){
             var params = cb_reader.get_vars();
             cb_reader.get_page(params['page']);
             window.onpopstate = cb_reader.pop_history;
             cb_reader.bind_controls();
+            cb_reader.get_next_issue();
         }
     };
 
