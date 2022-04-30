@@ -58,8 +58,22 @@ switch($format){
             $table .= '<span class="result-three">'.$sub_series.'</span>';
             $table .= '<span class="result-four">'.$artist.'</span>';
             $table .= '<span class="result-five">';
-            $table .= '<a class="button" href="'.build_slug('view/'.$r['data_id'], [], 'ebooks').'" title="View"><i class="fa fa-eye"></i></a>';
-            $table .= '<a class="button ajax-form" data-href="'.build_slug('edit/'.$r['data_id'], [], 'ebooks').'" data-id="'.$r['data_id'].'" title="Edit"><i class="fa fa-pencil"></i></a>';
+            $link = build_slug('view/'.$r['data_id'], [], 'ebooks');
+            if($r['data_type'] == 'pdf'){
+                $link .= '?file=';
+                $replace = [
+                    ROOT,
+                    '#'
+                ];
+                $with = [
+                    '',
+                    urlencode('#')
+                ];
+                $link .= str_replace($replace, $with, $r['data_content']);
+            }
+            $table .= '<a class="button" href="'.$link.'" title="View"><i class="fa fa-eye"></i></a>';
+            $link = build_slug('edit/'.$r['data_id'], [], 'ebooks');           
+            $table .= '<a class="button ajax-form" data-href="'.$link.'" data-id="'.$r['data_id'].'" title="Edit"><i class="fa fa-pencil"></i></a>';
             $table .= '</span>';
             $table .= '</div>';
         }

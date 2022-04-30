@@ -1,8 +1,8 @@
 <div id="cb-page-content" class="cb-fullscreen">
-    <canvas id="cb-page" class="cb-fullscreen">
-    </canvas>
+    <div id="cb-page" class="cb-fullscreen">
+    </div>
     <div id="cb-controls" class="cb-fullscreen absolute">
-        <a id="back class="button" href="<?php 
+        <a id="back" class="button" href="<?php 
         if(!empty($_SERVER['HTTP_REFERER'])){
             echo $_SERVER['HTTP_REFERER'];
         }else{
@@ -23,8 +23,21 @@
     .cb-fullscreen{
         padding: 0;
         width: 100%;
-        height: 100%;
-        overflow: auto;
+        position: relative;
+        min-height: 100vh;
+    }
+    .cb-fullscreen img{
+        display: block;
+        margin: 0 auto;
+        max-width: 100%;
+    }
+    .cb-fullscreen i.fa-cog{
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 4rem;
+        color: #fff;
     }
     .absolute{
         position: absolute;
@@ -96,6 +109,20 @@
         current_page: false,
         page_index: 0,
         pages: [],
+        get_history: function(){
+            $.get(cb_reader.get_history_url,{id: cb_reader.c_id}, function(returned){
+                if(returned.history != undefined && returned.history != false){
+                    cb_reader.get_page(returned.history)
+                }else{
+                    cb_reader.get_page(0);
+                }
+            });
+        },
+        save_history: function(){
+            var vars = cb_reader.get_vars();
+            var page = vars['page'];
+            $.get(cb_reader.save_history_url, {id: cb_reader.c_id, page: page});
+        },
         get_vars: function(){
             var url = new URL(window.location);
             var s = url.search;
@@ -124,6 +151,7 @@
                     var params = cb_reader.get_vars();
                     if(page != params[page]){
                         cb_reader.push_history(page);
+                        cb_reader.save_history();
                     }
                 }else{
                     console.log(returned);
@@ -131,11 +159,12 @@
             });
         },
         blank_page: function(){
-            var canvas = $('#cb-page');
+            /*var canvas = $('#cb-page');
             var ctx = canvas[0].getContext("2d");
             ctx.globalCompositeOperation = 'source-over';
             ctx.fillStyle = '#000000';
-            ctx.fillRect(0,0,canvas.width,canvas.height);
+            ctx.fillRect(0,0,canvas.width,canvas.height);*/
+            $('#cb-page').html('<i class="fa fa-cog fa-spin"></i>');
         },
         render_page: function(page_object){
             cb_reader.current_page = false;
@@ -143,7 +172,8 @@
             cb_reader.current_page = page_object;
             cb_reader.page.src = page_object.image_data;
             cb_reader.page.onload = function(){
-                var page_w = cb_reader.page.width;
+                $('#cb-page').html('<img src="'+page_object.image_data+'" />');
+                /*var page_w = cb_reader.page.width;
                 var page_h = cb_reader.page.height;
                 var page_r = page_h / page_w;
                 if(
@@ -171,7 +201,7 @@
                 ctx.globalCompositeOperation = 'source-over';
                 ctx.fillStyle = '#000000';
                 ctx.fillRect(0,0,canvas.width,canvas.height);
-                ctx.drawImage(cb_reader.page,0,0,page_w,page_h, 0 + x_offset, 0, draw_w, draw_h);
+                ctx.drawImage(cb_reader.page,0,0,page_w,page_h, 0 + x_offset, 0, draw_w, draw_h);*/
             }
         },
         bind_controls: function(){
@@ -227,7 +257,7 @@
         },
         init: function(){
             var params = cb_reader.get_vars();
-            cb_reader.get_page(params['page']);
+            cb_reader.get_history();
             window.onpopstate = cb_reader.pop_history;
             cb_reader.bind_controls();
             cb_reader.get_next_issue();

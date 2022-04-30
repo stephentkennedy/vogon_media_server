@@ -131,7 +131,7 @@ footer{
 .row{
 	padding: 10px;
 }
-button, .button{
+button:not(.toolbarButton), .button{
 	padding: 5px !important;
 	background-color: transparent;
 	transition: all var(--transition-speed) linear;
@@ -172,7 +172,7 @@ h1 a, h2 a, h3, a{
 	font-size: 1rem;
 	font-weight: normal;
 }
-a:not(.drag), a.open-popup, .open-popup{
+a:not(.drag):not(#viewBookmark):not(#back), a.open-popup, .open-popup{
 	color: var(--white);
 	cursor: pointer;
 	display: inline-block;
@@ -185,6 +185,21 @@ a:not(.drag), a.open-popup, .open-popup{
 	border-radius: var(--border-radius);
 	overflow: hidden;
 	box-shadow: 1px 1px 3px 0px var(--shadows);
+}
+#cb-page-content a#back,
+#cb-page-content button{
+	box-shadow: none !important;
+	border: none !important;
+	background: none !important;
+	text-shadow: 2px 2px 2px rgba(0,0,0,0.8);
+	color: #fff !important;
+}
+#cb-page-content a.button:active,
+#cb-page-content a.button:hover
+#cb-page-content button:active,
+#cb-page-content button:hover{
+	background: none !important;
+	opacity: 1 !important;
 }
 a:hover, a.open-popup:hover, .open-popup:hover{
 	background-color: #CECECE;
@@ -1019,7 +1034,7 @@ Comment: Flex tables
 		float: none;
 		display: block;
 	}
-	button, .button, input[type="submit"], a:not(.drag), a.open-popup, .open-popup, #searchbar{
+	button:not(.toolbarButton), .button, input[type="submit"], a:not(.drag):not(.toolbarButton), a.open-popup, .open-popup, #searchbar{
 		padding: 10px;
 		min-height: 48px;
 	}

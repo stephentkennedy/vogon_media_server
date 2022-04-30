@@ -31,7 +31,7 @@ $view_data = [
 ];
 switch($type){
     case 'pdf':
-        $view = 'pdf_viewer';
+        $view = 'js_pdf_viewer';
         break;
     case 'cbz':
     case 'cbr':

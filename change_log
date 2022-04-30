@@ -1,8 +1,4 @@
-*Added*
--Additional meta fields for ebooks: sub_series, order
--Added additional fields to edit form and added sub_series to list view
--Added feature to allow the cbz reader to navigate to the next issue, if one exists within the current series & sub-series and you are on the last page of the current issue.
 *Changes*
--Modified the order option for db_handler and db_meta_handler to support arrays so that complex order clauses can be built. Does not currently support per column order directions.
-*Fixes*
--Patched some faulty logic in db_handler and db_meta_handler.
+-Changed pdf viewer from simple iframe to Mozilla's PDF.js
+-Added better responsive styles to ebooks list view
+-Added history saving/loading to cbz viewer

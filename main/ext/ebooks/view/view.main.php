@@ -3,9 +3,31 @@
         $type = $_GET['t'];
     }
 ?><header><h1>E-Book Library</h1></header>
-<style>#ajax-output{
+<style>
+#ajax-output{
 	padding-top: 20px;
-}</style>
+}
+span.result-five{
+    max-width: 150px;
+}
+span.result-one{
+    min-width: 40%;
+}
+@media screen and (max-width: 800px){
+
+    .flex-row span.result-one,
+    .flex-row span.result-five{
+        min-width: 100%;
+    }
+    .flex-row span{
+        min-width: 50%;
+        border: none;
+    }
+    .flex-row + .flex-row{
+        margin-top: 1rem;
+    }
+}
+</style>
 <div>
 	<label for="search">Search</label>
 	<input type="text" id="search" placeholder="Search...">
