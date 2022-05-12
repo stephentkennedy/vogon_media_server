@@ -1,4 +1,3 @@
-*Changes*
--Changed pdf viewer from simple iframe to Mozilla's PDF.js
--Added better responsive styles to ebooks list view
--Added history saving/loading to cbz viewer
+-Added new user_model class
+-Moved existing session logic into the new class in anticipation of support for extension defined user permissions
+-Reworked logout process to actually work again.

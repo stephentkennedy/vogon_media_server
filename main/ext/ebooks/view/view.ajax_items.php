@@ -48,8 +48,13 @@ switch($format){
             }else{
                 $icon = 'newspaper-o';
             }
+            if(!empty($r['history'])){
+                $history = ' &mdash; [Read]';
+            }else{
+                $history = '';
+            }
             $table .= '<div class="result-row flex-row" data-id="'.$r['data_id'].'">';
-            $table .= '<span class="result-one"><i class="fa fa-'.$icon.'"></i>&nbsp;'.$r['data_name'].'</span>';
+            $table .= '<span class="result-one"><i class="fa fa-'.$icon.'"></i>&nbsp;'.$r['data_name'].$history.'</span>';
             if(!empty($r['parent_data_name'])){
                 $table .= '<span class="result-two"><a href="">'.$r['parent_data_name'].'</a></span>';
             }else{

@@ -61,8 +61,17 @@ $exts = dir_contents(__DIR__ . DIRECTORY_SEPARATOR . 'ext');
 $_SESSION['loaded_extensions'] = $exts;
 
 //Comment this out if you don't want vogon to be password protected
-global $user;
-$user = [];
+global $user,
+	$user_model;
+load_class('user_model');
+$user_model = new user_model([
+	'secure' => false,
+	'session_timeout' => 'twelve hours ago'
+]);
+$user_model->manage_session();
+$user = [
+	'user_key' => $user_model->user_key
+];
 //load_controller('session', [], 'user');
 
 //Comment this out if you don't want local_storage based user management

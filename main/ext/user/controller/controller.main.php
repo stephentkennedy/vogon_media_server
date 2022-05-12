@@ -80,8 +80,7 @@
 			redirect(build_slug('', [], 'user'));
 		}
 	}else if($action == 'logout'){
-		redirect( build_slug('', []) );
-		load_model('logout', [], 'user');
+		load_controller('logout');
 	}else{
 		load_controller('header', ['title' => 'Profiles']);
 		if(empty($_REQUEST['action']) || $_REQUEST['action'] != 'search' || empty($_REQUEST['search'])){
