@@ -31,7 +31,8 @@ if(!empty($search)){
 	$search_options['sub_query'][] = [
 		'query_mode' => 'OR',
 		'search_parent_data_name' => '%'.$search.'%',
-		'search_meta_artist' => '%'.$search.'%',
+		'search_meta_author' => '%'.$search.'%',
+		'search_meta_sub_series' => '%'.$search.'%',
 		'search_name' => '%'.$search.'%',
 		'search_content' => '%'.$search.'%',
 	];

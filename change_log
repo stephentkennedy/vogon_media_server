@@ -1,3 +1,1 @@
--Added new user_model class
--Moved existing session logic into the new class in anticipation of support for extension defined user permissions
--Reworked logout process to actually work again.
+Updated ebook search model to include sub series and check the write meta data for author.
