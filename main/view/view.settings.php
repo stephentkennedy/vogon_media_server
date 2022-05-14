@@ -1,4 +1,3 @@
-<header><h1>Settings</h1></header>
 <h2>Framework Settings</h2>
 <h3>Routes</h3>
 <p>Routes connect individual controllers to specific URI endpoints. A controller can then load other controllers based on its programmed logic, so a route&#39;s controller may not be controlled solely by the extension it is associated with.</p>
@@ -105,7 +104,9 @@
 	<select name="theme">
 		<?php
 			foreach($themes as $t){
-				if($t == 'layout.css'){
+				if($t == 'layout.css'
+				|| $t == 'pdf_viewer.css'
+				|| $t == 'images'){
 					//Skip our layout rules, as they are alway loaded.
 					continue;
 				}
@@ -138,4 +139,3 @@
 	</fieldset>
 	<button type="submit"><i class="fa fa-floppy-o"></i> Save</button>
 </form>
-<h2>Extension Settings</h2>

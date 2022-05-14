@@ -10,16 +10,25 @@
 		}
 	}
 	
-	$settings = '';
-	$settings .= load_controller('settings', ['mode' => 'get_form']);
+	$settings = [];
+	$settings[] = [
+		'name' => 'framework',
+		'form' => load_controller('settings', ['mode' => 'get_form'])
+	];
 	$exts = $_SESSION['loaded_extensions'];
 	foreach($exts as $ext){
 		if($ext != '.' && $ext != '..'){
-			$settings .= str_replace('{{ext_name}}', $ext, load_controller('settings', ['mode' => 'get_form'], $ext));
+			$settings[] = [
+			'name' => $ext,
+			'form' => str_replace('{{ext_name}}', $ext, load_controller('settings', ['mode' => 'get_form'], $ext))];
 		}
 	}
-	
+	load_controller('header', ['title' => 'Settings']);
 	echo load_view('main', [
 		'settings' => $settings
 	], 'settings');
+	if(!empty($_GET['force_reload']) && $_GET['force_reload'] == true){
+		echo '<script type="text/javascript">window.location = "'.URI.'/settings";</script>';
+	}
+	load_controller('footer');
 ?>

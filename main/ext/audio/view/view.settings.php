@@ -1,4 +1,4 @@
-<h3>Audio Library Settings</h3>
+<h2>Audio Library Settings</h2>
 <h4>Default Visualizer</h4>
 <form action="?ext={{ext_name}}&form=audioviz&force_reload=true" method="post">
 	<select name="viz">

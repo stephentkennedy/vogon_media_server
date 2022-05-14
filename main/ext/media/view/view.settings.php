@@ -1,4 +1,4 @@
-<h3>Video Media Settings</h3>
+<h2>Video Media Settings</h2>
 <h4>Thumbnail Directory</h4>
 <form action="?ext={{ext_name}}&form=thumb&force_reload=true" method="post">
 	<?php
