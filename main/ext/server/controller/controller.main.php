@@ -42,6 +42,12 @@ if(!empty($action)){
 		case 'server-shutdown':
 			load_model('shutdown_server', [], 'server');
 			break;
+		case 'ebook_series_type_change':
+			load_controller('ebook_series_cleanup', [], 'ebooks');
+			break;
+		default:
+			redirect(build_slug('server'));
+			break;
 	}
 	
 	//This switch case is because we're repurposing this controller.

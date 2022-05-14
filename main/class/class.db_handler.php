@@ -76,8 +76,9 @@ class db_handler {
 			}
 		}
 		$set = implode(', ', $this->where);
-		$sql .= $set . ' WHERE `'.$this->primary_key.'` = :id';
+		$sql .= $set . ' WHERE `'.$this->table.'`.`'.$this->primary_key.'` = :id';
 		$this->params[':id'] = $id;
+		$this->sql = $sql;
 		return $this->db->query($sql, $this->params);
 	}
 	
@@ -394,6 +395,9 @@ class db_handler {
 			$friendly = $field;
 		}
 		if(gettype($option) == 'array'){
+			if(stristr($field, '.') === false){
+				$field = $this->table . '.' . $field;
+			}
 			$temp_where = [];
 			foreach($option as $key => $type){
 				if($this->depth > 0){

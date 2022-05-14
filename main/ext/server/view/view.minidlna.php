@@ -30,6 +30,7 @@
 		<a class="button" href="<?php echo build_slug('build'); ?>" title="Build a deployable .zip file of Vogon">Build</a>
 		<a class="button" href="<?php echo build_slug('server/find_orphan_entries'); ?>" title="This will find all entries in your database that are no longer connected to files and mark them so that other tools can attempt to repair them.">Find Orphan Entries</a>
 		<a class="button" href="<?php echo build_slug('server/patch_series'); ?>" title="Did you import a series while the series importer was broken and it generated a new series entry for each episode? This will fix that.">Merge Series</a>
+		<a class="button" href="<?= build_slug('server/ebook_series_type_change'); ?>" title="When ebooks were first introduced, they used the same series type as videos, this will reassign them to a new type.">Ebook Series Cleanup</a>
 	</div>
 	<div class="col col-ten">
 		<h2>Server Information</h2>

@@ -1,1 +1,1 @@
-Updated ebook search model to include sub series and check the write meta data for author.
+Added tool to migrate ebook series to new type that doesn't conflict with video series.
