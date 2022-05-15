@@ -1,7 +1,1 @@
-*Updates*
--Continuing to update older models to use new db_handler class to further minimize database queries (get_recent and get_series_members in the media extension)
--Series view has been optimized to no longer need caching system (which is good because it created many unexpected issues)
--Reworked series view page to better utilize space on desktop. Instead of each season tiling as a col-five, each season is a full column, with each episode being a col-three inside. Episodes are now read fully left to right rather than up and down and then left to right for seasons.
-
-*Additions*
--Added complex meta direct link db handler class.
+Update to settings page to make it more user friendly.

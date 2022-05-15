@@ -18,6 +18,9 @@
 </ul>
 <?= $divs ?>
 <style>
+	#settings_tabs{
+		margin-bottom: 1rem;
+	}
 	.settings-tab + .settings-tab{
 		margin-left: 0.5rem;
 	}
