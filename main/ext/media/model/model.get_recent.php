@@ -41,7 +41,10 @@ $results = $dmh->getRecords($search);
 if(!empty($results)){
 	$ordered = [];
 	foreach($results as $r){
-		if(empty($ordered[$r['data_parent']]) && $r['data_type'] != 'video'){
+		if(
+			empty($ordered[$r['data_parent']]) 
+			&& $r['data_type'] != 'video'
+		){
 			$r['parent'] = $clerk->getRecord($r['data_parent']);
 			$ordered[$r['data_parent']] = $r;
 			

@@ -423,6 +423,7 @@ a.video-preview:hover{
 	transition: all var(--transition-speed) ease;
 	width: 100%;
 	margin-bottom: 0px;
+	color: var(--gray);
 }
 .video-preview:hover h4{
 	background-color: rgba(var(--rgb-main-accent), 0.5);

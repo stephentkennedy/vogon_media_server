@@ -39,6 +39,7 @@
 	video{
 		width: 100vw;
 		height: 100vh;
+		background: #000;
 	}
 	video.animorphic{
 		transform: scaleY(1.35);
