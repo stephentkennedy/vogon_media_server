@@ -4,6 +4,10 @@ switch($format){
     case 'JSON':
         break;
     case 'HTML':
+        if(empty($search_results)){
+			echo 'We couldn&#39;t find anything matching that search.';
+			die();
+		}
         $page_data['ajax'] = true;
         $pageination = load_view('pageination', $page_data, 'audio');
         $table = '<article id="ebook-library-main" class="flex results">

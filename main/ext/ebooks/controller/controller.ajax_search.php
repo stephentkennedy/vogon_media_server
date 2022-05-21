@@ -24,7 +24,7 @@ if(!empty($_GET['format'])){
 }else{
 	$format = 'JSON';
 }
-$model_data = load_model('search', ['search' => $search, 'type' => $type, 'page' => $page, 'rpp' => $rpp], 'ebooks');
+$model_data = load_model('parsed_search', ['search' => $search, 'type' => $type, 'page' => $page, 'rpp' => $rpp], 'ebooks');
 if($model_data['error'] == false){
 	
 	$page_data = load_model('page', [

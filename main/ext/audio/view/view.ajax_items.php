@@ -44,6 +44,10 @@ switch($format){
 	
 		break;
 	case 'HTML':
+		if(empty($search_results)){
+			echo 'We couldn&#39;t find anything matching that search.';
+			die();
+		}
 		$page_data['ajax'] = true;
 		$shufflePlay = '<button class="button miniplayer-server-shuffle"><i class="fa fa-retweet"></i> Shuffle Play All</button> <button class="button miniplayer-server-fav-shuffle"><i class="fa fa-retweet"></i> Shuffle Play Favorites</button><br><br>';
 		$pageination = load_view('pageination', $page_data, 'audio');

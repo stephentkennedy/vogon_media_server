@@ -1,2 +1,2 @@
-Updated Styles
-Updated Dashboard to interact correctly with ebook history entries.
+Search improvements for both audio and ebooks extensions.
+An incomplete search parsing class has been added. Still has some bugs to work out but support for quotes and commas is enough of an improvement over the old search logic to push it out as is.
