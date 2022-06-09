@@ -1,2 +1,1 @@
-Search improvements for both audio and ebooks extensions.
-An incomplete search parsing class has been added. Still has some bugs to work out but support for quotes and commas is enough of an improvement over the old search logic to push it out as is.
+Updating season editor, moving video search to db_handler, added series thumbnail option

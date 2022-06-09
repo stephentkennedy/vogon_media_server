@@ -49,12 +49,6 @@ switch($format){
 		$table = '<div  class="video-contain">';
 		foreach($search_results as $r){
 			//debug_d($r);
-			if(empty($r['series'])){
-				$r['series'] = '';
-			}
-			if(empty($r['meta']['release'])){
-				$r['meta']['release'] = '';
-			}
 			if(empty($r['data_name'])){
 				$filename = $r['data_content'];
 				$filename = explode(DIRECTORY_SEPARATOR, $filename);
@@ -65,11 +59,19 @@ switch($format){
 			}else{
 				$class = 'tv-series';
 			}
-			if(!empty($r['meta']['poster'])){
-				$r['meta']['poster'] = str_replace(ROOT, '', $r['meta']['poster']);
-				$table .= '<a href="'.build_slug('view/'.$r['data_id'], [], 'media').'" class="video-preview '.$class.'"><div class="img-contain"><img src="'.URI.$r['meta']['poster'].'"></div><h4>'.$r['data_name'].' ('.$r['meta']['release'].')</h4></a>';
+			if(!empty($r['poster'])){
+				$r['poster'] = str_replace(ROOT, '', $r['poster']);
+				$upload_dir = build_slug('upload/thumbs/');
+				if(strstr($r['poster'], $upload_dir) === false){
+					$r['poster'] = $upload_dir.$r['poster'];
+				}
+				$table .= '<a href="'.build_slug('view/'.$r['data_id'], [], 'media').'" class="video-preview '.$class.'"><div class="img-contain"><img src="'.URI.$r['poster'].'"></div><h4>'.$r['data_name'];
+				if(!empty($r['release'])){
+					$table.= ' ('.$r['release'].')';
+				}
+				$table.= '</h4></a>';
 			}else{
-				$table .= '<a href="'.build_slug('view/'.$r['data_id'], [], 'media').'" class="video-preview '.$class.'"><div class="img-contain"><i class="fa fa-play-circle"></i></div><h4>'.$r['data_name'].' ('.$r['meta']['release'].')</h4></a>';
+				$table .= '<a href="'.build_slug('view/'.$r['data_id'], [], 'media').'" class="video-preview '.$class.'"><div class="img-contain"><i class="fa fa-play-circle"></i></div><h4>'.$r['data_name'].' ('.$r['release'].')</h4></a>';
 			}
 		}
 		$table .= '</div>';

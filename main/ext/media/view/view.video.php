@@ -58,6 +58,7 @@
 		background: rgb(0,0,0);
 		background: linear-gradient(0deg, rgba(0,0,0,1) 0%, rgba(5,5,5,1) 76%, rgba(100,100,100,1) 100%);
 		text-align: center;
+		color: #ffffff;
 	}
 	#controls i{
 		cursor: pointer;
@@ -116,6 +117,7 @@
 		background-color: rgba(0,0,0,0.5);
 		border: 1px solid rgba(var(--rgb-main-accent),1);
 		pointer-events: none;
+		color: #ffffff;
 	}
 	#video_preview #img_container{
 		height: calc(.75 * 10vw);

@@ -49,7 +49,7 @@
 	<div id="seasons" class="col col-seven">
 		<h2>Seasons <a class="add"><i class="fa fa-plus"></i></a></h2>
 		<?php foreach($members['seasons'] as $s){
-			echo '<div class="season"><input class="name" value="'.$s['name'].'"><div class="episode-container sortable">';
+			echo '<div class="season"><input class="name" value="'.$s['data_name'].'"><div class="episode-container sortable">';
 			foreach($s['episodes'] as $ord => $r){
 				echo '<a class="episode" data-id="'.$r['data_id'].'">'.$r['data_name'].'</a>';
 			}

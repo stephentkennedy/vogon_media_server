@@ -522,6 +522,9 @@ a.video-preview:hover{
 	top: 48px;
 	max-width: calc(100% - 48px);
 }
+.mini-player info a{
+	text-align: right !important;
+}
 .mini-player .mini-player-label{
 	color: var(--white);
 	position: relative;

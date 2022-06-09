@@ -47,8 +47,8 @@ if(empty($result)){
 
 $thumb_dir = ROOT . DIRECTORY_SEPARATOR . 'upload' . DIRECTORY_SEPARATOR . 'thumbs' . DIRECTORY_SEPARATOR;
 
-if(file_exists($thumb_dir.$temp)){
-	$thumb = '/upload/thumbs/'.$temp;
+if(!empty($temp) && file_exists($thumb_dir.$temp)){
+	$thumb = build_slug('upload/thumbs/').$temp;
 }else{
 	$thumb = $meta['poster'];
 }

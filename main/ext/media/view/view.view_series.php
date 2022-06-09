@@ -6,7 +6,6 @@
 		<a data-id="<?php echo $id; ?>" id="next_series"><i class="fa fa-spin fa-cog"></i> Checking ...</a>
 	</div>
 <?php
-//debug_d($data);
 if(!empty($members['seasons'])){
 	foreach($members['seasons'] as $s){?>
 		<div class="col col-ten">
@@ -32,7 +31,14 @@ if(!empty($members['seasons'])){
 				}
 			if(!empty($r['poster'])){
 				$r['poster'] = str_replace(ROOT, '', $r['poster']);
-				echo '<li class="col col-three">'.$r['data_name'].' ('.formatLength($r['length']).')<br><img class="series_poster" data-src="'.build_slug($r['poster']).'">';
+				echo '<li class="col col-three">';
+				$image_url = build_slug($r['poster']);
+				if($image_url == $thumb){
+					echo '<i class="fa fa-star season-thumb" data-id="'.$id.'" data-url="'.$image_url.'"></i>';
+				}else{
+					echo '<i class="fa fa-star-o season-thumb" data-id="'.$id.'" data-url="'.$image_url.'"></i>';
+				}
+				echo $r['data_name'].' ('.formatLength($r['length']).')<br><img class="series_poster" data-src="'.$image_url.'">';
 				
 				//if($r['time'] == false){
 					$percent = 0;
@@ -74,7 +80,14 @@ if(!empty($members['loose'])){
 		}
 		if(!empty($r['poster'])){
 			$r['poster'] = str_replace(ROOT, '', $r['poster']);
-			echo '<li class="col col-three">'.$r['data_name'].' ('.formatLength($r['length']).')<br><img class="series_poster" data-src="'.build_slug($r['poster']).'">';
+			echo '<li class="col col-three">';
+			$image_url = build_slug($r['poster']);
+			if($image_url == $thumb){
+				echo '<i class="fa fa-star season-thumb" data-id="'.$id.'" data-url="'.$image_url.'"></i>';
+			}else{
+				echo '<i class="fa fa-star-o season-thumb" data-id="'.$id.'" data-url="'.$image_url.'"></i>';
+			}
+			echo $r['data_name'].' ('.formatLength($r['length']).')<br><img class="series_poster" data-src="'.$image_url.'">';
 			
 			//if($r['time'] == false){
 				$percent = 0;
@@ -162,6 +175,20 @@ if(!empty($members['movies'])){?>
 			});
 			$(window).off('scroll.history').on('scroll.history', vogon_history.loop);
 			vogon_history.loop();
+			$('.season-thumb').click(function(){
+				var id = $(this).data('id');
+				var url = $(this).data('url');
+				var handoff = $(this);
+				$.post('<?= build_slug('ajax/ajax_series_thumbnail/media'); ?>', {
+					id: id,
+					url: url
+				}).done(function(){
+					$('.season-thumb').removeClass('fa-star');
+					$('.season-thumb').addClass('fa-star-o');
+					handoff.removeClass('fa-star-o');
+					handoff.addClass('fa-star');
+				});
+			});
 		},
 		getNext: function(){
 			var id = $('#next_series').data('id');
