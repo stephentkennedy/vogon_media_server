@@ -835,9 +835,9 @@
   --field-bg-color: rgba(255, 255, 255, 1);
   --field-border-color: rgba(187, 187, 188, 1);
   --findbar-nextprevious-btn-bg-color: rgba(227, 228, 230, 1);
-  --treeitem-color: rgba(0, 0, 0, 0.8);
-  --treeitem-hover-color: rgba(0, 0, 0, 0.9);
-  --treeitem-selected-color: rgba(0, 0, 0, 0.9);
+  --treeitem-color: rgba(255, 255, 255, 0.8);
+  --treeitem-hover-color: rgba(100, 100, 100, 0.9);
+  --treeitem-selected-color: rgba(100, 100, 255, 0.9);
   --treeitem-selected-bg-color: rgba(0, 0, 0, 0.25);
   --sidebaritem-bg-color: rgba(0, 0, 0, 0.15);
   --doorhanger-bg-color: rgba(255, 255, 255, 1);

@@ -1,1 +1,1 @@
-Updating season editor, moving video search to db_handler, added series thumbnail option
+Added nano header that loads no extra styles or scripts to improve compatibility with heavily styled components like the JS PDF reader.

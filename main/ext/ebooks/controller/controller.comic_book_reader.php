@@ -29,15 +29,17 @@ $view_data = [
     'item' => $item,
     'type' => $type
 ];
+$view_size = 'mini';
 switch($type){
     case 'pdf':
         $view = 'js_pdf_viewer';
+        $view_size = 'nano';
         break;
     case 'cbz':
     case 'cbr':
         $view = 'comic_book_reader';
         break;
 }
-load_controller('header', ['title' => $item['data_name'], 'view' => 'mini']);
+load_controller('header', ['title' => $item['data_name'], 'view' => 'nano']);
 echo load_view($view, ['item'=> $item], 'ebooks');
 load_controller('footer', ['view'=>'mini']);
