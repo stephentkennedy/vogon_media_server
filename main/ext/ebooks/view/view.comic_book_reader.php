@@ -10,8 +10,6 @@
         }
 ?>" title="Exit Viewer"><i class="fa fa-reply"></i></a>
         <button id="prev" title="Previous Page"><i class="fa fa-chevron-left"></i></button>
-        <button id="zoom-in" title="Zoom-in"><i class="fa fa-plus"></i></button>
-        <button id="zoom-out" title="Zoom-out"><i class="fa fa-minus"></i></button>
         <button id="next" title="Next Page"><i class="fa fa-chevron-right"></i></button>
     </div>
 </div>
@@ -227,6 +225,32 @@
                 cb_reader.scale += -1 * 0.05;
                 cb_reader.render_page(cb_reader.current_page);
             });
+            $(window).keydown(function(e){
+                switch(e.which){
+                    case 39: //Right Arrow
+                    case 34: //Page Down
+                        $('#next').trigger('click');
+                        break;
+                    case 37: //Left Arrow
+                    case 33: //Page Up
+                        $('#prev').trigger('click');
+                        break;
+                    case 36: //Home
+                        $('.cb-page').animate({
+                            scrollTop: 0
+                        }, 200);
+                        break;
+                    case 35: //End
+                        $('.cb-page').animate({
+                            scrollTop: $('.cb-page').height()-$(window).height()
+                        }, 200);
+                        break;
+                    case 112: //F1
+                    case 72: //"h"
+                        cb_reader.help();
+                        break;
+                }
+            });
         },
         push_history: function(page){
             var url = '?page=' + page;
@@ -253,6 +277,13 @@
                 if(returned.error != false){
                     cb_reader.next_issue = cb_reader.root_url + '/' + returned['data_id'];
                 }
+            });
+        },
+        help: function(){
+            var string = '<h2>Keyboard Controls Reference</h2><p><strong>Right Arrow/Page Down:</strong> Next Page<br><br><strong>Left Arrow/Page Up:</strong> Previous Page<br><br><strong>Home:</strong> Scroll to Top<br><br><strong>End:</strong> Scroll to Bottom<br><br><strong>Down Arrow:</strong> Scroll Down<br><br><strong>Up Arrow:</strong> Scroll Up<br><br><button class="confirm">Close</button>';
+            var win = aPopup.newWindow(string, {title: 'Help'});
+            win.find('.confirm').click(function(){
+                win.remove();
             });
         },
         init: function(){

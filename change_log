@@ -1,1 +1,4 @@
-Added nano header that loads no extra styles or scripts to improve compatibility with heavily styled components like the JS PDF reader.
+Fixed issue with comic book reader.
+Added keyboard controls to comic book reader.
+Added help menu to comic book reader to display keyboard controls: press F1 or "h" to open it.
+Added event listener to "escape" key for all opened popups to close popups.

@@ -40,6 +40,6 @@ switch($type){
         $view = 'comic_book_reader';
         break;
 }
-load_controller('header', ['title' => $item['data_name'], 'view' => 'nano']);
+load_controller('header', ['title' => $item['data_name'], 'view' => $view_size]);
 echo load_view($view, ['item'=> $item], 'ebooks');
 load_controller('footer', ['view'=>'mini']);

@@ -31,6 +31,12 @@ aPopup.newWindow = function(content, options){
 		style += '"';
 		var object = $('<div class="popup '+cls+'"'+style+'><div class="handle"><div><a class="drag"><i class="fa fa-ellipsis-v"></i></a> '+title+'</div><div><a class="closePop"><i class="fa fa-times"></i></a></div></div><div class="content">'+content+'</div></div>').appendTo('#popup');
 		aPopup.clickBind();
+		$(window).keydown(function(e){
+			if(e.which == 27){
+				object.remove();
+				$(this).off(e);
+			}
+		});
 		return object;
 	}
 
