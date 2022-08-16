@@ -19,6 +19,11 @@ switch($action){
 		load_controller('comic_book_reader', [], 'ebooks');
 		break;
 	default:
+		if(isset($_GET['resume_search'])){
+			echo load_view('ls_redirect', [], 'ebooks');
+			die();
+		}
+
 		load_controller('header', ['title' => 'E-Book Library']);
 		echo load_view('main', [], 'ebooks');
 		load_controller('footer');

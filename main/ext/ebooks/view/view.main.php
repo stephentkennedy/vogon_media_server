@@ -117,6 +117,10 @@ span.result-one{
 			$.get(controller.url[controller.active_url], data , function(content){
 				controller.load(content);
 			});
+            var url = new URL(window.location);
+            var s = url.search;
+            var ls = window.localStorage;
+            ls.setItem('ebook_search', s);
         }
     };
 

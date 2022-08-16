@@ -1,4 +1,1 @@
-Fixed issue with comic book reader.
-Added keyboard controls to comic book reader.
-Added help menu to comic book reader to display keyboard controls: press F1 or "h" to open it.
-Added event listener to "escape" key for all opened popups to close popups.
+Change to the way the back button is populated on the cbz reader.

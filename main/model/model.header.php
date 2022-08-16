@@ -10,7 +10,7 @@
 	}
 	$menu = json_decode($_SESSION['header_menu'], true);
 	if($menu != false){
-		if(!empty($user) && $user['user_role'] != 0){
+		if(!empty($user) && !empty($user['user_role']) && $user['user_role'] != 0){
 			$sql = 'SELECT * FROM data WHERE data_name = "menu" AND data_parent = :role';
 			$params = [
 				':role' => $user['user_role']

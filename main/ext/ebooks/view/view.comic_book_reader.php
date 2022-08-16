@@ -3,11 +3,7 @@
     </div>
     <div id="cb-controls" class="cb-fullscreen absolute">
         <a id="back" class="button" href="<?php 
-        if(!empty($_SERVER['HTTP_REFERER'])){
-            echo $_SERVER['HTTP_REFERER'];
-        }else{
-            echo build_slug('', [], 'ebooks');
-        }
+            echo build_slug('', ['resume_search' => true], 'ebooks');
 ?>" title="Exit Viewer"><i class="fa fa-reply"></i></a>
         <button id="prev" title="Previous Page"><i class="fa fa-chevron-left"></i></button>
         <button id="next" title="Next Page"><i class="fa fa-chevron-right"></i></button>
