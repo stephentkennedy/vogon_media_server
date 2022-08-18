@@ -1,1 +1,1 @@
-Change to the way the back button is populated on the cbz reader.
+Added logic to automatically skip phpmyadmin configuration tables in the build process.

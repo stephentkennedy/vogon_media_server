@@ -1124,6 +1124,7 @@ Comment: Flex tables
 @media (max-width: 915px){
 	body{
 		flex-flow: column wrap;
+		display: block;
 	}
 	header.main{
 		min-height: 0;

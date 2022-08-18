@@ -28,6 +28,10 @@
 	$table_struct = [];
 	$table_data = [];
 	foreach($tables as $table => $data){
+		if(substr($table,0, strlen('pma__')) == 'pma__'){
+			//We don't export phpmyadmin tables.
+			continue;
+		}
 		if($data == true){
 			if($table != 'var'){
 				$sql = 'SELECT * FROM `'.$table.'`';

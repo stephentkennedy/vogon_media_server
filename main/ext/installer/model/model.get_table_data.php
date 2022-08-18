@@ -15,7 +15,12 @@ if($query == false){
 	$results = $query->fetchAll();
 	$return = [];
 	foreach($results as $r){
+		if(substr($r['table_name'],0, strlen('pma__')) == 'pma__'){
+			//We don't export phpmyadmin tables.
+			continue;
+		}
 		$return[] = $r['table_name'];
 	}
+	asort($return);
 	return $return;
 }
