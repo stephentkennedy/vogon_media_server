@@ -10,7 +10,7 @@ $params = [
 	':parent' => $series,
 	':ord' => $count
 ];
-$query = $db->query($sql, $params);
+$query = $db->t_query($sql, $params);
 if(!empty($query)){
 	$toDelete = $query->fetchAll();
 	foreach($toDelete as $d){

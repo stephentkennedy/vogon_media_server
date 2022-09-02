@@ -11,7 +11,7 @@ $sql = 'SELECT * FROM `cache` WHERE `cache_uri` = :uri';
 $params = [
 	':uri' => $uri
 ];
-$query = $db->query($sql, $params);
+$query = $db->t_query($sql, $params);
 if($query != false){
 	$result = $query->fetch();
 	if($result != false){
@@ -23,7 +23,7 @@ if($query != false){
 		':content' => json_encode($cache),
 		':uri' => $uri
 	];
-	$db->query($sql, $params);
+	$db->t_query($sql, $params);
 	return true;
 }else{
 	return false;

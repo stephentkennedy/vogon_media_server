@@ -38,10 +38,10 @@
 			}else{
 				$sql = 'SELECT * FROM `'.$table.'` WHERE var_type IS NULL OR var_type != "private"'; //This way we can avoid leaking potentially private information.
 			}
-			$query = $db->query($sql);
+			$query = $db->t_query($sql);
 			$t_data = $query->fetchAll();
 			$sql = 'DESCRIBE `'.$table.'`';
-			$query = $db->query($sql);
+			$query = $db->t_query($sql);
 			$c_data = $query->fetchAll();
 			$primary = '';
 			foreach($c_data as $c){
@@ -59,7 +59,7 @@
 			$table_data[$table] = [];
 		}
 		$sql = 'SHOW CREATE TABLE `'.$table.'`';
-		$query = $db->query($sql);
+		$query = $db->t_query($sql);
 		if($query != false){
 			$t_data = $query->fetch();
 		}else{

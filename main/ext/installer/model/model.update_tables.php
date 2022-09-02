@@ -41,6 +41,6 @@ foreach($change as $table => $fields){
 				$sql .= ' '.$f['Extra'];
 			}
 		}
-		$db->query($sql);
+		$db->t_query($sql);
 	}
 }

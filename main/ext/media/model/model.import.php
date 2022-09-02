@@ -66,7 +66,7 @@ if(stristr($mime, 'video') === false){
 //Database check.
 $sql = 'SELECT * FROM data WHERE data_content = :content AND ( data_type = "video" OR data_type = "tv" )';
 $params = [':content' => $f];
-$query = $db->query($sql, $params);
+$query = $db->t_query($sql, $params);
 if($query == false){
 	ob_start();
 	debug_d($db->error);

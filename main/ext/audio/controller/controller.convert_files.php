@@ -16,7 +16,7 @@ $ffmpeg = FFMpeg\FFMpeg::create();
 $ffprobe = FFMpeg\FFProbe::create();
 
 $sql = 'SELECT * FROM data WHERE data_content LIKE "%.wma" OR data_content LIKE "%.wav" OR data_content LIKE "%.aif"';
-$query = $db->query($sql, []);
+$query = $db->t_query($sql, []);
 
 $results = $query->fetchAll();
 $i = 1;
@@ -50,7 +50,7 @@ foreach($results as $r){
 			':name' => $name,
 			':id' => $r['data_id']
 		];
-		$db->query($sql, $params);
+		$db->t_query($sql, $params);
 		echo $i. '.) '.$new_name.'<br>';
 	}else{
 		unlink($new_name);

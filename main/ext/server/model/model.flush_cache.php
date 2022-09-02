@@ -4,7 +4,7 @@ $params = [
 	':id' => $row['cache_id']
 ];
 
-$check = $db->query($sql, $params);
+$check = $db->t_query($sql, $params);
 if($check == false){
 	ob_start();
 	debug_d($db->error);

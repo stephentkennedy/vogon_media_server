@@ -3,5 +3,5 @@
 	$params = [
 		':id' => $user_key
 	];
-	return $db->query($sql, $params);
+	return $db->t_query($sql, $params);
 ?>

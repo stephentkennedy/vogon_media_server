@@ -1,7 +1,7 @@
 <?php
 
 $sql = 'SELECT * FROM `data` WHERE `data_type` = "genre" ORDER BY `data_name` ASC';
-$genres = $db->query($sql, [])->fetchAll();
+$genres = $db->t_query($sql, [])->fetchAll();
 
 if(empty($meta['poster'])){
 	$meta['poster'] = '';
@@ -14,7 +14,7 @@ $sql = 'SELECT * FROM `data` WHERE `data_type` = "series" AND `data_id` = :id';
 $params = [
 	':id' => $data_parent
 ];
-$series = $db->query($sql, $params)->fetch();
+$series = $db->t_query($sql, $params)->fetch();
 if($series != false && count($series) > 0){
 	$series_id = $series['data_id'];
 	$series = $series['data_name'];	
@@ -34,7 +34,7 @@ $params = [
 	':user' => $user['user_key'],
 	':id' => $data_id
 ];
-$query = $db->query($sql, $params);
+$query = $db->t_query($sql, $params);
 $result = false;
 if($query != false){
 	$result = $query->fetch();
@@ -75,7 +75,9 @@ $meta['poster'] = str_replace(ROOT, '', $meta['poster']);
 if(empty($meta['animorphic'])){
 	$meta['animorphic'] = 0;
 }
-
+if(empty($data_content)){
+	$data_content = '';
+}
 return [
 	'title' => $data_name,
 	'genre' => $data_parent,

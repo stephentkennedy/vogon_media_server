@@ -6,5 +6,5 @@ $params = [
 	':id' => $id
 ];
 
-$db->query($sq, $params);
+$db->t_query($sq, $params);
 ?>

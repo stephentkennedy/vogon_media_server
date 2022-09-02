@@ -1,4 +1,4 @@
 <?php
 
 $sql = 'DELETE FROM `cache` WHERE 1';
-$db->query($sql, []);
+$db->t_query($sql, []);

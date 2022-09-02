@@ -24,5 +24,5 @@
 		':salt' => $salt,
 		':mods' => json_encode($role_mods)
 	];
-	return $db->query($sql, $params);
+	return $db->t_query($sql, $params);
 ?>

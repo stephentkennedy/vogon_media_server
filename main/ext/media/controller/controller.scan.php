@@ -50,7 +50,7 @@ foreach($files as $f){
 	
 	$sql = 'SELECT * FROM data WHERE data_content = :content AND ( data_type = "video" OR data_type = "tv" )';
 	$params = [':content' => $f];
-	$query = $db->query($sql, $params);
+	$query = $db->t_query($sql, $params);
 	if($query == false){
 		debug_d($db->error);
 	}else{

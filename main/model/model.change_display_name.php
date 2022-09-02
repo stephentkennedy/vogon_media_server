@@ -5,7 +5,7 @@
 		$params = [
 			':id' => $id
 		];
-		$query = $db->query($sql, $params);
+		$query = $db->t_query($sql, $params);
 		$result = $query->fetch();
 		return [
 			'current_value' => $result['nav_display'],
@@ -17,6 +17,6 @@
 			':name' => $display_name,
 			':id' => $id
 		];
-		$db->query($sql, $params);
+		$db->t_query($sql, $params);
 	}
 ?>

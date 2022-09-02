@@ -13,7 +13,7 @@ $replace = [
 	';'
 ];
 
-$query = $db->query($sql, []);
+$query = $db->t_query($sql, []);
 
 if($query != false){
 	$matches = $query->fetchAll();
@@ -33,7 +33,7 @@ if($query != false){
 					':content' => $new_filename,
 					':id' => $m['data_id']
 				];
-				$db->query($sql, $params);
+				$db->t_query($sql, $params);
 				//debug_d('Renamed to: '.$new_filename);
 			}
 		}

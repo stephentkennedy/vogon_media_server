@@ -32,7 +32,7 @@ if(!empty($order_by) && in_array($order_by, $search_cols)){
 	}
 }
 
-$c_query = $db->query($cql, $params);
+$c_query = $db->t_query($cql, $params);
 
 if($c_query === false){
 	debug_d($cql);
@@ -48,7 +48,7 @@ $page = floor($offset / $limit) + 1;
 
 $sql .= ' LIMIT '.$offset.','.$limit;
 
-$query = $db->query($sql, $params);
+$query = $db->t_query($sql, $params);
 
 if($query === false){
 	debug_d($sql);

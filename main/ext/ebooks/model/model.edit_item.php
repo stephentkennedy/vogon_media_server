@@ -11,7 +11,7 @@ $sql = 'SELECT * FROM data WHERE data_type = "series" AND data_name = :search OR
 $params = [
 	':search' => $series
 ];
-$query = $db->query($sql, $params);
+$query = $db->t_query($sql, $params);
 $check = $query->fetch();
 if(empty($check)){
 	$album_id = $clerk->addRecord([

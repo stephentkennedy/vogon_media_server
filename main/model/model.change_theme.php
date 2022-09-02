@@ -3,5 +3,5 @@
 	$params = [
 		':content' => 'css/'.$theme
 	];
-	$db->query($sql, $params);
+	$db->t_query($sql, $params);
 ?>

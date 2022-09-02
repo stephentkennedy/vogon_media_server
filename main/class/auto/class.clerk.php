@@ -52,7 +52,7 @@ class clerk {
 		$set = implode(', ', $this->where);
 		$sql .= $set . ' WHERE data_id = :id';
 		$this->params[':id'] = $id;
-		return $this->db->query($sql, $this->params);
+		return $this->db->t_query($sql, $this->params);
 	}
 	
 	public function addRecord($values, $metas = false){
@@ -88,7 +88,7 @@ class clerk {
 			$this->params[':user'] = $values['user'];
 		}
 		$this->sql = $sql;
-		$this->db->query($sql, $this->params);
+		$this->db->t_query($sql, $this->params);
 		if($metas === false){
 			return $this->db->last;
 		}else{
@@ -106,7 +106,7 @@ class clerk {
 				':name' => $name,
 				':content' => $content
 			];
-			$query = $this->db->query($sql, $params);
+			$query = $this->db->t_query($sql, $params);
 			if($query == false && $this->debug == true){
 				debug_d($this->db->error);
 			}
@@ -126,14 +126,14 @@ class clerk {
 				':id' => $record_id,
 				':name' => $name,
 			];
-			$query = $this->db->query($check_sql, $check_params);
+			$query = $this->db->t_query($check_sql, $check_params);
 			if(!empty($query)){
 				$check = $query->fetch();
 				if($check == false){
 					$tsql = 'INSERT INTO `data_meta` (data_id, data_meta_name, data_meta_content) VALUES (:id, :name, :content)';
-					$this->db->query($tsql, $params);
+					$this->db->t_query($tsql, $params);
 				}else{
-					$this->db->query($sql, $params);
+					$this->db->t_query($sql, $params);
 				}
 			}else{
 				debug_d($this->db->error);
@@ -148,7 +148,7 @@ class clerk {
 				':id' => $record_id,
 				':name' => $name
 			];
-			$this->db->query($sql, $this->params);
+			$this->db->t_query($sql, $this->params);
 		}
 	}
 	
@@ -209,7 +209,7 @@ class clerk {
 			}
 		}
 		if(isset($cql)){
-			$count = $this->db->query($cql, $this->params)->fetch()['count'];
+			$count = $this->db->t_query($cql, $this->params)->fetch()['count'];
 			$this->total_count = $count;
 		}
 		if(isset($options['orderby'])){
@@ -219,7 +219,7 @@ class clerk {
 			$sql .= ' LIMIT '.$options['limit'];
 		}
 		$this->sql = $sql;
-		$query = $this->db->query($sql, $this->params);
+		$query = $this->db->t_query($sql, $this->params);
 		if($query != false){
 			$records = $query->fetchAll();
 		}else{
@@ -284,7 +284,7 @@ class clerk {
 		}
 		$this->sql = $sql;
 		
-		$query = $this->db->query($sql, $this->params);
+		$query = $this->db->t_query($sql, $this->params);
 		if($query != false){
 			$records = $query->fetch();
 		}else{
@@ -317,7 +317,7 @@ class clerk {
 		}
 		$metas = [];
 		$this->sql = $sql;
-		$query = $this->db->query($sql, $this->params);
+		$query = $this->db->t_query($sql, $this->params);
 		if($query != false){
 			$records = $query->fetchAll();
 		}else{
@@ -335,13 +335,13 @@ class clerk {
 			':id' => $id
 		];
 		$this->sql = $sql;
-		$this->db->query($sql, $this->params);
+		$this->db->t_query($sql, $this->params);
 		$sql = 'DELETE FROM data WHERE data_id = :id';
 		$this->params = [
 			':id' => $id
 		];
 		$this->sql = $sql;
-		$this->db->query($sql, $this->params);
+		$this->db->t_query($sql, $this->params);
 	}
 	
 	private function metaComplex($options){
@@ -448,7 +448,7 @@ class clerk {
 			$sql .= ' ORDER BY '.$options['orderby'];
 		}
 		
-		$query = $this->db->query($sql, $params);
+		$query = $this->db->t_query($sql, $params);
 		if($query != false){
 			$records = $query->fetchAll();
 		}else{

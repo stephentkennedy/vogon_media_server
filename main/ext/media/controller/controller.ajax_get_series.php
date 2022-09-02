@@ -12,7 +12,7 @@ if(!empty($record['meta']['season'])){
 	$params = [
 		':season' => $season
 	];
-	$query = $db->query($sql, $params);
+	$query = $db->t_query($sql, $params);
 	if($query != false){
 		$results = $query->fetchAll();
 		$list = [];
@@ -44,7 +44,7 @@ if(!empty($record['meta']['season'])){
 		':parent' => $season['data_parent'],
 		':ord' => (int)$season['meta']['season_ord'] //I actually wonder if casting on the PHP side of this transaction does anything
 	];
-	$query = $db->query($sql, $params);
+	$query = $db->t_query($sql, $params);
 	if($query != false){
 		$next_season = $query->fetch();
 		if(!empty($next_season)){
@@ -52,7 +52,7 @@ if(!empty($record['meta']['season'])){
 			$params = [
 				':season' => $next_season['data_id']
 			];
-			$query = $db->query($sql, $params);
+			$query = $db->t_query($sql, $params);
 			if($query != false){
 				$next_episode = $query->fetch();
 				$meta = $clerk->getMetas($next_episode['data_id']);
@@ -69,12 +69,12 @@ if(!empty($record['meta']['season'])){
 }else{
 	$sql = 'SELECT * FROM data WHERE data_type = "series" AND data_name = :name';
 	$params = [':name' => $name];
-	$query = $db->query($sql, $params);
+	$query = $db->t_query($sql, $params);
 	if($query != false){
 		$id = $query->fetch()['data_id'];
 		$sql = 'SELECT * FROM data WHERE data_parent = :id AND data_type = "tv" ORDER BY data_name ASC'; //Put in order logic later
 		$params = [':id' => $id];
-		$query = $db->query($sql, $params);
+		$query = $db->t_query($sql, $params);
 		if($query != false){
 			$results = $query->fetchAll();
 			$list = [];
@@ -105,12 +105,12 @@ echo json_encode($output);
 //Old Logic
 /*$sql = 'SELECT * FROM data WHERE data_type = "series" AND data_name = :name';
 $params = [':name' => $name];
-$query = $db->query($sql, $params);
+$query = $db->t_query($sql, $params);
 if($query != false){
 	$id = $query->fetch()['data_id'];
 	$sql = 'SELECT * FROM data WHERE data_parent = :id ORDER BY data_name ASC'; //Put in order logic later
 	$params = [':id' => $id];
-	$query = $db->query($sql, $params);
+	$query = $db->t_query($sql, $params);
 	if($query != false){
 		$results = $query->fetchAll();
 		$list = [];

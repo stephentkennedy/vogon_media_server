@@ -18,9 +18,13 @@
 	$exts = $_SESSION['loaded_extensions'];
 	foreach($exts as $ext){
 		if($ext != '.' && $ext != '..'){
+			$form = load_controller('settings', ['mode' => 'get_form'], $ext);
+			if(empty($form)){
+				$form = '';
+			}
 			$settings[] = [
 			'name' => $ext,
-			'form' => str_replace('{{ext_name}}', $ext, load_controller('settings', ['mode' => 'get_form'], $ext))];
+			'form' => str_replace('{{ext_name}}', $ext, $form)];
 		}
 	}
 	load_controller('header', ['title' => 'Settings']);

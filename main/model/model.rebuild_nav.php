@@ -3,7 +3,7 @@ switch($type){
 	case 'head':
 		
 		$sql = 'SELECT * FROM route WHERE in_h_nav = 1 ORDER BY route_ord, nav_display ASC';
-		$query = $db->query($sql);
+		$query = $db->t_query($sql);
 		$nav_routes = $query->fetchAll();
 		$array = [];
 		$string = '';
@@ -43,12 +43,12 @@ switch($type){
 		$params = [
 			':content' => $string
 		];
-		$db->query($sql, $params);
+		$db->t_query($sql, $params);
 		break;
 	case 'foot':
 		
 		$sql = 'SELECT * FROM route WHERE in_f_nav = 1 ORDER BY route_ord, nav_display ASC';
-		$query = $db->query($sql);
+		$query = $db->t_query($sql);
 		$nav_routes = $query->fetchAll();
 		$array = [];
 		$string = '';
@@ -68,6 +68,6 @@ switch($type){
 		$params = [
 			':content' => $string
 		];
-		$db->query($sql, $params);
+		$db->t_query($sql, $params);
 		break;
 }

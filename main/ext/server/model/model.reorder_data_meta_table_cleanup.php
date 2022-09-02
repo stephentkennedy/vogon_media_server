@@ -1,10 +1,10 @@
 <?php
 $message = 'Setting AUTO_INCREMENT for `data_meta`.<br>';
 $sql = 'SELECT count(*) AS `count` FROM `data_meta` WHERE 1';
-$count = $db->query($sql, [])->fetch()['count'];
+$count = $db->t_query($sql, [])->fetch()['count'];
 
 $sql = 'ALTER TABLE `data_meta` AUTO_INCREMENT = '.($count + 1);
-$check = $db->query($sql, []);
+$check = $db->t_query($sql, []);
 if($check == false){
 	ob_start();
 	debug_d($db->error);

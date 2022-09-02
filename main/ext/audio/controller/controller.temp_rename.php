@@ -1,6 +1,6 @@
 <?php
 $sql = 'SELECT * FROM data WHERE data_content LIKE "%dresden files%"';
-$query = $db->query($sql, []);
+$query = $db->t_query($sql, []);
 $items = $query->fetchAll();
 $clerk = new clerk;
 

@@ -1,1 +1,1 @@
-Added logic to automatically skip phpmyadmin configuration tables in the build process.
+Initial update to existing code to ensure compatibility with PHP 8.1

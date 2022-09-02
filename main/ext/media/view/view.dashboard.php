@@ -2,7 +2,11 @@
 <?php if(!empty($recent)){
 	echo '<h2>Recent</h2><div class="video-contain">';
 	foreach($recent as $r){
-		$r['poster'] = str_replace(ROOT, '', $r['poster']);
+		if(!empty($r['poster'])){
+			$r['poster'] = str_replace(ROOT, '', $r['poster']);
+		}else{
+			$r['poster'] = '';
+		}
 		echo '<a href="';
 		$thumbnail = URI.$r['poster'];
 		switch($r['data_type']){

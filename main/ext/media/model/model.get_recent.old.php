@@ -21,7 +21,7 @@ if(!empty($user) && !empty($user['user_key'])){
 		':user' => $user['user_key'],
 		':thirty_days' => db_date('-30 days')
 	];
-	$query = $db->query($sql, $params);
+	$query = $db->t_query($sql, $params);
 	if($query == false){
 		return [
 			'success' => false,

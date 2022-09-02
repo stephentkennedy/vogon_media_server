@@ -5,5 +5,5 @@
 		':ext' => $ext,
 		':slug' => $slug
 	];
-	$db->query($sql, $params);
+	$db->t_query($sql, $params);
 ?>

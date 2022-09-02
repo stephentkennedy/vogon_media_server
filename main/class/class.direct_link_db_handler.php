@@ -71,7 +71,7 @@ class direct_link_db_handler extends db_handler{
 			}
 		}
 		if(isset($cql)){
-			$count = $this->db->query($cql, $this->params)->fetch()['count'];
+			$count = $this->db->t_query($cql, $this->params)->fetch()['count'];
 			$this->total_count = $count;
 		}
 		if(isset($options['groupby']) && !empty($this->structure[$options['groupby']])){
@@ -97,7 +97,7 @@ class direct_link_db_handler extends db_handler{
 			$sql .= ' LIMIT '.$options['limit'];
 		}
 		$this->sql = $sql;
-		$query = $this->db->query($sql, $this->params);
+		$query = $this->db->t_query($sql, $this->params);
 		if($query != false){
 			$records = $query->fetchAll();
 		}else{
@@ -131,7 +131,7 @@ class direct_link_db_handler extends db_handler{
 				}
 			}
 		}
-		$query = $this->db->query($sql, $this->params);
+		$query = $this->db->t_query($sql, $this->params);
 		if($query != false){
 			$records = $query->fetch();
 		}else{
@@ -147,7 +147,7 @@ class direct_link_db_handler extends db_handler{
 			':id' => $id
 		];
 		$this->sql = $sql;
-		$this->db->query($sql, $this->params);
+		$this->db->t_query($sql, $this->params);
 		$this->root->removeRecord($id);
 	}
 	

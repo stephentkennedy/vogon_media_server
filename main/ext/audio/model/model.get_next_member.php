@@ -7,7 +7,7 @@ $params = [
 	':parent' => $id,
 	':user' => $user['user_key']
 ];
-$query = $db->query($sql, $params);
+$query = $db->t_query($sql, $params);
 
 $result = $query->fetch();
 
@@ -30,7 +30,7 @@ if($result == false){
 			':ord' => ((int)$item['meta']['track'] + 1),
 			':series' => $id
 		];
-		$query = $db->query($sql, $params);
+		$query = $db->t_query($sql, $params);
 		if($query == false){
 			die($db->error);
 		}

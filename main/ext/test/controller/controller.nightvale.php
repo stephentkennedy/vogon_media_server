@@ -5,7 +5,7 @@ ini_set('display_errors', 1);
 echo 'Nightvale Fix<br>';
 
 $sql = 'SELECT * FROM data WHERE data_parent = "16850"';
-$query = $db->query($sql);
+$query = $db->t_query($sql);
 
 $results = $query->fetchAll();
 

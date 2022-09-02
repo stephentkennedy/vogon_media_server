@@ -19,7 +19,7 @@ class thumb extends PDO{
 		$this->settings = $settings;
 	}
 	
-	public function query($sql, $params = []){
+	public function t_query($sql, $params = []){
 		//Always safe rather than sorry
 		$this->beginTransaction();
 		$trans = $this->prepare($sql);
@@ -56,7 +56,7 @@ class thumb extends PDO{
 			while(($line = fgets($handle)) !== false){
 				if(preg_match($pattern, $line) === 1){
 					$cmd .= $line;
-					$this->query(str_replace('{;}', ';', $cmd), []);
+					$this->t_query(str_replace('{;}', ';', $cmd), []);
 					$cmd = '';
 				}else{
 					$cmd .= $line;
@@ -72,7 +72,7 @@ class thumb extends PDO{
 		fwrite($handle, $header);
 		if(gettype($table) == 'string'){
 			$sql = "SHOW CREATE TABLE `".$table."`";
-			$query = $this->query($sql, []);
+			$query = $this->t_query($sql, []);
 			$create = $query->fetch()['Create Table'];
 			if($data == false){
 				$create = preg_replace('/AUTO_INCREMENT=[0-9]+ /', 'AUTO_INCREMENT=0', $create);
@@ -82,12 +82,12 @@ class thumb extends PDO{
 				case 'array':
 					fwrite($handle, PHP_EOL.PHP_EOL);
 					$sql = "SHOW KEYS FROM `".$table."` WHERE Key_name = 'PRIMARY'";
-					$query = $this->query($sql, []);
+					$query = $this->t_query($sql, []);
 					$primary = $query->fetch()['Column_name'];
 					foreach($data as $id){
 						$sql = "SELECT * FROM `".$table."` WHERE `".$primary."` = :id";
 						$params = [":id" => $id];
-						$query = $this->query($sql, $params);
+						$query = $this->t_query($sql, $params);
 						$line = $query->fetch();
 						$keys = [];
 						$values = [];
@@ -104,7 +104,7 @@ class thumb extends PDO{
 				default:
 					if($data == true){
 						$sql = "SELECT * FROM `".$table."`";
-						$rows = $this->query($sql, []);
+						$rows = $this->t_query($sql, []);
 						fwrite($handle, PHP_EOL.PHP_EOL);
 						foreach($rows as $row){
 							$keys = [];
@@ -127,7 +127,7 @@ class thumb extends PDO{
 			$tables = $table;
 			foreach($tables as $table){
 				$sql = "SHOW CREATE TABLE `".$table."`";
-				$query = $this->query($sql, []);
+				$query = $this->t_query($sql, []);
 				$create = $query->fetch()['Create Table'];
 				if($data[$table] == false){
 					$create = preg_replace('/AUTO_INCREMENT=[0-9]+ /', 'AUTO_INCREMENT=0 ', $create);
@@ -137,12 +137,12 @@ class thumb extends PDO{
 					case 'array':
 						fwrite($handle, PHP_EOL.PHP_EOL);
 						$sql = "SHOW KEYS FROM `".$table."` WHERE Key_name = 'PRIMARY'";
-						$query = $this->query($sql, []);
+						$query = $this->t_query($sql, []);
 						$primary = $query->fetch()['Column_name'];
 						foreach($data[$table] as $id){
 							$sql = "SELECT * FROM `".$table."` WHERE `".$primary."` = :id";
 							$params = [":id" => $id];
-							$query = $this->query($sql, $params);
+							$query = $this->t_query($sql, $params);
 							$line = $query->fetch();
 							$keys = [];
 							$values = [];
@@ -159,7 +159,7 @@ class thumb extends PDO{
 					default:
 						if($data == true){
 							$sql = "SELECT * FROM `".$table."`";
-							$rows = $this->query($sql, []);
+							$rows = $this->t_query($sql, []);
 							fwrite($handle, PHP_EOL.PHP_EOL);
 							foreach($rows as $row){
 								$keys = [];

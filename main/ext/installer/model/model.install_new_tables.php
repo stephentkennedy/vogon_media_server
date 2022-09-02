@@ -1,7 +1,7 @@
 <?php
 foreach($new as $table){
 	$create = $db_tables[$table]['create'];
-	$db->query($create);
+	$db->t_query($create);
 	if(count($db_tables[$table]['records']) > 1){
 		foreach($db_tables[$table]['records'] as $r){
 			$columns = array_keys($r);
@@ -10,7 +10,7 @@ foreach($new as $table){
 			foreach($columns as $c){
 				$params[':'.$c] = $r[$c];
 			}
-			$db->query($sql, $params);
+			$db->t_query($sql, $params);
 		}
 	}
 }

@@ -171,6 +171,9 @@ if($page < $pages - 2){
 		<span data-col="result-eleven" class="flex-resize result-eleven"></span>
 	</div>
 <?php foreach($rows as $r){
+	if(empty($r['data_content'])){
+		$r['data_content'] = '';
+	}
 	echo '<form class="result-row flex-row" method="post">
 	<input type="hidden" name="id" value="'.$r['data_id'].'">';
 	echo '<span data-col="result-one" class="flex-resize result-one"><input type="text" name="data_id" value="'.$r['data_id'].'"></span>

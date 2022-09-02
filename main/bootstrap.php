@@ -40,7 +40,7 @@ define('URL', $protocol.'://'.$host);
 $db = new thumb(__DIR__.DIRECTORY_SEPARATOR.'config.ini');
 
 $sql = 'SELECT * FROM var WHERE var_session = 1';
-$query = $db->query($sql, []);
+$query = $db->t_query($sql, []);
 session_start();
 //Dump session variables not set by the database
 //$_SESSION = [];

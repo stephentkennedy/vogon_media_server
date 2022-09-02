@@ -99,7 +99,7 @@ class user_model {
         $params = [
             ':email' => $email
         ];
-        $query = $this->db->query($sql, $params);
+        $query = $this->db->t_query($sql, $params);
         if(!empty($query)){
             return $query->fetch();
         }else{
@@ -134,7 +134,7 @@ class user_model {
         $params = [
             ':id' => $user_key
         ];
-        $query = $this->db->query($sql, $params);
+        $query = $this->db->t_query($sql, $params);
         $user_data = $query->fetch();
         if(!empty($user_data)){
             $user_data['user_role_mods'] = json_decode($user_data['user_role_mods'], true);
@@ -154,7 +154,7 @@ class user_model {
         $params = [
             ':key' => $this->session
         ];
-        $query = $this->db->query($sql, $params);
+        $query = $this->db->t_query($sql, $params);
 
         if($query == false){
             return [
@@ -185,7 +185,7 @@ class user_model {
             ':id' => $this->session,
             ':date' => date('Y-m-d H:i:s')
         ];
-        $this->db->query($sql, $params);
+        $this->db->t_query($sql, $params);
     }
 
     private function check_timeout($timestamp){
@@ -205,7 +205,7 @@ class user_model {
         $params = [
             ':key' => $this->user_key
         ];
-        $this->db->query($sql, $params);
+        $this->db->t_query($sql, $params);
 
         $sql = 'INSERT INTO session (user_key, session_key, session_ip, create_date, last_edit) VALUES (:user, :key, :ip, :create, :edit)';
         $params = [
@@ -218,7 +218,7 @@ class user_model {
 
         $this->ip = $_SERVER['REMOTE_ADDR'];
 
-        $this->db->query($sql, $params);
+        $this->db->t_query($sql, $params);
     }
 
     public function logout(){
@@ -226,7 +226,7 @@ class user_model {
         $params = [
             ':key' => $this->user_key
         ];
-        $this->db->query($sql, $params);
+        $this->db->t_query($sql, $params);
     }
     
 }

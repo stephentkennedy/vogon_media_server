@@ -13,11 +13,11 @@ $params = [
 
 $outer_sql = 'UPDATE data SET data_parent = :id WHERE data_parent IN('.$inner_sql.')';
 
-$check = $db->query($outer_sql, $params);
+$check = $db->t_query($outer_sql, $params);
 if(empty($check)){
 	debug_d($db->error);
 	die();
 }
 
 $outer_sql = 'DELETE FROM data WHERE data_id IN('.$inner_sql.')';
-$db->query($outer_sql, $params);
+$db->t_query($outer_sql, $params);

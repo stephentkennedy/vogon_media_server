@@ -8,7 +8,7 @@ if($new_id < $old_id){
 		':old_id' => $old_id
 	];
 
-	$db->query($sql1, $params);
+	$db->t_query($sql1, $params);
 	$message = 'Migrating ID ('.$old_id.' => '.$new_id.').';
 }else{
 	$message = 'ID does not need to be migrated.';

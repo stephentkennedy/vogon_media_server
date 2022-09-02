@@ -7,7 +7,7 @@ $params = [
 	':parent' => $id,
 	':user' => $user['user_key']
 ];
-$query = $db->query($sql, $params);
+$query = $db->t_query($sql, $params);
 
 if($query == false){
 	die($db->error);
@@ -35,7 +35,7 @@ if($result == false){
 			':ord' => ((int)$item['meta']['episode_ord'] + 1),
 			':series' => $id
 		];
-		$query = $db->query($sql, $params);
+		$query = $db->t_query($sql, $params);
 		if($query == false){
 			die($db->error);
 		}
@@ -64,7 +64,7 @@ if($result == false){
 				':series' => $id,
 				':ord' => $season['meta']['season_ord'] + 1
 			];
-			$query = $db->query($sql, $params);
+			$query = $db->t_query($sql, $params);
 			if($query == false){
 				die($db->error);
 			}
@@ -79,7 +79,7 @@ if($result == false){
 				$params = [
 					':season' => $next_season['data_id']
 				];
-				$query = $db->query($sql, $params);
+				$query = $db->t_query($sql, $params);
 				if($query == false){
 					die($db->error);
 				}

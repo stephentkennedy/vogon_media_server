@@ -11,7 +11,7 @@ if($return == false){
 	$params = [
 		':id' => $id
 	];
-	$query = $db->query($sql, $params);
+	$query = $db->t_query($sql, $params);
 	$tv = $query->fetchAll();
 	foreach($tv as $key => $v){		
 		$metas = $clerk->getMetas($v['data_id']);
@@ -38,7 +38,7 @@ if($return == false){
 	$params = [
 		':id' => $id
 	];
-	$query = $db->query($sql, $params);
+	$query = $db->t_query($sql, $params);
 	if($query === false){
 		debug_d($sql);
 		debug_d($db->error);die();

@@ -27,7 +27,7 @@ if($update_root != false){
 		':name' => $db_name
 	];
 	
-	$table_return = $db->query($sql, $params)->fetchAll();
+	$table_return = $db->t_query($sql, $params)->fetchAll();
 	$tables = [];
 	foreach($table_return as $t){
 		$tables[$t['table_name']] = false;

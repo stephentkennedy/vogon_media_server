@@ -7,7 +7,7 @@
 	$params = [
 		':key' => $session_key
 	];
-	$query = $db->query($sql, $params);
+	$query = $db->t_query($sql, $params);
 	if($query == false){
 		return [
 			'session' => false,
@@ -51,7 +51,7 @@
 				':id' => $session_data['session_id'],
 				':date' => date('Y-m-d H:i:s')
 			];
-			$db->query($sql, $params);
+			$db->t_query($sql, $params);
 		}
 		return $return;
 	}

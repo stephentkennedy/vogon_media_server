@@ -26,7 +26,7 @@
 	$struct = [];
 	foreach($tables as $table => $bool){
 		$sql = 'DESCRIBE `'.$table.'`';
-		$query = $db->query($sql);
+		$query = $db->t_query($sql);
 		if($query == false){
 			debug_d($db->error);
 			continue;

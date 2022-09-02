@@ -23,7 +23,7 @@ foreach($files as $f){
 	if($mime[0] == 'audio' || substr($f, -4) == '.wma'){
 		$sql = 'SELECT * FROM data WHERE data_content = :content AND data_type = "audio"';
 		$params = [':content' => $f];
-		$query = $db->query($sql, $params);
+		$query = $db->t_query($sql, $params);
 		if($query == false){
 			debug_d($db->error);
 		}else{
@@ -45,7 +45,7 @@ foreach($files as $f){
 				
 				$sql = 'SELECT * FROM data WHERE data_name = :album AND data_type = "album"';
 				$params = [':album' => $album];
-				$query = $db->query($sql, $params);
+				$query = $db->t_query($sql, $params);
 				if($query != false){
 					$result = $query->fetch();
 				}else{

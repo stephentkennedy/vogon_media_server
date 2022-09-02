@@ -44,7 +44,7 @@ HERE;
 	 public function checkup($output = false, $approve = false){
 		global $th;
 		$sql = 'SELECT * FROM hitchhiker';
-		$query = $th->query($sql, []);
+		$query = $th->t_query($sql, []);
 		$exes = $query->fetchAll();
 		if($output == true){
 			echo count($exes).' files to be scanned.<br>';
@@ -64,13 +64,13 @@ HERE;
 				$report = serialize($report);
 				$sql = 'UPDATE hitchhiker SET hitchhiker_owner = :owner, hitchhiker_group = :group, hitchhiker_perms = :perms, hitchhiker_last_edit = :last, hitchhiker_hash = :hash, hitchhiker_report = :report WHERE hitchhiker_id = :id';
 				$params = [ ':owner' => $owner, ':group' => $group, ':perms' => $perms, ':last' => $lastEdit, ':hash' => $hash, ':report' => $report, ':id' => $exe['executable_id'] ];
-				$th->query($sql, $params);
+				$th->t_query($sql, $params);
 			}else{
 				$report = [ 'owner' => $owner, 'group' => $group, 'perms' => $perms, 'lastEdit' => $lastEdit, 'hash' => $hash ];
 				$report = serialize($report);
 				$sql = 'UPDATE hitchhiker SET hitchhiker_report = :report WHERE hitchhiker_id = :id';
 				$params = [':report' => $report, ':id' => $exe['executable_id']];
-				$th->query($sql, $params);
+				$th->t_query($sql, $params);
 			}
 			$change = false;
 			$changeSum = '';
@@ -110,7 +110,7 @@ HERE;
 			if($change == true && $approve == true){
 				$sql = 'UPDATE executable SET executable_owner = :owner, executable_group = :group, executable_perms = :perms, executable_last_edit = :last, executable_hash = :hash WHERE executable_id = :id';
 				$params = [ ':owner' => $owner, ':group' => $group, ':perms' => $perms, ':last' => $lastEdit, ':hash' => $hash, ':id' => $exe['executable_id'] ];
-				$th->query($sql, $params);
+				$th->t_query($sql, $params);
 			}
 		}
 		if($output == true){
@@ -124,11 +124,11 @@ HERE;
 		foreach($files as $file){
 			$sql = "SELECT * FROM hitchhiker WHERE hitchhiker_file = :file";
 			$params = [':file' => $file];
-			$query = $th->query($sql, $params);
+			$query = $th->t_query($sql, $params);
 			$return = $query->fetchAll();
 			if(!$return && $approve == true){
 				$sql = "INSERT INTO hitchhiker (hitchhiker_file) VALUES (:file)";
-				$th->query($sql, $params);
+				$th->t_query($sql, $params);
 			}else if($approve == false && !$return){
 				echo $file.'<br>';
 			}

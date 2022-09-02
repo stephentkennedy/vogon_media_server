@@ -4,7 +4,7 @@ $sql = 'SELECT * FROM `data` WHERE `data_name` = "email" AND `data_type` = "cred
 $params = [
 	':user' => $user['user_key']
 ];
-$query = $db->query($sql, $params);
+$query = $db->t_query($sql, $params);
 $db_data = $query->fetch();
 if($db_data != false){
 	$sql = 'UPDATE `data` SET `data_content` = :content WHERE `data_id` = :id';
@@ -14,7 +14,7 @@ if($db_data != false){
 		':content' => json_encode($content),
 		':id' => $db_data['data_id']
 	];
-	$query = $db->query($sql, $params);
+	$query = $db->t_query($sql, $params);
 }
 else{
 	$sql = 'INSERT INTO `data` (data_name, data_slug, data_content, data_type, data_parent, data_status, user_key) VALUES (:name, :slug, :content, :type, :parent, :status, :user)';
@@ -28,6 +28,6 @@ else{
 		':status' => 'active',
 		':user' => $user['user_key']
 	];
-	$query = $db->query($sql, $params);
+	$query = $db->t_query($sql, $params);
 }
 return $query;

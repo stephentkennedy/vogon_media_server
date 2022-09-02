@@ -5,14 +5,14 @@ switch($type){
 		$params = [
 			':id' => $id
 		];
-		$query = $db->query($sql, $params);
+		$query = $db->t_query($sql, $params);
 		$bool = $query->fetchAll()[0]['in_h_nav'];
 		if($bool){
 			$sql = 'UPDATE route SET in_h_nav = 0 WHERE route_id = :id';
 		}else{
 			$sql = 'UPDATE route SET in_h_nav = 1 WHERE route_id = :id';
 		}
-		$db->query($sql, $params);
+		$db->t_query($sql, $params);
 		
 		break;
 	case 'foot':
@@ -20,14 +20,14 @@ switch($type){
 		$params = [
 			':id' => $id
 		];
-		$query = $db->query($sql, $params);
+		$query = $db->t_query($sql, $params);
 		$bool = $query->fetchAll()[0]['in_f_nav'];
 		if($bool){
 			$sql = 'UPDATE route SET in_f_nav = 0 WHERE route_id = :id';
 		}else{
 			$sql = 'UPDATE route SET in_f_nav = 1 WHERE route_id = :id';
 		}
-		$db->query($sql, $params);
+		$db->t_query($sql, $params);
 		
 		break;
 }

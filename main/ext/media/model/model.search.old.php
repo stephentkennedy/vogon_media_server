@@ -42,7 +42,7 @@ switch($type){
 }
 
 $sql .= ' ORDER BY `data`.`data_name`';
-$c_query = $db->query($c_sql.$sql , $params);
+$c_query = $db->t_query($c_sql.$sql , $params);
 if($c_query != false){
 	$count_raw = $c_query->fetchAll();
 	$count = 0;
@@ -50,7 +50,7 @@ if($c_query != false){
 		$count += $c['count'];
 	}
 	$limit = ' LIMIT '.(($page - 1) * $rpp).', '.$rpp;
-	$r_query = $db->query($r_sql.$sql.$limit, $params);
+	$r_query = $db->t_query($r_sql.$sql.$limit, $params);
 	//debug_d($r_sql.$sql.$limit);
 	if($r_query != false){
 		$search_results = $r_query->fetchAll();
@@ -64,7 +64,7 @@ if($c_query != false){
 				$aarams = [
 					':id' => $r['data_parent']
 				];
-				$a_query = $db->query($aql, $aarams);
+				$a_query = $db->t_query($aql, $aarams);
 				if($a_query != false){
 					$album = $a_query->fetch()['data_name'];
 					$search_results[$key]['series'] = $album;

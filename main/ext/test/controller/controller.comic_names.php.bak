@@ -67,7 +67,7 @@ foreach($results as $row){
 /*
 $sql = 'SELECT * FROM data WHERE data_type = "pdf" and `data_name` = ""';
 
-$query = $db->query($sql, []);
+$query = $db->t_query($sql, []);
 $i = 0;
 foreach($query as $row){
     $loc = $row['data_content'];

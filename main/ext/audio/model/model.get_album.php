@@ -6,7 +6,7 @@ $sql = 'SELECT * FROM data, data_meta WHERE data.data_type = "audio" AND data.da
 $params = [
 	':parent' => $album['data_id']
 ];
-$query = $db->query($sql, $params);
+$query = $db->t_query($sql, $params);
 $members = $query->fetchAll();
 foreach($members as $key => $m){
 	$meta = $clerk->getMetas($m['data_id']);
@@ -17,7 +17,7 @@ foreach($members as $key => $m){
 			':id' => $m['data_id'],
 			':user' => $user['user_key']
 		];
-		$query = $db->query($sql, $params);
+		$query = $db->t_query($sql, $params);
 		$history = $query->fetch();
 		if(!empty($history)){
 			$members[$key]['listened'] = $history['history_val'];

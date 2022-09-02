@@ -6,7 +6,7 @@ $params = [
 	':user' => $user['user_key'],
 	':id' => $id
 ];
-$query = $db->query($sql, $params);
+$query = $db->t_query($sql, $params);
 if($query != false){
 	$return = $query->fetch();
 	if(!empty($return)){
@@ -23,6 +23,6 @@ if($query != false){
 			':time' => $time
 		];
 	}
-	$db->query($sql, $params);
+	$db->t_query($sql, $params);
 }
 	

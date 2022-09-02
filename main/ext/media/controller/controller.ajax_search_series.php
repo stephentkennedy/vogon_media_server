@@ -4,6 +4,6 @@ $sql = 'SELECT data_name FROM data WHERE data_type = "series" AND data_name LIKE
 $params = [
 	':search' => '%'.$_GET['search'].'%'
 ];
-$query = $db->query($sql, $params);
+$query = $db->t_query($sql, $params);
 $results = $query->fetchAll();
 echo load_view('json', $results);

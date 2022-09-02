@@ -1,7 +1,7 @@
 <?php
 	$sql = 'SELECT * FROM `user` WHERE `user_email` = :email';
 	$params = [':email' => $email];
-	$query = $db->query($sql, $params);
+	$query = $db->t_query($sql, $params);
 	if($query == false){
 		return [
 			'correct' => false,

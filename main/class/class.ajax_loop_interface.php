@@ -148,7 +148,7 @@ class ajax_loop_interface {
 			$this->params = $options['params'];
 		}
 		if(!isset($_GET['offset'])){
-			$query = $this->db->query($this->count_sql, $this->params);
+			$query = $this->db->t_query($this->count_sql, $this->params);
 			if($query == false){
 				ob_start();
 				debug_d($this->db->error);
@@ -176,7 +176,7 @@ class ajax_loop_interface {
 				$this->error = 'Non-numeric Offset provided.';
 				return false;
 			}
-			$query = $this->db->query($offset_sql, $this->params);
+			$query = $this->db->t_query($offset_sql, $this->params);
 			if($query == false){
 				ob_start();
 				debug_d($this->db->error);

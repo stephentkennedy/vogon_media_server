@@ -43,7 +43,7 @@ class db_handler {
 		$params = [
 			':table' => $table_name
 		];
-		$query = $this->db->query($sql, $params);
+		$query = $this->db->t_query($sql, $params);
 		$results = $query->fetchAll();
 		foreach($results as $column){
 			$column_name = $column['COLUMN_NAME'];
@@ -79,7 +79,7 @@ class db_handler {
 		$sql .= $set . ' WHERE `'.$this->table.'`.`'.$this->primary_key.'` = :id';
 		$this->params[':id'] = $id;
 		$this->sql = $sql;
-		return $this->db->query($sql, $this->params);
+		return $this->db->t_query($sql, $this->params);
 	}
 	
 	public function set_default_params(){
@@ -191,7 +191,7 @@ class db_handler {
 			}
 		}
 		$this->sql = $sql;
-		$this->db->query($sql, $this->params);
+		$this->db->t_query($sql, $this->params);
 		return $this->db->last;
 	}
 	
@@ -221,9 +221,9 @@ class db_handler {
 				$cql .= ' FROM `'.$this->table.'`';
 			}
 		}
-		$this->query_mode = 'AND';
+		$this->t_query_mode = 'AND';
 		if(!empty($options['query_mode'])){
-			$this->query_mode = $options['query_mode'];
+			$this->t_query_mode = $options['query_mode'];
 			unset($options['query_mode']);
 		}
 		$this->where = [];
@@ -234,14 +234,14 @@ class db_handler {
 			$this->parse_where_statement($options['sub_query']);
 		}
 		if(count($this->where) > 0){
-			$where = implode(' '. $this->query_mode .' ', $this->where);
+			$where = implode(' '. $this->t_query_mode .' ', $this->where);
 			$sql .= ' WHERE '.$where;
 			if(isset($cql)){
 				$cql .= ' WHERE '.$where;
 			}
 		}
 		if(isset($cql)){
-			$query = $this->db->query($cql, $this->params);
+			$query = $this->db->t_query($cql, $this->params);
 			if(!empty($query)){
 				$count = $query->fetch()['count'];
 				$this->total_count = $count;
@@ -283,7 +283,7 @@ class db_handler {
 		}
 		
 		$this->sql = $sql;
-		$query = $this->db->query($sql, $this->params);
+		$query = $this->db->t_query($sql, $this->params);
 		if($query != false){
 			$records = $query->fetchAll();
 		}else{
@@ -302,7 +302,7 @@ class db_handler {
 		}else{
 			$sql .= ' FROM `'.$this->table.'`';
 		}		
-		$this->query_mode = 'AND';
+		$this->t_query_mode = 'AND';
 		$this->where = [];
 		$this->params = [];
 		$this->depth = 0;
@@ -312,14 +312,14 @@ class db_handler {
 			];
 		}
 		if(!empty($options['query_mode'])){
-			$this->query_mode = $options['query_mode'];
+			$this->t_query_mode = $options['query_mode'];
 			unset($options['query_mode']);
 		}
 		$this->parse_select_options($options);
 		if(isset($options['sub_query'])){
 			$this->parse_where_statement($options['sub_query']);
 		}
-		$sql .= ' WHERE ' . implode(' ' . $this->query_mode . ' ', $this->where);
+		$sql .= ' WHERE ' . implode(' ' . $this->t_query_mode . ' ', $this->where);
 		if(isset($options['orderby']) && !empty($this->structure[$options['orderby']])){
 			$sql .= ' ORDER BY '.$this->structure[$options['orderby']]['machine_name'];
 			
@@ -339,7 +339,7 @@ class db_handler {
 		}
 		$this->sql = $sql;
 		
-		$query = $this->db->query($sql, $this->params);
+		$query = $this->db->t_query($sql, $this->params);
 		if($query != false){
 			$records = $query->fetch();
 		}else{
@@ -387,7 +387,7 @@ class db_handler {
 			':id' => $id
 		];
 		$this->sql = $sql;
-		$this->db->query($sql, $this->params);
+		$this->db->t_query($sql, $this->params);
 	}
 	
 	public function buildParam($option, $field, $friendly = false, $compare = '='){

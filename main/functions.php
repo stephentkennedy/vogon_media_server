@@ -185,7 +185,7 @@ function get_ext_slug($ext){
 	global $db;
 	$sql = 'SELECT * FROM route WHERE route_ext = :ext AND ext_primary = 1';
 	$db_params = [':ext' => $ext];
-	$query = $db->query($sql, $db_params);
+	$query = $db->t_query($sql, $db_params);
 	if($query != false){
 		return $query->fetch()['route_slug'];
 	}else{
@@ -209,7 +209,7 @@ function get_var($var_name, $format="string"){
 	global $db;
 	$sql = "SELECT var_content FROM var WHERE var_name = :name";
 	$params = [':name' => $var_name];
-	$query = $db->query($sql, $params);
+	$query = $db->t_query($sql, $params);
 	$r = $query->fetch();
 	$content = $r['var_content'];
 	switch($format){
@@ -226,7 +226,7 @@ function put_var($var_name, $value, $format="string", $session = false){
 	global $db;
 	$sql = "SELECT var_content FROM var WHERE var_name = :name";
 	$params = [':name' => $var_name];
-	$query = $db->query($sql, $params);
+	$query = $db->t_query($sql, $params);
 	if($query != false){
 		$query = $query->fetch();
 	}
@@ -250,7 +250,7 @@ function put_var($var_name, $value, $format="string", $session = false){
 			$sql .= ', var_session = :session';
 		}
 		$sql .= ' WHERE var_name = :name';
-		$db->query($sql, $params);
+		$db->t_query($sql, $params);
 	}else{
 		$sql = 'INSERT INTO var (var_session, var_name, var_content, user_key) VALUES (';
 		if($session == true){
@@ -259,7 +259,7 @@ function put_var($var_name, $value, $format="string", $session = false){
 			$sql .= '0';
 		}
 		$sql .= ', :name, :content, 0)';
-		$check = $db->query($sql, $params);
+		$check = $db->t_query($sql, $params);
 		if($check == false){
 			debug_d($db->error);
 		}
@@ -317,15 +317,17 @@ function recursiveScan($loc, $all = false){
 }
 
 function formatLength($seconds){
-	$hours = floor(($seconds / 3600) % 60);
+	//Added @ operators to suppress depreciated notices for lack of precision
+	//Will probably have to rewrite this function before another php upgrade.
+	$hours = @floor(($seconds / 3600) % 60);
 	
 	$seconds = $seconds - ($hours * 3600);
 	
-	$minutes = floor(($seconds / 60) % 60);
+	$minutes = @floor(($seconds / 60) % 60);
 	
 	$seconds = $seconds - ($minutes * 60);
 	
-	$seconds = $seconds % 60;
+	$seconds = @($seconds % 60);
 	
 	$string = $seconds . 's';
 	

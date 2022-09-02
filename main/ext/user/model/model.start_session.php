@@ -5,7 +5,7 @@
 	$params = [
 		':key' => $user_key
 	];
-	$db->query($sql, $params);
+	$db->t_query($sql, $params);
 
 	$sql = 'INSERT INTO session (user_key, session_key, session_ip, create_date, last_edit) VALUES (:user, :key, :ip, :create, :edit)';
 	$params = [
@@ -16,7 +16,7 @@
 		':edit' => date('Y-m-d H:i:s')
 	];
 
-	$return = $db->query($sql, $params);
+	$return = $db->t_query($sql, $params);
 	
 	return $return
 ?>

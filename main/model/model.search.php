@@ -32,7 +32,7 @@ $offset = $_REQUEST['page'] - 1;
 $offset = $offset * $_REQUEST['rpp'];
 $query_data['sql'] .= ' LIMIT '.$offset.', '.$_REQUEST['rpp'];
 
-$query = $db->query($query_data['sql'], $query_data['params']);
+$query = $db->t_query($query_data['sql'], $query_data['params']);
 if($query == false){
 	return false;
 }

@@ -6,7 +6,7 @@ $sql = 'SELECT `data_id` FROM `data` WHERE `data_parent` = :id';
 $params = [
 	':id' => $id
 ];
-$query = $db->query($sql, $params);
+$query = $db->t_query($sql, $params);
 $items = $query->fetchAll();
 
 foreach($items as $i){

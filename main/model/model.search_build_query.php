@@ -98,7 +98,7 @@ if(!empty($links)){
 }
 $table_statement = rtrim($table_statement,',');
 $count_statement = 'SELECT count(*) as `count` FROM '.$table_statement.' WHERE '.$statement;
-$query = $db->query($count_statement, $params);
+$query = $db->t_query($count_statement, $params);
 if($query !== false){
 	$count = $query->fetch()['count'];
 	$statement = 'SELECT * FROM '.$table_statement.' WHERE '.$statement;

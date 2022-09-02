@@ -1,7 +1,7 @@
 <?php
 $sql = 'SELECT * FROM `data_meta` WHERE `data_meta_id` = :id && `data_meta_name` = "artist"';
 $params = [':id' => $id];
-$query = $db->query($sql, $params);
+$query = $db->t_query($sql, $params);
 
 if($query == false){
 	debug_d($db->error);
@@ -15,7 +15,7 @@ $params = [
 	':search' => $artist
 ];
 
-$query = $db->query($sql, $params);
+$query = $db->t_query($sql, $params);
 
 if($query == false){
 	debug_d($db->error);
@@ -33,7 +33,7 @@ $sql = 'SELECT data_parent FROM `data` WHERE `data_type` = "audio" AND `data_par
 $params = [
 	':ids' => implode(',', $ids)
 ];
-$query = $db->query($sql, $params);
+$query = $db->t_query($sql, $params);
 
 if($query == false){
 	debug_d($db->error);
@@ -53,7 +53,7 @@ $params = [
 	':ids' => implode(',', $album_ids)
 ];
 
-$query = $db->query($sql, $params);
+$query = $db->t_query($sql, $params);
 
 if($query == false){
 	debug_d($db->error);
@@ -67,7 +67,7 @@ $sql = 'SELECT data_parent FROM `data` WHERE `data_type` = "audio" AND `data_par
 $params = [
 	':ids' => implode(',', $ids)
 ];
-$query = $db->query($sql, $params);
+$query = $db->t_query($sql, $params);
 
 if($query == false){
 	debug_d($db->error);

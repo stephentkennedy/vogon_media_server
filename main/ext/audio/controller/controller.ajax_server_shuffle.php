@@ -34,7 +34,7 @@ if(isset($_POST['prev']) && is_array($_POST['prev']) && isset($_POST['prev'][0])
 
 $sql .= ' ORDER BY RAND() LIMIT 100';
 
-$query = $db->query($sql, $params);
+$query = $db->t_query($sql, $params);
 
 if($query !== false){
 	$results = $query->fetchAll();

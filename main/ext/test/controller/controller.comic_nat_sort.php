@@ -17,7 +17,7 @@ $pattern = '/\s0+/';
 
 $sql = 'SELECT * FROM `data_meta` WHERE `data_meta_name` = "sub_series" GROUP BY `data_meta_content`';
 
-$results = $db->query($sql, [])->fetchAll();
+$results = $db->t_query($sql, [])->fetchAll();
 
 foreach($results as $row){
     $search['meta_sub_series'] = $row['data_meta_content'];

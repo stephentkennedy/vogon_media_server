@@ -19,7 +19,7 @@ foreach($tables as $table){
 		':db' => $db->settings['database']['name'],
 		':table' => $table
 	];
-	$query = $db->query($sql, $params);
+	$query = $db->t_query($sql, $params);
 	if($query != false){
 		
 		$results = $query->fetchAll();

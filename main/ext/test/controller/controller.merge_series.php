@@ -1,6 +1,6 @@
 <?php
 $sql = 'SELECT data_id, count(data_id) as `count`, data_name FROM data WHERE data_type = "series" GROUP BY data_name ORDER BY data_id';
-$series = $db->query($sql, [])->fetchAll();
+$series = $db->t_query($sql, [])->fetchAll();
 
 foreach($series as $s){
     if($s['count'] == 1){
@@ -10,7 +10,7 @@ foreach($series as $s){
     $params = [
         ':series' => $s['data_name']
     ];
-    $results = $db->query($sql, $params)->fetchAll();
+    $results = $db->t_query($sql, $params)->fetchAll();
     if(!empty($results) && count($results) > 1){
         $root = false;
         $key = [];
@@ -26,11 +26,11 @@ foreach($series as $s){
         $params = [
             ':root' => $root
         ];
-        $db->query($sql, $params);
+        $db->t_query($sql, $params);
 
         $sql = 'DELETE FROM data WHERE data_id IN('.implode(',', $key).')';
 
-        $db->query($sql, []);
+        $db->t_query($sql, []);
     }
 
 }

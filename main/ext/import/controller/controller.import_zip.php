@@ -30,7 +30,7 @@ while(($data = fgetcsv($h, 1000, ",")) !== FALSE){
 			':state' => $state,
 			':county' => $county
 		];
-		$db->query($sql, $params);
+		$db->t_query($sql, $params);
 	}	
 	$lines++;
 }

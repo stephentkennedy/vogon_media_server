@@ -15,7 +15,7 @@
 	//Remove the session from our authorized sessions.
 	$sql = 'DELETE FROM `session` WHERE `session_key` = :key';
 	$params = [':key' => $session_key];
-	$db->query($sql, $params);
+	$db->t_query($sql, $params);
 	
 	if(session_status() == PHP_SESSION_ACTIVE){ //PHP 7 will kill session once $_SESSION array is emptied, so this handler will check if the session is already killed
 		session_destroy();

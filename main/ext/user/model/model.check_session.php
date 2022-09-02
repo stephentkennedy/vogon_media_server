@@ -4,7 +4,7 @@
 	$params = [
 		':session' => $session_id
 	];
-	$query = $db->query($sql, $params);
+	$query = $db->t_query($sql, $params);
 	if($query == false){
 		return false;
 	}else{

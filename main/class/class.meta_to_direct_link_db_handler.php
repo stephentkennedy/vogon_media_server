@@ -89,9 +89,9 @@ class meta_to_direct_link_db_handler extends meta_link_db_handler {
 				'id' => $options
 			];
 		}
-		$this->query_mode = 'AND';
+		$this->t_query_mode = 'AND';
 		if(!empty($options['query_mode'])){
-			$this->query_mode = $options['query_mode'];
+			$this->t_query_mode = $options['query_mode'];
 			unset($options['query_mode']);
 		}
 		unset($options['meta']);
@@ -100,7 +100,7 @@ class meta_to_direct_link_db_handler extends meta_link_db_handler {
 			$this->parse_where_statement($options['sub_query']);
 		}
 		$this->where[] = '`'.$this->root->table.'`.`'.$this->parent_join_key.'` = `'.$this->linked->table.'`.`'.$this->linked_join_key.'`';
-		$sql .= ' WHERE ' . implode(' '. $this->query_mode .' ', $this->where);
+		$sql .= ' WHERE ' . implode(' '. $this->t_query_mode .' ', $this->where);
 		
 		if(isset($options['orderby']) && !empty($this->structure[$options['orderby']])){
 			$sql .= ' ORDER BY '.$this->structure[$options['orderby']]['machine_name'];
@@ -118,7 +118,7 @@ class meta_to_direct_link_db_handler extends meta_link_db_handler {
 				}
 			}
 		}
-		$query = $this->db->query($sql, $this->params);
+		$query = $this->db->t_query($sql, $this->params);
 		if($query != false){
 			$records = $query->fetch();
 		}else{
@@ -154,9 +154,9 @@ class meta_to_direct_link_db_handler extends meta_link_db_handler {
 		if(isset($options['limit'])){
 			$cql = 'SELECT COUNT(*) as `count` FROM `'.$this->root->table.'` '. implode(' ', $mj['joins']).', `'.$this->linked->table.'`';
 		}
-		$this->query_mode = 'AND';
+		$this->t_query_mode = 'AND';
 		if(!empty($options['query_mode'])){
-			$this->query_mode = $options['query_mode'];
+			$this->t_query_mode = $options['query_mode'];
 			unset($options['query_mode']);
 		}
 		$this->where = [];
@@ -169,14 +169,14 @@ class meta_to_direct_link_db_handler extends meta_link_db_handler {
 		}
 		$this->where[] = '`'.$this->root->table.'`.`'.$this->parent_join_key.'` = `'.$this->linked->table.'`.`'.$this->linked_join_key.'`';
 		if(count($this->where) > 0){
-			$where = implode(' '. $this->query_mode .' ', $this->where);
+			$where = implode(' '. $this->t_query_mode .' ', $this->where);
 			$sql .= ' WHERE '.$where;
 			if(isset($cql)){
 				$cql .= ' WHERE '.$where;
 			}
 		}
 		if(isset($cql)){
-			$count = $this->db->query($cql, $this->params)->fetch()['count'];
+			$count = $this->db->t_query($cql, $this->params)->fetch()['count'];
 			$this->total_count = $count;
 		}
 		if(isset($options['groupby']) && !empty($this->structure[$options['groupby']])){
@@ -208,7 +208,7 @@ class meta_to_direct_link_db_handler extends meta_link_db_handler {
 			$sql .= $options['limit'];
 		}
 		$this->sql = $sql;
-		$query = $this->db->query($sql, $this->params);
+		$query = $this->db->t_query($sql, $this->params);
 		if($query != false){
 			$records = $query->fetchAll();
 		}else{

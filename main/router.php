@@ -10,7 +10,7 @@ $sql = 'SELECT * FROM route WHERE route_slug = :slug';
 $params = [
 	':slug' => $slug
 ];
-$route = $db->query($sql, $params);
+$route = $db->t_query($sql, $params);
 if($db->error == false){
 	$route = $route->fetchAll();
 	if(!empty($route)){

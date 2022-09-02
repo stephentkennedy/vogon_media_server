@@ -13,7 +13,7 @@ switch($location){
 			$view_data = load_model('format_video_data', $record, 'media');
 		}else{
 			$sql = 'SELECT * FROM `data` WHERE `data_type` = "genre" ORDER BY `data_name` ASC';
-			$genres = $db->query($sql, [])->fetchAll();
+			$genres = $db->t_query($sql, [])->fetchAll();
 			$title = 'New Video';
 			$view_data = [
 				'genres' => $genres

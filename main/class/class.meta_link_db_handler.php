@@ -74,9 +74,9 @@ class meta_link_db_handler extends db_handler{
 		if(isset($options['limit'])){
 			$cql = 'SELECT COUNT(*) as `count` FROM `'.$this->root->table.'` '. implode(' ', $mj['joins']);
 		}
-		$this->query_mode = 'AND';
+		$this->t_query_mode = 'AND';
 		if(!empty($options['query_mode'])){
-			$this->query_mode = $options['query_mode'];
+			$this->t_query_mode = $options['query_mode'];
 			unset($options['query_mode']);
 		}
 		$this->where = [];
@@ -87,14 +87,14 @@ class meta_link_db_handler extends db_handler{
 			$this->parse_where_statement($options['sub_query']);
 		}
 		if(count($this->where) > 0){
-			$where = implode(' '. $this->query_mode .' ', $this->where);
+			$where = implode(' '. $this->t_query_mode .' ', $this->where);
 			$sql .= ' WHERE '.$where;
 			if(isset($cql)){
 				$cql .= ' WHERE '.$where;
 			}
 		}
 		if(isset($cql)){
-			$count = $this->db->query($cql, $this->params)->fetch()['count'];
+			$count = $this->db->t_query($cql, $this->params)->fetch()['count'];
 			$this->total_count = $count;
 		}
 		if(isset($options['groupby']) && !empty($this->structure[$options['groupby']])){
@@ -156,7 +156,7 @@ class meta_link_db_handler extends db_handler{
 			$sql .= $options['limit'];
 		}
 		$this->sql = $sql;
-		$query = $this->db->query($sql, $this->params);
+		$query = $this->db->t_query($sql, $this->params);
 		if($query != false){
 			$records = $query->fetchAll();
 		}else{
@@ -193,16 +193,16 @@ class meta_link_db_handler extends db_handler{
 				'id' => $options
 			];
 		}
-		$this->query_mode = 'AND';
+		$this->t_query_mode = 'AND';
 		if(!empty($options['query_mode'])){
-			$this->query_mode = $options['query_mode'];
+			$this->t_query_mode = $options['query_mode'];
 			unset($options['query_mode']);
 		}
 		$this->parse_select_options($options);
 		if(isset($options['sub_query'])){
 			$this->parse_where_statement($options['sub_query']);
 		}
-		$sql .= ' WHERE ' . implode(' '. $this->query_mode .' ', $this->where);
+		$sql .= ' WHERE ' . implode(' '. $this->t_query_mode .' ', $this->where);
 		
 		if(isset($options['orderby']) 
 		&& is_string($options['orderby']) 
@@ -247,7 +247,7 @@ class meta_link_db_handler extends db_handler{
 			}
 		}
 		$this->sql = $sql;
-		$query = $this->db->query($sql, $this->params);
+		$query = $this->db->t_query($sql, $this->params);
 		if($query != false){
 			$records = $query->fetch();
 		}else{
@@ -262,7 +262,7 @@ class meta_link_db_handler extends db_handler{
 			':id' => $id
 		];
 		$this->sql = $sql;
-		$this->db->query($sql, $this->params);
+		$this->db->t_query($sql, $this->params);
 		$this->root->removeRecord($id);
 	}
 	

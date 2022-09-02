@@ -8,7 +8,7 @@ $params = [
 	':star' => '%'.$search.'%'
 ];
 
-$results = $db->query($sql, $params)->fetchAll();
+$results = $db->t_query($sql, $params)->fetchAll();
 
 if(count($results) > 1){
 	$sql = 'SELECT * FROM `data` WHERE FIND_IN_SET(`data_id`, :ids) ORDER BY `data_name`, LENGTH(`data_name`)';
@@ -25,7 +25,7 @@ $params = [
 	':ids' => implode(',', $temp_array)
 ];
 
-$query = $db->query($sql, $params);
+$query = $db->t_query($sql, $params);
 if($query == false){
 	debug_d($db->error);
 }

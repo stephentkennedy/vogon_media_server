@@ -55,5 +55,5 @@
 	$sql .= implode(', ', $updates) . ' WHERE user_key = :id';
 	$params[':id'] = $user_key;
 	//run query and return result
-	return $db->query($sql, $params);
+	return $db->t_query($sql, $params);
 ?>

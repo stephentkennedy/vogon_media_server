@@ -9,7 +9,7 @@ $params = [
 	':user' => $user['user_key'],
 	':id' => $id
 ];
-$query = $db->query($sql, $params);
+$query = $db->t_query($sql, $params);
 if($query != false){
 	$result = $query->fetch();
 	if($result != false){

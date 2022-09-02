@@ -14,7 +14,7 @@
 		$params = [
 			':id' => $_POST['user_key']
 		];
-		$query = $db->query($sql, $params);
+		$query = $db->t_query($sql, $params);
 		if($query == false){
 			$users = load_model('get_users', [], 'user');
 			load_controller('header', ['view' => 'mini']);

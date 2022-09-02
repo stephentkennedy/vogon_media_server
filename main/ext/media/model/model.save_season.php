@@ -9,7 +9,7 @@
 			':parent' => $series,
 			':ord' => $order
 		];
-		$query = $db->query($sql, $params);
+		$query = $db->t_query($sql, $params);
 		$item = $query->fetch();
 		if($item != false){
 			$clerk->updateRecord(['name' => $name], $item['data_id']);
@@ -38,5 +38,5 @@
 		$params = [
 			':uri' => build_slug('view/'.$series, [] , 'media')
 		];
-		$db->query($sql, $params);
+		$db->t_query($sql, $params);
 	}
