@@ -1,1 +1,1 @@
-Initial update to existing code to ensure compatibility with PHP 8.1
+Updated class.user_model.php to avoid warnings in php 8.1

@@ -165,12 +165,15 @@ class user_model {
             'session' => true
         ];
         $session_data = $query->fetch();
-        $this->user_key = $session_data['user_key'];
-        $this->user = $this->get_current_user();
-        $this->user_email = $this->user['user_email'];
+        if(!empty($session_data)){
+            $this->user_key = $session_data['user_key'];
+            $this->user = $this->get_current_user();
+            $this->user_email = $this->user['user_email'];
 
-        $check = $this->check_timeout($session_data['last_edit']);
-
+            $check = $this->check_timeout($session_data['last_edit']);
+        }else{
+            $check = false;
+        }
         if(!$check){
             $return['reauth'] = true;
         }else{
