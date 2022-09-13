@@ -211,6 +211,9 @@ function get_var($var_name, $format="string"){
 	$params = [':name' => $var_name];
 	$query = $db->t_query($sql, $params);
 	$r = $query->fetch();
+	if(empty($r)){
+		return null;
+	}
 	$content = $r['var_content'];
 	switch($format){
 		case 'array':

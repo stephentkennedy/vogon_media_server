@@ -1,1 +1,1 @@
-Partially implemented installation system. Added db_shim for php versions below 8 to make it easy to use legacy extensions.
+Added extension install item to settings page.

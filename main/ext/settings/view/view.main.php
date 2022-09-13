@@ -9,6 +9,10 @@
 		$tabs .= '<li class="settings-tab button" data-id="'.$s['name'].'">'.ucwords($friendly).'</li>';
 		$divs .= '<div class="settings-content" id="'.$s['name'].'">'.$s['form'].'</div>';
 	}
+	$tabs .= '<li class="settings-tab button" data-id="extensions">Extensions</li>';
+	$divs .= '<div class="settings-content" id="extensions">';
+	$divs .= load_view('extensions_form', ['exts' => $_SESSION['loaded_extensions']], 'settings');
+	$divs .= '</div>';
 ?>
 <header>
 	<h1>Settings</h1>
