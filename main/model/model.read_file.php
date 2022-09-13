@@ -9,7 +9,6 @@
 		}
 			$filename = ROOT . DIRECTORY_SEPARATOR . $filename;
 	}
-	debug_d($filename);
 	return [
 		//'filename' => $filename,
 		'content' => file_get_contents($filename)

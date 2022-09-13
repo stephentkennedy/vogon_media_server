@@ -82,7 +82,7 @@
 				}
 				break;
 			case 'install_ext':
-				load_controller('ext_install', ['ext' => $_GET['ext']]);
+				load_controller('ext_install', ['extension' => $_GET['ext']]);
 				break;
 				
 		}

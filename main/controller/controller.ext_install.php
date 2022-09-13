@@ -1,32 +1,41 @@
 <?php 
-
+load_class('db_handler');
 $route_table = new db_handler('route');
 
 $search = [
     'ext_primary' => 1,
-    'route_ext' => $ext
+    'ext' => $extension
 ];
 
 $check = $route_table->getRecord($search);
 
 if(empty($check)){
-    $defaults = load_model('get_install_vars', [], $ext);
+    $defaults = load_model('get_install_vars', [], $extension);
     if(!empty($defaults)){
 
         //Allow us to define a default route upon installation
         if(!empty($defaults['route'])){
-            $search['route_slug'] = $defaults['route'];
+            $search['slug'] = $defaults['route'];
+            $search['in_h_nav'] = 1;
 
-            $double_check = $route_table->getRecord(['route_slug' => $search['route_slug']]);
+            $double_check = $route_table->getRecord(['route_slug' => $defaults['route']]);
             if(!empty($double_check)){
-                $search['route_slug'] = $search['route_slug'].'_'.$ext;
+                $search['slug'] = $defaults['route'].'_'.$extension;
             }
 
-            if(!empty($defaults['nav_display'])){
-                $search['nav_display'] = $defaults['nav_display'];
+            if(!empty($defaults['display'])){
+                $search['nav_display'] = $defaults['display'];
+            }
+
+            if(empty($defaults['controller'])){
+                $search['controller'] = 'main';
+            }else{
+                $search['controller'] = $defaults['controller'];
             }
 
             $route_table->addRecord($search);
+            load_model('rebuild_nav', ['type' => 'head']);
+            redirect(build_slug('', [], 'settings'));
         }
 
         //Allow us to install non-standard tables if we have them.
