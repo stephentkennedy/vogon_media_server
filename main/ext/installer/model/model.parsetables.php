@@ -2,7 +2,7 @@
 $final_tables = [];
 foreach($include as $name => $value){
 	if($value == 1){
-		$final_tables[$name] = $tables[$name];
+		$final_tables[$name] = false;
 	}
 }
 

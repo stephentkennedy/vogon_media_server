@@ -56,6 +56,13 @@ if(isset($_SESSION['error_reporting'])){
 //Include our framework functions
 include __DIR__.DIRECTORY_SEPARATOR.'functions.php';
 
+if(phpversion() < 8){
+	//This allows us to use legacy extensions if we're on a low enough php version to allow the use of $thumb->query without errors.
+	load_class('db_shim');
+	$db2 = new db_shim(__DIR__.DIRECTORY_SEPARATOR.'config.ini');
+	$db = $db2;
+}
+
 //Load our installed extensions as a session variable
 $exts = dir_contents(__DIR__ . DIRECTORY_SEPARATOR . 'ext');
 $_SESSION['loaded_extensions'] = $exts;
@@ -87,6 +94,8 @@ if(empty($_REQUEST['orderby'])){
 
 //Used by the Filebrowser Ext, comment out if you're not using that ext
 $_SESSION['active_filebrowsers'] = 0;
+
+run_filters('vogon_init');
 
 /*
 Developer: Steph Kennedy

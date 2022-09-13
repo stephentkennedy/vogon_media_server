@@ -42,6 +42,32 @@ switch($slug){
 		echo '<br><a href="'.URI.'">Back</a>';
 		load_controller('footer');
 	break;
+	case 'table_structure_export':
+		$table_data = load_model('get_table_data', [], 'installer');
+		
+		load_controller('header');
+		echo load_view('tables_struct_export', [
+			'tables' => $table_data,
+		], 'installer');
+		load_controller('footer');
+		break;
+		break;
+	case 'export_tables':
+
+		if(!empty($_POST['include'])){
+			$_POST['tables'] = array_keys($_POST['include']);
+		}
+		$table_data = load_model('parsetables', ['include' => $_POST['include'], 'tables' => $_POST['include']], 'installer');
+		$table_data['filename'] = slugify($_POST['filename']);
+	
+		load_controller('header', ['title' => 'Exporting Table Structure']);
+		$filename = load_model('export_tables', $table_data, 'installer');
+		echo 'Export created: <br>';
+		echo $filename;
+		echo '<br><a href="'.URI.'">Back</a>';
+		load_controller('footer');
+
+		break;
 	default:
 		$table_data = load_model('get_table_data', [], 'installer');
 		

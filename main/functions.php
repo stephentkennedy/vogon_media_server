@@ -277,11 +277,11 @@ function slugify($content){
 	return strtolower($content);
 }
 
-function nice_date($date){
+function nice_date($date = ''){
 	return reformat_date($date, 'm/d/Y g:ia');
 }
 
-function db_date($date){
+function db_date($date = ''){
 	return reformat_date($date, 'Y-m-d H:i:s');
 }
 
@@ -396,7 +396,7 @@ function register_filter($hook, $model, $ext = false){
 	];
 }
 
-function run_filters($hook, $hook_data){
+function run_filters($hook, $hook_data = []){
 	global $hooks;
 	if(!empty($hooks) && !empty($hooks[$hook])){
 		foreach($hooks[$hook] as $h){

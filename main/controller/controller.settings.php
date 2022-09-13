@@ -81,6 +81,9 @@
 						break;
 				}
 				break;
+			case 'install_ext':
+				load_controller('ext_install', ['ext' => $_GET['ext']]);
+				break;
 				
 		}
 	}else if($method == 'ajax'){

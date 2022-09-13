@@ -1,1 +1,1 @@
-Updated class.user_model.php to avoid warnings in php 8.1
+Partially implemented installation system. Added db_shim for php versions below 8 to make it easy to use legacy extensions.
