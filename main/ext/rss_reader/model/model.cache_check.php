@@ -10,6 +10,7 @@ $feed = $h->getRecord($search);
 if(!empty($feed) && !empty($feed['data_content'])){
     if(
         strtotime($feed['last_edit']) > strtotime('-1 hour')
+        //&& false
     ){
         $feed = json_decode($feed['data_content'], true);
         return $feed;

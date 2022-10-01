@@ -26,12 +26,69 @@
         width: auto;
         height: auto;
     }
+    .errors .col{
+        background-color: var(--error);
+        color: var(--white);
+        padding: 0.5rem;
+        border-radius: var(--border-radius);
+        border-bottom: 2px solid var(--secondary-accent);
+        display: flex;
+        flex-direction: row;
+    }
+    .errors .col > i{
+        flex-grow: 0;
+    }
+    .errors .col span{
+        flex-grow: 1;
+        padding-left: 0.25rem;
+    }
+    .errors .col span.error-dismiss{
+        padding: 0.25rem;
+        display: flex;
+        margin-top: -0.25em;
+        margin-bottom: -0.25em;
+        margin-right: -0.25em;
+        transition: background var(--transition-speed) linear;
+        border-radius: var(--border-radius);
+        flex-grow: 0;
+        background-color: transparent;
+    }
+    .errors .col span.error-dismiss:hover{
+        background-color: rgba(var(--rgb-white), 0.5);
+        cursor: pointer;
+    }
+    .errors .col + .col{
+        margin-top: 0.25rem;
+    }
+    .errors .col:last-child{
+        margin-bottom: 0.25rem;
+    }
 </style>
-<?php //debug_d($feed); ?>
+<?php if(!empty($feed['errors'])){?>
+<div class="row errors">
+    <?php 
+    foreach($feed['errors'] as $error){
+        echo '<div class="col col-ten"><i class="fa fa-';
+        switch($error['type']){
+            case 'timeout':
+                echo 'clock-o';
+                break;
+            default:
+                echo 'exclamation';
+                break;
+        }
+        echo '"></i> <span>'.$error['message'].'</span> <span class="error-dismiss"><i class="fa fa-times"></i></span></div>';
+    }
+    ?>
+</div>
+<?php } ?>
 <div class="row">
 <?php 
     $final_output = [];
-    foreach($feed as $channel){
+    foreach($feed as $fkey => $channel){
+        if($fkey == 'errors'){
+            continue;
+        }
         foreach($channel['items'] as $key => $item){
             ob_start();
             echo '<div class="col col-two feed-item" target="_blank" href="'.$item['link'].'"><div>';
@@ -68,5 +125,9 @@
 <script type="text/javascript">
     $(document).ready(function(){
         lazy.init('.lazy');
+
+        $('.error-dismiss').click(function(){
+            $(this).parent().remove();
+        });
     });
 </script>

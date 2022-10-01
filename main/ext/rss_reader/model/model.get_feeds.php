@@ -3,6 +3,15 @@ load_class('db_handler');
 global $user;
 $h = new db_handler('data');
 $fish = new fish;
+//RSS feeds should be small, text only, and we're not loading external resources as part of the curl request.
+$timeout = get_var('rss_timeout');
+if(
+    empty($timeout)
+    || !is_numeric($timeout)
+){
+    $timeout = 5;
+}
+$fish->options[CURLOPT_TIMEOUT] = $timeout;
 
 $feeds = load_model('get_sources', [], 'rss_reader');
 
@@ -11,6 +20,7 @@ if(empty($feeds)){
 }
 
 $feed_data = [];
+$feed_errors = [];
 foreach($feeds as $feed){
     $fish->url = $feed['data_content'];
     $fish->dispatch();
@@ -60,6 +70,16 @@ foreach($feeds as $feed){
                 ];
             }
         }
+    }else{
+        if(
+            is_string($info)
+            && stristr($info, 'Connection timed out') !== false
+        ){
+            $feed_errors[] = [
+                'message' => 'Connection to '.$feed['data_name'].' timed out.',
+                'type' => 'timeout'
+            ];
+        }
     }
 }
 
@@ -78,5 +98,7 @@ if(!empty($feed_cache)){
     ];
     $h->updateRecord($update, $cache_id);
 }
-
+if(!empty($feed_errors)){
+    $feed_data['errors'] = $feed_errors;
+}
 return $feed_data;
