@@ -53,6 +53,7 @@ $(document).ready(function(){
 		h_loop: false,
 		h_freq: <?php if(!empty($_SESSION['audio_his_time'])){ echo $_SESSION['audio_his_time']; }else{ echo '10000'; } ?>,
 		sleep_timer: false,
+		viz_storage: {},
 		animation: miniplayer.<?php if(!empty($_SESSION['def_visual'])){ echo $_SESSION['def_visual']; }else{ echo 'noViz'; } ?>,
 		seed: '<div class="mini-player"><header class="mini-player-header"><span class="shadow"></span><span class="controls"><i class="fa fa-window-maximize toggle"></i><i class="fa fa-cog option"></i><i class="fa fa-expand fullscreen"></i><i class="fa fa-times close"></i></span></header><info><a target="_blank" data-target="popup" class="mini-player-label title"></a><a target="_blank" data-target="popup" class="mini-player-label album"></a><a target="_blank" data-target="popup" class="mini-player-label band"></a></info><canvas></canvas><audio class="current-track"><source class="current-source" onerror="miniplayer.error"></source></audio><div class="mini-player-audio-controls"><i class="fa fa-heart-o favorite"></i><input type="range" class="seek" value="0" max="" /><span class="mini-player-seek-counter hidden"></span> <span class="mini-player-counter">0:00 / 0:00</span> <br><i class="fa fa-random  fa-fw mini-player-shuffle disable"></i><i class="fa fa-step-backward fa-fw  mini-player-prev disable"></i><i class="fa fa-play fa-fw  mini-player-play"></i><i class="fa fa-step-forward fa-fw  mini-player-next disable"></i><i class="fa fa-retweet fa-fw  mini-player-loop disable"></i><span class="mini-one">1</span></div><i class="fa fa-clock-o sleep-timer"></i><div class="mini-player-playlist"></div></div>',
 		timeFormat : function(duration){
@@ -445,6 +446,10 @@ $(document).ready(function(){
 				'orchid': {
 					name: 'Space Orchid',
 					func: miniplayer.orchid
+				},
+				'rain': {
+					name: 'Rain',
+					func: miniplayer.rain
 				}
 			}
 			var string = '<label for="visualizer">Visualization</label><select id="visualizer">';
@@ -500,7 +505,13 @@ $(document).ready(function(){
 						miniplayer.animation = miniplayer.orchid;
 						window.localStorage.setItem('vizualizer', 'orchid');
 						break;
+					case 'rain':
+						miniplayer.animation = miniplayer.rain;
+						window.localStorage.setItem('vizualizer', 'rain');
+						break;
 				}
+				//Clear the vizualizer storage so that it can be reused.
+				miniplayer.viz_storage = {};
 				win.remove();
 			});
 		},
@@ -526,6 +537,120 @@ $(document).ready(function(){
 				ctx.globalCompositeOperation = 'source-over';
 				ctx.fillStyle = '#000000';
 				ctx.fillRect(0,0,canvas.width,canvas.height);
+			}
+			window.requestAnimationFrame(miniplayer.animation);
+		},
+		rain: function(){
+			if(miniplayer.instance.hasClass('open')){
+				miniplayer.colorControl();
+				// set to the size of device
+				canvas = miniplayer.instance.find('canvas')[0];
+				canvas.width = miniplayer.instance.find('canvas').width();
+				canvas.height = miniplayer.instance.find('canvas').height();
+				ctx = canvas.getContext("2d");
+				ctx.globalCompositeOperation = 'source-over';
+				ctx.fillStyle = '#000000';
+				ctx.fillRect(0,0,canvas.width,canvas.height);
+
+				analyser.getByteFrequencyData(frequency_array);
+				
+				var gradient = ctx.createLinearGradient(0,0,0,canvas.height);
+				
+				var level = 0;
+				var bar_increment = 1;
+
+				for(var i = 0; i < miniplayer.binCount; i += bar_increment){
+					level += frequency_array[i];
+				}
+
+				level = Math.floor(level / miniplayer.binCount);
+
+				var comp = miniplayer.getCompliment(miniplayer.curColor);
+				var lvl_temp = ~~(level / 2) / 255;
+
+				gradient.addColorStop(0,"rgba("+(comp.r * lvl_temp)+","+(comp.g * lvl_temp)+", "+(comp.b * lvl_temp)+", 1)");
+				
+				gradient.addColorStop(1,"rgba(0, 0, 0, 1)");
+				ctx.fillStyle = gradient;
+				ctx.fillRect(0,0,canvas.width,canvas.height);
+				ctx.fillStyle = 'transparent';
+
+				var x_speed = 0;
+				var x_step = 0.01;
+				var stor = miniplayer.viz_storage;
+				if(typeof stor.x_to == 'undefined'){
+					var max = Math.floor(Math.random() * (level / 4));
+					var item = Math.floor(Math.random() * (level / 2));
+					stor.x_to = (max * -1) + item;
+					//console.log('Chosen: ' + stor.x_to);
+				}
+				if(typeof stor.x_cur == 'undefined'){
+					stor.x_cur = x_speed;
+				}
+				if(stor.x_cur != Number(stor.x_to.toFixed(2))){
+					if(stor.x_cur < stor.x_to){
+						stor.x_cur += x_step;
+					}
+					if(stor.x_cur > stor.x_to){
+						stor.x_cur = (-1 * x_step) + stor.x_cur;
+					}
+					stor.x_cur = Number(stor.x_cur.toFixed(2));
+					miniplayer.viz_storage.x_cur = stor.x_cur;
+				}else{
+					delete miniplayer.viz_storage.x_to;
+				}
+				x_speed = stor.x_cur;
+				//console.log('Current: ' + x_speed);
+				
+				for(var i = 0; i < miniplayer.binCount; i++){
+					if(typeof miniplayer.viz_storage[i] == 'undefined'){
+						var x = Math.floor(Math.random() * canvas.width) + 1;
+						var y = 0 - Math.floor(Math.random() * 255) - 1;
+						miniplayer.viz_storage[i] = {
+							x: x,
+							y: y
+						};
+					}
+					var part = miniplayer.viz_storage[i];
+					if(part.x < 0){
+						part.x += canvas.width;
+					}else if(part.x > canvas.width){
+						part.x = part.x - canvas.width;
+					}
+					var y_speed = Math.floor((frequency_array[i] + canvas.height) / 16);
+
+					var new_x = part.x + x_speed;
+					var new_y = part.y + y_speed;
+
+					miniplayer.drawBar(part.x, part.y, new_x, new_y, 2, frequency_array[i]);
+					if(new_y > canvas.height){
+						delete miniplayer.viz_storage[i];
+						if(
+							new_x > 0
+							&& new_x <= canvas.width
+						){
+							var rise = part.y - new_y;
+							var run = part.x - new_x;
+							var slope = Number((rise / run).toFixed());
+							
+							var adjusted_x = ((canvas.height - part.y) / slope ) + part.x;
+							
+							//adjusted_x = Math.floor(adjusted_x);
+							//console.log({new_x: new_x, adjusted_x: adjusted_x});
+							new_x = adjusted_x;
+							left_x = new_x - 4;
+							splash_y = canvas.height - 4;
+							right_x = new_x + 4;
+							miniplayer.drawBar(new_x, canvas.height, left_x, splash_y, 2, frequency_array[i]);
+							miniplayer.drawBar(new_x, canvas.height, right_x, splash_y, 2, frequency_array[i]);
+						}
+					}else{
+						miniplayer.viz_storage[i] = {
+							x: new_x,
+							y: new_y
+						};
+					}
+				}
 			}
 			window.requestAnimationFrame(miniplayer.animation);
 		},

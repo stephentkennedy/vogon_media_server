@@ -1,4 +1,9 @@
 <?php
+global $user_model;
+if(!$user_model->permission('sys_info')){
+	redirect(build_slug(''));
+	die();
+}
 $clerk = new clerk;
 $new_data = [
 	'id' => $_POST['data_id'],

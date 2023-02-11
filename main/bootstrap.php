@@ -110,3 +110,8 @@ include __DIR__.DIRECTORY_SEPARATOR.'router.php';
 
 ob_flush();
 ob_end_clean();
+
+//Install Admin Role if not exist;
+if(load_model('user_roles_check', [], 'user')){
+	redirect(build_slug('', ['tab' => 'user'], 'settings'));
+}

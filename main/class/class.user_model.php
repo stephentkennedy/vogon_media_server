@@ -139,6 +139,23 @@ class user_model {
         if(!empty($user_data)){
             $user_data['user_role_mods'] = json_decode($user_data['user_role_mods'], true);
         }
+        if(!empty($user_data['user_role'])){
+            $sql = 'SELECT * FROM `data` WHERE `data_id` = :id AND `data_type` = "user_role"';
+            $params = [
+                ':id' => $user_data['user_role'],
+            ];
+            $query = $this->db->t_query($sql, $params);
+            $user_role = $query->fetch();
+            if(!empty($user_role)){
+                $permissions = json_decode($user_role['data_content'], true);
+                if(!empty($user_data['user_role_mods'])){
+                    foreach($user_data['user_role_mods'] as $key => $mod){
+                        $permissions[$key] = $mod;
+                    }
+                }
+                $user_data['merged_permissions'] = $permissions;
+            }
+        }
         return $user_data;
     }
 
@@ -230,6 +247,14 @@ class user_model {
             ':key' => $this->user_key
         ];
         $this->db->t_query($sql, $params);
+    }
+
+    public function permission($permission_name){
+        $return = false;
+        if(!empty($this->user['merged_permissions'][$permission_name])){
+            $return = $this->user['merged_permissions'][$permission_name];
+        }
+        return $return;
     }
     
 }

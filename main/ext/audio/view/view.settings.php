@@ -13,6 +13,8 @@
 				'solidCircle' => 'Solid Circle',
 				'pipCircle' => 'Pip Circle',
 				'burnout' => 'Burnout',
+				'rain' => 'Rain',
+				'orchid' => 'Space Orchid'
 			];
 			foreach($visualizers as $var => $friendly){
 				$selected = '';

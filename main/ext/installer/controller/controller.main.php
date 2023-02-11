@@ -8,6 +8,11 @@ We need to add a UI that lets developers choose what extensions get included, as
 
 Additionally, we need to let the developer choose what operating system the install is targeting, as the zip has to be constructed differently for windows and linux. I still feel like that issue is a personal failing in how I'm using the ziparchive class, but work with what we have.
 */
+global $user_model;
+if(!$user_model->permission('sys_info')){
+	redirect(build_slug(''));
+	die();
+}
 $slug = get_slug_part(1);
 switch($slug){
 	case 'makearchive':

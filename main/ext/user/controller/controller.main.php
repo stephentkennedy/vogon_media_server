@@ -1,4 +1,9 @@
 <?php
+	global $user_model;
+	if(!$user_model->permission('settings')){
+		redirect(build_slug(''));
+		die();
+	}
 	$action = get_slug_part(1);
 	if($action == 'new'){
 		load_controller('header', ['title' => 'Create New Profile']);

@@ -1,4 +1,9 @@
 <?php
+global $user_model;
+if(!$user_model->permission('sys_info')){
+	redirect(build_slug(''));
+	die();
+}
 load_controller('header', [
 	'title' => 'Data Meta table cleanup.'
 ]);

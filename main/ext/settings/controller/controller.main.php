@@ -1,5 +1,12 @@
 <?php
-
+	global $user_model;
+	if(
+		!$user_model->permission('settings')
+		&& !load_model('user_roles_check', [], 'user')
+	){
+		redirect(build_slug(''));
+		die();
+	}
 	if(empty($_REQUEST) && empty($_GET['form'])){
 
 	}else if(

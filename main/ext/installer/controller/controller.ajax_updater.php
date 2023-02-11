@@ -1,5 +1,8 @@
 <?php
-
+global $user_model;
+if(!$user_model->permission('sys_info')){
+	return;
+}
 load_class('ajax_loop_interface');
 $ali = new ajax_loop_interface([
 	'mode' => 'session_array',

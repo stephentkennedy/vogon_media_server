@@ -1,4 +1,8 @@
 <?php
+global $user_model;
+if(!$user_model->permission('sys_info')){
+	return;
+}
 load_class('vParse');
 $v = new vParse;
 $level = $_GET['level'];

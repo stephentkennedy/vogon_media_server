@@ -1,4 +1,9 @@
 <?php
+global $user_model;
+if(!$user_model->permission('sys_info')){
+	redirect(build_slug(''));
+	die();
+}
 if(!empty($_GET['id']) && is_numeric($_GET['id'])){
 	load_model('merge_series', ['id' => $_GET['id']], 'server');
 	redirect(build_slug('patch_series', [], 'server'));

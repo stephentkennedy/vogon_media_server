@@ -1,4 +1,9 @@
 <?php
+global $user_model;
+if(!$user_model->permission('sys_info')){
+	redirect(build_slug(''));
+	die();
+}
 $action = get_slug_part(1);
 if(!empty($action)){
 	switch(strtolower($action)){

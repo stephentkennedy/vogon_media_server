@@ -1,3 +1,7 @@
+			<?php
+			global $user_model;
+			if($user_model->permission('sys_info')){
+			?>
 			<div id="server-status-tray" class="tray right col col-three">
 				<div class="controls">
 					<i class="fa fa-tachometer tray-expand" title="Status"></i>
@@ -8,6 +12,7 @@
 					</div>
 				</div>
 			</div>
+			<?php } ?>
 		</div><!-- End of #content Div -->
 		<div id="popup"></div>
 		<footer>

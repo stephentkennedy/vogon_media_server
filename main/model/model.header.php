@@ -16,10 +16,13 @@
 				':role' => $user['user_role']
 			];
 			$query = $db->t_query($sql, $params);
-			$menu_mod = json_decode($query->fetch()['data_content'], true);
-			foreach($menu as $k => $v){
-				if(!in_array($k, $menu_mod)){
-					unset($menu[$k]);
+			$check = $query->fetch();
+			if($check){
+				$menu_mod = json_decode($check['data_content'], true);
+				foreach($menu as $k => $v){
+					if(!in_array($k, $menu_mod)){
+						unset($menu[$k]);
+					}
 				}
 			}
 		}

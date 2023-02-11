@@ -4,6 +4,11 @@ Developer: Steph Kennedy
 Date: 4/28/21
 Comment: There are often times when I've wanted to make manual updates to the data table, because an import ran wrong or I needed to reassign data. This tool is designed to be a way to do that without requiring the user to learn any SQL or PHPMyAdmin.
 */
+global $user_model;
+if(!$user_model->permission('sys_info')){
+	redirect(build_slug(''));
+	die();
+}
 if(empty($_GET['offset'])){
 	$offset = 0;
 }else{

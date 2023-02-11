@@ -26,6 +26,10 @@
         width: auto;
         height: auto;
     }
+	.feed-item .date{
+		display: block;
+		width: 100%;
+	}
     .errors .col{
         background-color: var(--error);
         color: var(--white);
