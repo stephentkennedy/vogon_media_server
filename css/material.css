@@ -231,7 +231,8 @@ nav a:not(.drag):not(#viewBookmark):not(#back){
 	text-align: left;
 }
 #cb-page-content a#back,
-#cb-page-content button{
+#cb-page-content button,
+#cb-page-content a.button{
 	box-shadow: none !important;
 	border: none !important;
 	background: none !important;

@@ -1,1 +1,5 @@
-Added rain visualization.
+Permission system pushed into compatibility mode until it can be completed. This is to preserve existing functionality with current installs.
+
+Added fullscreen logic to CBZ reader. Improvement to CBZ loading when first attempted index does not return image data.
+
+Other misc improvements not pushed to live repo due to incomplete permission system. 

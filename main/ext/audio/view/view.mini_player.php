@@ -522,8 +522,10 @@ $(document).ready(function(){
 				var width = miniplayer.instance.width();
 				canvas.width = width;
 				canvas.height = 150;
+				//document.exitFullscreen();
 			}else{
 				miniplayer.instance.addClass('fullscreen');
+				//miniplayer.instance[0].requestFullscreen();
 				var width = miniplayer.instance.width();
 				var height = miniplayer.instance.height() - 158;
 				canvas.width = width;

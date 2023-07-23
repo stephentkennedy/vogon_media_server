@@ -10,6 +10,8 @@ class user_model {
         $secure, 
         $db,
         $user;
+    
+    private $compatability_mode = true;
 
     public function __construct($options = [
         'secure' => true,
@@ -253,6 +255,9 @@ class user_model {
         $return = false;
         if(!empty($this->user['merged_permissions'][$permission_name])){
             $return = $this->user['merged_permissions'][$permission_name];
+        }
+        if($this->compatability_mode == true){
+            $return = true; //Old system didn't do compatability checks, and until it is fully upgraded it will break functionality to do them.
         }
         return $return;
     }

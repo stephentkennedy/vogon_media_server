@@ -6,6 +6,7 @@
             echo build_slug('', ['resume_search' => true], 'ebooks');
 ?>" title="Exit Viewer"><i class="fa fa-reply"></i></a>
         <button id="prev" title="Previous Page"><i class="fa fa-chevron-left"></i></button>
+        <a id="toggle_fullscreen" class="button"><i class="fa fa-expand"></i></a>
         <button id="next" title="Next Page"><i class="fa fa-chevron-right"></i></button>
     </div>
 </div>
@@ -61,14 +62,18 @@
     }
     #cb-controls #next, #cb-controls #prev{
         width: 96px;
-        height: 100vh;
-        top: 0;
-        position: absolute;
-    }
-    #cb-controls #prev{
         height: calc(100vh - 96px);
         top: 96px;
+        position: absolute;
     }
+    #cb-controls #toggle_fullscreen{
+        left: auto;
+        right: 0;
+    }
+    /*#cb-controls #prev{
+        height: calc(100vh - 96px);
+        top: 96px;
+    }*/
     #cb-controls #next{
         right: 0;
     }
@@ -100,6 +105,8 @@
         next_issue: false,
         page: new Image(),
         scale: 1,
+        original_orientation: false,
+        fullscreen: false,
         current_page: false,
         page_index: 0,
         pages: [],
@@ -148,6 +155,13 @@
                         cb_reader.save_history();
                     }
                 }else{
+                    if(
+                        returned.message == 'No data at that index'
+                        && typeof returned.array != undefined
+                        && page < returned.array.length
+                    ){
+                        return cb_reader.get_page(page + 1);
+                    }
                     console.log(returned);
                 }
             });
@@ -198,6 +212,22 @@
                 ctx.drawImage(cb_reader.page,0,0,page_w,page_h, 0 + x_offset, 0, draw_w, draw_h);*/
             }
         },
+        toggle_fullscreen: function($dom){
+            var content = $('html')[0];
+            if(cb_reader.fullscreen == false){
+                if(content.requestFullscreen()){
+                    $dom.find('i').removeClass('fa-expand').addClass('fa-compress');
+                    cb_reader.fullscreen = true;
+                    screen.orientation.lock('landscape');
+                }
+            }else{
+                if(document.exitFullscreen()){
+                    cb_reader.fullscreen = false;
+                    $dom.find('i').removeClass('fa-compress').addClass('fa-expand');
+                    screen.orientation.unlock();
+                }
+            }
+        },
         bind_controls: function(){
             $('#prev').click(function(){
                 if(cb_reader.page_index > 0){
@@ -220,6 +250,10 @@
             $('#zoom-out').click(function(){
                 cb_reader.scale += -1 * 0.05;
                 cb_reader.render_page(cb_reader.current_page);
+            });
+            $('#toggle_fullscreen').click(function(){
+                var $this = $(this);
+                cb_reader.toggle_fullscreen($this);
             });
             $(window).keydown(function(e){
                 switch(e.which){
@@ -244,6 +278,12 @@
                     case 112: //F1
                     case 72: //"h"
                         cb_reader.help();
+                        break;
+                    case 70: //"f"
+                        $('#toggle_fullscreen').trigger('click');
+                        break;
+                    default:
+                        console.log('Keycode: ' + e.which);
                         break;
                 }
             });
