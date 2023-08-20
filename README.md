@@ -25,8 +25,9 @@ It's a prototyping and developing framework for PHP. You can find the framework 
 * History tracking allows resuming across devices
 
 **E-Book Support**
-* Use your browser's built in PDF reader (or download it if you're on mobile)
-* Use the entirely web based CBZ reader (still very much in alpha)
+* Read EPUB files in the browser using [EPUB.js](https://github.com/futurepress/epub.js/)
+* Read PDF files in the browser using [PDF.js](https://github.com/mozilla/pdf.js)
+* Read CBZ files in the browser using a custom CBZ reader.
 
 **Custom HTML5 Video Player Interface:**
 * Autoplay next episode for items categorized as part of a TV series
