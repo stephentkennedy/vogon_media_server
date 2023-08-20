@@ -78,7 +78,8 @@ switch($format){
                     '',
                     urlencode('#')
                 ];
-                $link .= str_replace($replace, $with, $r['data_content']);
+                //$link .= str_replace($replace, $with, urlencode($r['data_content']));
+                $link .= urlencode(load_model('file_to_url', ['item' => $r], 'ebooks')['url']);
             }
             $table .= '<a class="button" href="'.$link.'" title="View"><i class="fa fa-eye"></i></a>';
             $link = build_slug('edit/'.$r['data_id'], [], 'ebooks');           

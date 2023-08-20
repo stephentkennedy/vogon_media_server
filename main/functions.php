@@ -413,3 +413,17 @@ function outputFilters($buffer){
 	$returned = run_filters('output', ['buffer' => $buffer]);
 	return $returned['buffer'];
 }
+
+function build_style_tag($relative_path){
+	if(substr($relative_path, 0, 1) != '/'){
+		$relative_path = '/'.$relative_path;
+	}
+	return '<link rel="stylesheet" href="'.build_slug($relative_path).'" type="text/css">';
+}
+
+function build_script_tag($relative_path){
+	if(substr($relative_path, 0, 1) != '/'){
+		$relative_path = '/'.$relative_path;
+	}
+	return '<script type="text/javascript" src="'.build_slug($relative_path).'"></script>';
+}

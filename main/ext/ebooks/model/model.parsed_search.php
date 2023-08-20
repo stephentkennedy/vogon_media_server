@@ -22,7 +22,7 @@ $search_options = [
 		'sub_series',
 		'order'
 	],
-	'type' => ['pdf', 'cbz'],
+	'type' => ['pdf', 'cbz', 'epub'],
 	'orderby' => ['parent_data_name', 'meta_sub_series', 'meta_order + 0', 'name'],
 	'limit' => $rpp,
 	'offset' => (($page - 1) * $rpp)

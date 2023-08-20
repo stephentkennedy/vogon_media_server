@@ -6,17 +6,23 @@ $supported = [
     //'cbr',
     'cbz',
     'pdf',
+    'epub'
 ];
 $id = get_slug_part(2);
-if(!is_numeric($id)){
-    return  [
-        'error'=> true,
-        'message' => 'Data id is not valid.'
-    ];
-}
 
-$item = load_model('get_item_by_id', ['id' => $id], 'ebooks');
-$type = $item['data_type'];
+if(isset($_GET['test'])){
+    $item = false;
+    $type = 'epub';
+}else{
+    if(!is_numeric($id)){
+        return  [
+            'error'=> true,
+            'message' => 'Data id is not valid.'
+        ];
+    }
+    $item = load_model('get_item_by_id', ['id' => $id], 'ebooks');
+    $type = $item['data_type'];
+}
 
 if(!in_array($type, $supported)){
     return  [
@@ -34,10 +40,18 @@ switch($type){
     case 'pdf':
         $view = 'js_pdf_viewer';
         $view_size = 'nano';
+        $item['url'] = load_model('file_to_url', ['item' => $item], 'ebooks');
         break;
     case 'cbz':
     case 'cbr':
         $view = 'comic_book_reader';
+        break;
+    case 'epub':
+        //Short circuit this controller so some more complex logic can be run
+        load_controller('epub_reader', [
+            'item' => $item
+        ], 'ebooks');
+        die();
         break;
 }
 load_controller('header', ['title' => $item['data_name'], 'view' => $view_size]);

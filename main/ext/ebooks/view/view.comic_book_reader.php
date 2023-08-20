@@ -26,10 +26,10 @@
         margin: 0 auto;
         max-width: 100%;
     }
-    .cb-fullscreen i.fa-cog{
+    .cb-fullscreen i.icon-center{
         position: absolute;
-        left: 50%;
-        top: 50%;
+        left: calc(50% - 36px);
+        top: calc(50% - 36px);
         transform: translate(-50%, -50%);
         font-size: 4rem;
         color: #fff;
@@ -90,7 +90,7 @@
         top: 0;
     }
     #cb-controls #zoom-out{
-        bottom: 0;
+        bottom: 0;$('#cb-page').html('<i class="fa fa-cog fa-spin"></i>');
     }
 </style>
 <script type="text/javascript">
@@ -162,6 +162,12 @@
                     ){
                         return cb_reader.get_page(page + 1);
                     }
+                    if(
+                        returned.error == true
+                    ){
+                        var w = aPopup.newWindow(returned.message);
+                        cb_reader.error_page();
+                    }
                     console.log(returned);
                 }
             });
@@ -172,7 +178,10 @@
             ctx.globalCompositeOperation = 'source-over';
             ctx.fillStyle = '#000000';
             ctx.fillRect(0,0,canvas.width,canvas.height);*/
-            $('#cb-page').html('<i class="fa fa-cog fa-spin"></i>');
+            $('#cb-page').html('<i class="fa fa-cog fa-spin icon-center"></i>');
+        },
+        error_page: function(){
+            $('#cb-page').html('<i style="color: red !important;" class="fa fa-times icon-center"></i>');
         },
         render_page: function(page_object){
             cb_reader.current_page = false;

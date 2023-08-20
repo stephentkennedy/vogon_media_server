@@ -2,20 +2,46 @@
 $zip = new ZipArchive;
 if($zip->open($item['data_content'])){
     $count = $zip->count();
+    if($count == 0){
+        return [
+            'error' => true,
+            'message' => 'This archive appears to be empty.',
+            'count' => $count
+        ];
+    }
     $array = [];
     for($i=0; $i <= $count; $i++){
         $name = $zip->getNameIndex($i);
-        if(!empty($name)){
+        //debug_d($name);
+        if(
+            !empty($name)
+            || $name === 0
+        ){
             $array[] = $name;
         }
     }
     //Because some of these archives use human sortable filenames
     natsort($array);
     $array = array_values($array);
+    if(empty($array)){
+        return [
+            'error' => true,
+            'message' => 'No data was returned when traversing the archive for page names.',
+            'array' => $array,
+            'count' => $count
+        ];
+    }
     //If our first entry is a folder, skip it.
-    if(substr($array[0], -1) == '/' ){
+    if(@substr($array[0], -1) == '/' ){
         $page += 1;
         $count += -1;
+    }
+    if(empty($array[$page])){
+        return [
+            'error' => true,
+            'message' => 'No data at that index',
+            'array' => $array
+        ];
     }
     $image_data = $zip->getFromName($array[$page]);
     if($image_data != false){

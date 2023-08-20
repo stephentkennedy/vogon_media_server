@@ -38,6 +38,23 @@ switch(strtolower(substr($f, -4))){
 			$message .= 'File already exists in database.<br>Skipping.';
 		}
 		break;
+	case 'epub':
+		if(strtolower(substr($f, -5)) != '.epub'){
+			$message .= 'File is not a known ebook format.<br>Skipping.';
+			break;
+		}
+		$search = [
+			'content' => $f,
+			'type' => 'epub'
+		];
+		$check = $hand->getRecord($search);
+		if(empty($check)){
+			$hand->addRecord($search);
+			$message .= 'Adding to database.';
+		}else{
+			$message .= 'File already exists in database.<br>Skipping.';
+		}
+		break;
 	default:
 		$message .= 'File is not a known ebook format.<br>Skipping.';
 		break;

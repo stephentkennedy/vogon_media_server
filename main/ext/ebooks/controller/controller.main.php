@@ -15,6 +15,12 @@ switch($action){
 				break;
 		}
 		break;
+	//case 'series':
+	//	load_controller('series', [], 'ebooks');
+	//	break;
+	case 'serve':
+		load_controller('serve_file', [], 'ebooks');
+		break;
 	case 'view':
 		load_controller('comic_book_reader', [], 'ebooks');
 		break;
