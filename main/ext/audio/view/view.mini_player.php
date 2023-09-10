@@ -304,6 +304,18 @@ $(document).ready(function(){
 			var string = 'rgba(' + colorObj.r + ',' + colorObj.g + ',' + colorObj.b + ',' + colorObj.a + ')';
 			return string;
 		},
+		rand: function(min, max){
+            return Math.floor(Math.random() * (max - min + 1)) + min;
+        },
+        rand_alpha: function(min, max){
+            return this.rand(min, max) / 100;
+        },
+        decimal: function(number){
+            return Number(number.toFixed(2));
+        },
+		clear_storage: function(){
+			this.viz_storage = {};
+		},
 		drawBar: function (x1, y1, x2, y2, width, frequency){
 			var freq_temp = frequency / 255;
 			if(freq_temp > 1){
@@ -450,6 +462,10 @@ $(document).ready(function(){
 				'rain': {
 					name: 'Rain',
 					func: miniplayer.rain
+				},
+				'snow': {
+					name: 'Snow',
+					func: miniplayer.snow
 				}
 			}
 			var string = '<label for="visualizer">Visualization</label><select id="visualizer">';
@@ -503,15 +519,18 @@ $(document).ready(function(){
 						break;
 					case 'orchid':
 						miniplayer.animation = miniplayer.orchid;
-						window.localStorage.setItem('vizualizer', 'orchid');
+						window.localStorage.sminiplayer.viz_storage = {};etItem('vizualizer', 'orchid');
 						break;
 					case 'rain':
 						miniplayer.animation = miniplayer.rain;
 						window.localStorage.setItem('vizualizer', 'rain');
 						break;
+					case 'snow':
+						miniplayer.animation = miniplayer.snow;
+						window.localStorage.setItem('vizualizer', 'snow');
 				}
 				//Clear the vizualizer storage so that it can be reused.
-				miniplayer.viz_storage = {};
+				miniplayer.clear_storage();
 				win.remove();
 			});
 		},
@@ -652,6 +671,142 @@ $(document).ready(function(){
 							y: new_y
 						};
 					}
+				}
+			}
+			window.requestAnimationFrame(miniplayer.animation);
+		},
+		snow: function(){
+			if(miniplayer.instance.hasClass('open')){
+				//Gradient and setup
+				miniplayer.colorControl();
+				// set to the size of device
+				canvas = miniplayer.instance.find('canvas')[0];
+				canvas.width = miniplayer.instance.find('canvas').width();
+				canvas.height = miniplayer.instance.find('canvas').height();
+				ctx = canvas.getContext("2d");
+				ctx.globalCompositeOperation = 'source-over';
+				ctx.fillStyle = '#000000';
+				ctx.fillRect(0,0,canvas.width,canvas.height);
+
+				analyser.getByteFrequencyData(frequency_array);
+				
+				var gradient = ctx.createLinearGradient(0,0,0,canvas.height);
+				
+				var level = 0;
+				var bar_increment = 1;
+
+				for(var i = 0; i < miniplayer.binCount; i += bar_increment){
+					level += frequency_array[i];
+				}
+
+				level = Math.floor(level / miniplayer.binCount);
+
+				var comp = miniplayer.getCompliment(miniplayer.curColor);
+				var lvl_temp = ~~(level / 2) / 255;
+
+				gradient.addColorStop(0,"rgba("+(comp.r * lvl_temp)+","+(comp.g * lvl_temp)+", "+(comp.b * lvl_temp)+", 1)");
+				
+				gradient.addColorStop(1,"rgba(0, 0, 0, 1)");
+				ctx.fillStyle = gradient;
+				ctx.fillRect(0,0,canvas.width,canvas.height);
+				ctx.fillStyle = 'transparent';
+
+				var x_speed = 0;
+				var x_step = 0.01;
+				var stor = miniplayer.viz_storage;
+				var util = miniplayer; //Shim because this code was ported from GPX where it was prototyped.
+				var drop_numbers = miniplayer.binCount; //May need to re-examine this, as the bin should contain 255, which may not be enough particles for this slow moving effect.
+				
+				if(typeof stor.drop_array == 'undefined'){
+					//Then we need to initialize ourself.
+					var drop_array = [];
+					for(var i = 0; i <= drop_numbers; i++){
+						drop_array.push({
+							x: util.rand(0, canvas.width),
+							y: util.rand(-255, 0),
+							y_speed: Math.floor(util.rand(5, canvas.height) / 256) + 1,
+							x_speed: util.rand(-5, 5),
+							x_step: 0.01,
+							y_step: 0.01,
+							x_to: util.rand(-5, 5),
+							y_to: Math.floor(util.rand(5, canvas.height) / 256) + 1,
+						});
+					}
+					stor.drop_array = drop_array;
+				}
+
+				//Animation logic
+				for(var i = 0; i <= drop_numbers; i++){
+					var drop = stor.drop_array[i];
+
+					//Speed transitions
+					var x_to = util.decimal(drop.x_to);
+					var x_speed = util.decimal(drop.x_speed);
+					if(x_to != x_speed){
+						var speed_mult = drop.x_step * util.decimal(frequency_array[i] / 100);
+						if(x_to < x_speed){
+							speed_mult = speed_mult * -1;
+						}
+						x_speed += speed_mult;
+						drop.x_speed = x_speed;
+					}else{
+						x_to = util.rand(-5, 5);
+						drop.x_to = x_to;
+					}
+
+					var y_to = util.decimal(drop.y_to);
+					var y_speed = util.decimal(drop.y_speed);
+					if(y_to != y_speed){
+						var speed_mult = drop.y_step * frequency_array[i];
+						if(y_to < y_speed){
+							speed_mult = speed_mult * -1;
+						}
+						y_speed += speed_mult;
+						drop.y_speed = y_speed;
+					}else{
+						y_to = Math.floor(util.rand(5, canvas.height) / 256) + 1;
+						drop.y_to = y_to;
+					}
+
+					var x = drop.x;
+					var y = drop.y;
+					var x2 = x + x_speed;
+					/*if(weather_fx.wind_var != 0){
+						x2 = x + (x_speed + weather_fx.wind_var);
+					}*/
+					var y2 = y + y_speed;
+
+					if(y2 > canvas.height){
+						if(x2 > 0 && x2 <= canvas.width){
+							var rise = y - y2;
+							var run = x - x2;
+							var slope = Number((rise/run).toFixed());
+
+							var adjusted_x = ((canvas.height - y) / slope) + x;
+							frequency_array[i]
+							x2 = adjusted_x;
+						}
+
+						drop.y = util.rand(-255, 0);
+						drop.x = util.rand(0, canvas.width);
+
+					}else{
+						drop.y = y2;
+						drop.x = x2;
+					}
+
+					if(x2 < 0){
+						drop.x += canvas.width;
+						x += canvas.width;
+						x2 += canvas.width;
+					}else if(x2 >= canvas.width){
+						drop.x += canvas.width * -1;
+						x += canvas.width * -1;
+						x2 += canvas.width * -1;
+					}
+
+					util.drawBar(x, y, x2, y2, util.decimal(4 * util.decimal(frequency_array[i] / 255)), frequency_array[i]);
+					stor.drop_array[i] = drop;
 				}
 			}
 			window.requestAnimationFrame(miniplayer.animation);

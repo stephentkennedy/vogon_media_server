@@ -14,6 +14,7 @@
 				'pipCircle' => 'Pip Circle',
 				'burnout' => 'Burnout',
 				'rain' => 'Rain',
+				'snow' => 'Snow',
 				'orchid' => 'Space Orchid'
 			];
 			foreach($visualizers as $var => $friendly){
