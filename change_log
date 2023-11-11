@@ -1,1 +1,5 @@
-- Added Snow visualizer to audio player.
+Fixed lack of data in installer.
+
+Added true fullscreen mode to miniplayer (material theme only)
+
+Adjusted background color of comic viewer (material theme)

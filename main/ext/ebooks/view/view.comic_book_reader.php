@@ -15,6 +15,9 @@
         /*height: 100%;*/
         width: 100%;
     }
+    body{
+        background-color: #222222;
+    }
     .cb-fullscreen{
         padding: 0;
         width: 100%;

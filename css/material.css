@@ -18,6 +18,7 @@ Website: https://Stephkennedy.dev
 	--rgb-shadows: 238,236,234;
 	--border-radius: 30px;
 	--transition-speed: 0.2s;
+	--transition-speed-long: 0.4s;
 	--success: green;
 	--error: red;
 }
@@ -539,10 +540,18 @@ a.video-preview:hover{
 	border: none !important;
 	background-color: transparent !important;
 	box-shadow: none !important;
-	transition: color var(--transition-speed) linear;
+	transition: color var(--transition-speed) linear, opacity var(--transition-speed-long) ease;
+	opacity: 1;
+}
+.mini-player.inactive .mini-player-label{
+	opacity: 0;
+}
+.mini-player.inactive.labels-only .mini-player-label{
+	opacity: 1;
 }
 .mini-player .mini-player-label:hover{
 	color: rgba(var(--rgb-white), 0.7);
+	opacity: 1 !important;
 }
 .mini-player.fullscreen .mini-player-label{
 	font-size: 1.5rem;
@@ -564,8 +573,12 @@ a.video-preview:hover{
 	width: 48px;
 	height: 48px;
 	padding: 16px;
-	transition: color var(--transition-speed) linear, background var(--transition-speed) linear;
+	transition: color var(--transition-speed) linear, background var(--transition-speed) linear, opacity var(--transition-speed-long) ease;
 	background-color: rgba(255,255,255,0);
+	opacity: 1;
+}
+.mini-player.inactive .sleep-timer{
+	opacity: 0;
 }
 .mini-player .playlist-toggle:hover, .mini-player .sleep-timer:hover{
 	cursor: pointer;
@@ -711,6 +724,13 @@ a.video-preview:hover{
 	background: rgb(0,0,0);
 	background: linear-gradient(0deg, rgba(0,0,0,1) 0%, rgba(5,5,5,1) 76%, rgba(100,100,100,1) 100%);
 	color: #fff;
+	opacity: 1;
+	transition: opacity var(--transition-speed-long) ease;
+	position: relative;
+	z-index: 10;
+}
+.mini-player.inactive .mini-player-audio-controls{
+	opacity: 0;
 }
 .mini-player-audio-controls .fa{
 	cursor: pointer;
@@ -865,11 +885,23 @@ input[type=range]::-ms-fill-upper {
 input[type=range]:focus::-ms-fill-upper {
   background: #367ebd;
 }
+.mini-player{
+	cursor: auto;
+}
 .mini-player.fullscreen{
 	width: 100%; /* Fallback if Min() is not supported */
 	width: min(100vw, 100%);
 	height: 100%;
 	transform: translateY(calc(100vh - 48px));
+	border-left: none;
+	border-right: none;
+}
+.mini-player.fullscreen.inactive{
+	cursor: none;
+}
+.mini-player.fullscreen canvas{
+	margin-bottom: -110px;
+	margin-top: -48px;
 }
 .mini-player.open.fullscreen{
 	transform: translateY(0);
@@ -891,6 +923,11 @@ input[type=range]:focus::-ms-fill-upper {
 	overflow: hidden;
 	background-color: var(--main-accent);
 	margin-bottom: 0px;
+	opacity: 1;
+	transition: opacity var(--transition-speed-long) ease;
+}
+.mini-player.inactive header{
+	opacity: 0;
 }
 .mini-player header .shadow{
 	display: inline-block;

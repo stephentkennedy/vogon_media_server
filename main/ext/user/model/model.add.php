@@ -12,8 +12,10 @@
 			'salt' => $salt
 		], 'user');
 	}
-	if(!empty($role_mods)){
+	if(empty($role_mods)){
 		$role_mods = null;
+	}else{
+		$role_mods = json_encode($role_mods);
 	}
 
 	$sql = 'INSERT INTO `user` (`user_role`, `user_email`, `user_pass`, `user_salt`, `user_role_mods`) VALUE (:role, :email, :pass, :salt, :mods)';
@@ -22,7 +24,7 @@
 		':email' => $email,
 		':pass' => $password,
 		':salt' => $salt,
-		':mods' => json_encode($role_mods)
+		':mods' => $role_mods
 	];
 	return $db->t_query($sql, $params);
 ?>

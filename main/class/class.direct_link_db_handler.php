@@ -97,6 +97,14 @@ class direct_link_db_handler extends db_handler{
 			$sql .= ' LIMIT '.$options['limit'];
 		}
 		$this->sql = $sql;
+
+		if(
+			isset($options['sql_only']) 
+			&& $options['sql_only'] === true
+		){
+			return $sql;
+		}
+
 		$query = $this->db->t_query($sql, $this->params);
 		if($query != false){
 			$records = $query->fetchAll();

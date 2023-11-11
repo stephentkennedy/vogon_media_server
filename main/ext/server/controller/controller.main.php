@@ -32,6 +32,9 @@ if(!empty($action)){
 		case 'find_orphan_entries':
 			load_controller('find_orphan_entries', [], 'server');
 			break;
+		case 'build_file_hashes':
+			load_controller('build_media_hashes', [], 'server');
+			break;
 		case 'patch_series':
 			load_controller('patch_series', [], 'server');
 			break;

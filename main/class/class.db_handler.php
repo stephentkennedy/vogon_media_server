@@ -283,6 +283,14 @@ class db_handler {
 		}
 		
 		$this->sql = $sql;
+
+		if(
+			isset($options['sql_only']) 
+			&& $options['sql_only'] === true
+		){
+			return $sql;
+		}
+
 		$query = $this->db->t_query($sql, $this->params);
 		if($query != false){
 			$records = $query->fetchAll();
@@ -492,5 +500,15 @@ class db_handler {
 		}else{
 			return false;
 		}
+	}
+
+	public function get_sql($options){
+		$options = array_merge($options, [
+			'sql_only' => true
+		]);
+		return [
+			'sql' => $this->getRecords($options),
+			'params' => $this->params
+		];
 	}
 }

@@ -208,6 +208,14 @@ class meta_to_direct_link_db_handler extends meta_link_db_handler {
 			$sql .= $options['limit'];
 		}
 		$this->sql = $sql;
+
+		if(
+			isset($options['sql_only']) 
+			&& $options['sql_only'] === true
+		){
+			return $sql;
+		}
+
 		$query = $this->db->t_query($sql, $this->params);
 		if($query != false){
 			$records = $query->fetchAll();

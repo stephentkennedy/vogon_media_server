@@ -161,6 +161,7 @@ $(document).ready(function(){
 			}else{
 				miniplayer.instance.find('.mini-player-label.album').html('').attr('href', '');
 			}
+			miniplayer.show_labels();
 			$('.mini-player-label.title').off().click(function(){
 				if($(this).attr('data-href') != ''){
 					$(this).prepend('<i class="fa fa-fw fa-cog fa-spin"></i> ... ');
@@ -541,14 +542,29 @@ $(document).ready(function(){
 				var width = miniplayer.instance.width();
 				canvas.width = width;
 				canvas.height = 150;
-				//document.exitFullscreen();
+				document.exitFullscreen().then(function(){
+					var width = miniplayer.instance.width();
+					var canvas = miniplayer.instance.find('canvas')[0];
+					canvas.width = width;
+				});
 			}else{
 				miniplayer.instance.addClass('fullscreen');
 				//miniplayer.instance[0].requestFullscreen();
+				miniplayer.instance[0].requestFullscreen().then(function(){
+					//Adjust the canvas size for the next frame after fullscreening
+					var canvas = miniplayer.instance.find('canvas')[0];
+					var width = miniplayer.instance.width();
+					var height = miniplayer.instance.height();
+					canvas.width = width;
+					canvas.height = height;
+				});
+				//screen.orientation.lock('landscape');
 				var width = miniplayer.instance.width();
-				var height = miniplayer.instance.height() - 158;
+				var height = miniplayer.instance.height();
 				canvas.width = width;
 				canvas.height = height;
+				clearTimeout(miniplayer.active_timeout);
+				miniplayer.active_timeout = setTimeout(miniplayer.fade, 5000);
 			}
 		},
 		noViz: function(){
@@ -1668,11 +1684,55 @@ $(document).ready(function(){
 			var string = 'There has been an issue loading: ' + miniplayer.instance.find('.mini-player-label.title').html() + '<br><br>(Line ' + e.lineno + '): ' + e.message;
 			var w = aPopup.newWindow(string);
 		},
+		active_timeout: false,
+		activeFade: function(){
+			$('.mini-player').mousemove(function(){
+				var $mp = $('.mini-player');
+				if($mp.hasClass('inactive')){
+					$mp.removeClass('inactive');
+				}
+				clearTimeout(miniplayer.active_timeout);
+				if(!$mp.hasClass('fullscreen')){
+					return;
+				}
+				miniplayer.active_timeout = setTimeout(miniplayer.fade, 5000);
+			});
+			miniplayer.active_timeout = setTimeout(miniplayer.fade, 5000);
+		},
+		fade: function(){
+			var $mp = $('.mini-player');
+			if(
+				!$mp.hasClass('inactive')
+				&& $mp.hasClass('fullscreen')
+			){
+				$mp.addClass('inactive');
+			}
+		},
+		show_labels: function(){
+			var $mp = miniplayer.instance;
+			if(!$mp.hasClass('fullscreen')){
+				return;
+			}
+			if(!$mp.hasClass('labels-only')){
+				$mp.addClass('labels-only');
+			}
+			clearTimeout(miniplayer.remove_labels_timeout);
+			miniplayer.remove_labels_timeout = setTimeout(miniplayer.remove_labels, 5000);
+		},
+		remove_labels_timeout: function(){},
+		remove_labels: function(){
+			var $mp = miniplayer.instance;
+			if(
+				$mp.hasClass('labels-only')
+			){
+				$mp.removeClass('labels-only');
+			}
+		},
 		init: function(){
-			
 			miniplayer.chooseColor();
 			miniplayer.curColor = miniplayer.trueColor;
 			miniplayer.instance = $(miniplayer.seed).appendTo('body');
+			miniplayer.activeFade();
 			miniplayer.audio = $('.mini-player .current-track');
 			miniplayer.src = $('.mini-player .current-track .current-source');
 			miniplayer.header = $('.mini-player .mini-player-header .title');
