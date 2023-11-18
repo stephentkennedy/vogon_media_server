@@ -29,6 +29,10 @@ $return = [
 	'duration' => $track['meta']['length'],
 	'artist' => $track['meta']['artist'],
 	'favorite' => $track['meta']['fav_'.$user['user_key']],
+	'max_bin' => $track['meta']['max_bin'],
+	'min_bin' => $track['meta']['min_bin'],
+	'level_peak' => $track['meta']['level_peak'],
+	'level_graph' => json_decode($track['meta']['level_graph'], true)
 ];
 if(!empty($album)){
 	$return['album'] = $album['data_name'];

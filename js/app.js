@@ -30,3 +30,50 @@ app.ajax_form = function (form_contents, callback) {
 		}
 	});
 }
+
+app.simplify_array = function(array, max_members){
+	if(typeof array == 'undefined'){
+		return;
+	}
+	if(typeof max_members == 'undefined'){
+		max_members = 10;
+	}
+	if(array.length > max_members){
+		var increment = array.length / max_members;
+		increment = Math.ceil(increment);
+		var to_save = [];
+
+		for(var i = 0; i < array.length; i += increment){
+			var item = array[i];
+			to_save.push(item);
+		}
+		array = to_save;
+	}
+	return array;
+}
+
+app.simplify_num_array = function(array, max_members){
+	if(typeof array == 'undefined'){
+		return;
+	}
+	if(typeof max_members == 'undefined'){
+		max_members = 10;
+	}
+	if(array.length > max_members){
+		var increment = array.length / max_members;
+		increment = Math.ceil(increment);
+		var to_save = [];
+		var current = 0;
+		for(var i = 0; i < array.length; i++){
+			var item = array[i];
+			current += item;
+			if(i % increment == 0){
+				current = Math.floor(current / increment);
+				to_save.push(current);
+				current = 0;
+			}
+		}
+		array = to_save;
+	}
+	return array;
+}

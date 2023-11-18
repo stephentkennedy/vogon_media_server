@@ -1,5 +1,3 @@
-Fixed lack of data in installer.
-
-Added true fullscreen mode to miniplayer (material theme only)
-
-Adjusted background color of comic viewer (material theme)
+- Added visualizer meta data
+- Added visualizer analysis to generate meta data
+- Adjusted visualizers to use level multiplier based on max level found in analysis

@@ -53,6 +53,16 @@ $(document).ready(function(){
 		h_loop: false,
 		h_freq: <?php if(!empty($_SESSION['audio_his_time'])){ echo $_SESSION['audio_his_time']; }else{ echo '10000'; } ?>,
 		sleep_timer: false,
+		viz_analysis: false,
+		level_graph_points: 100,
+		level_mult: 1,
+		level_max_possible: 255,
+		viz_meta: {
+			max_bin: 0,
+			min_bin: 0,
+			level_peak: 0,
+			level_graph: []
+		},
 		viz_storage: {},
 		animation: miniplayer.<?php if(!empty($_SESSION['def_visual'])){ echo $_SESSION['def_visual']; }else{ echo 'noViz'; } ?>,
 		seed: '<div class="mini-player"><header class="mini-player-header"><span class="shadow"></span><span class="controls"><i class="fa fa-window-maximize toggle"></i><i class="fa fa-cog option"></i><i class="fa fa-expand fullscreen"></i><i class="fa fa-times close"></i></span></header><info><a target="_blank" data-target="popup" class="mini-player-label title"></a><a target="_blank" data-target="popup" class="mini-player-label album"></a><a target="_blank" data-target="popup" class="mini-player-label band"></a></info><canvas></canvas><audio class="current-track"><source class="current-source" onerror="miniplayer.error"></source></audio><div class="mini-player-audio-controls"><i class="fa fa-heart-o favorite"></i><input type="range" class="seek" value="0" max="" /><span class="mini-player-seek-counter hidden"></span> <span class="mini-player-counter">0:00 / 0:00</span> <br><i class="fa fa-random  fa-fw mini-player-shuffle disable"></i><i class="fa fa-step-backward fa-fw  mini-player-prev disable"></i><i class="fa fa-play fa-fw  mini-player-play"></i><i class="fa fa-step-forward fa-fw  mini-player-next disable"></i><i class="fa fa-retweet fa-fw  mini-player-loop disable"></i><span class="mini-one">1</span></div><i class="fa fa-clock-o sleep-timer"></i><div class="mini-player-playlist"></div></div>',
@@ -138,6 +148,28 @@ $(document).ready(function(){
 		load_bind: function(returned){
 			data = returned;
 			miniplayer.cur_id = data['id'];
+			miniplayer.viz_meta = {
+				max_bin: data['max_bin'],
+				min_bin: data['min_bin'],
+				level_peak: data['level_peak'],
+				level_graph: data['level_graph']
+			};
+
+			if(miniplayer.viz_meta['max_bin'] == null){
+				miniplayer.viz_analysis = true;
+				miniplayer.level_mult = 1;
+			}else{
+				miniplayer.viz_analysis = false;
+				if(miniplayer.viz_meta.level_peak < miniplayer.level_max_possible){
+					level_mult = Number((miniplayer.level_max_possible / miniplayer.viz_meta.level_peak).toFixed(2));
+					miniplayer.level_mult = level_mult;
+				}
+			}
+			if(miniplayer.viz_analysis == true){
+				//Clear our level graph
+				miniplayer.viz_meta.level_graph = [];
+			}
+
 			miniplayer.audio[0].pause();
 			miniplayer.src.prop('src', data['src']);
 			if(data['mime'] == 'application/octet-stream'){
@@ -281,6 +313,7 @@ $(document).ready(function(){
 					}
 				});
 			}
+
 		},
 		toggleFavorite: function(){
 			if(miniplayer.id == undefined || miniplayer.id == false){
@@ -317,8 +350,62 @@ $(document).ready(function(){
 		clear_storage: function(){
 			this.viz_storage = {};
 		},
+		update_max_bin(num){
+			var max_bin = miniplayer.viz_meta.max_bin
+			if(
+				typeof max_bin == 'undefined'
+				|| max_bin == null 
+				|| num > max_bin
+			){
+				miniplayer.viz_meta.max_bin = num;
+			}
+		},
+		update_min_bin(num){
+			var min_bin = miniplayer.viz_meta.min_bin
+			if(
+				typeof min_bin == 'undefined'
+				|| min_bin == null 
+				|| num < min_bin
+			){
+				miniplayer.viz_meta.min_bin = num;
+			}
+		},
+		update_level_peak(num){
+			var level_peak = miniplayer.viz_meta.level_peak;
+			if(miniplayer.viz_meta.level_graph == null){
+				miniplayer.viz_meta.level_graph = [];
+			}
+			miniplayer.viz_meta.level_graph.push(num);
+			if(
+				typeof level_peak == 'undefined'
+				|| level_peak == null 
+				|| num > level_peak
+			){
+				miniplayer.viz_meta.level_peak = num;
+			}
+		},
+		update_viz_meta(frequency_array, level){
+			if(
+				miniplayer.viz_analysis == false
+				|| miniplayer.audio[0].paused == true
+			){
+				return;
+			}
+			miniplayer.update_level_peak(level);
+			for(var i = 0; i < frequency_array.length; i++){
+				var item = frequency_array[i];
+				if(item > 0){
+					miniplayer.update_min_bin(i);
+					miniplayer.update_max_bin(i);
+				}
+			}
+		},
+		simplify_level_graph: function(){
+			miniplayer.viz_meta.level_graph = app.simplify_num_array(miniplayer.viz_meta.level_graph, miniplayer.level_graph_points);
+		},
 		drawBar: function (x1, y1, x2, y2, width, frequency){
 			var freq_temp = frequency / 255;
+			freq_temp = freq_temp * miniplayer.level_mult;
 			if(freq_temp > 1){
 				freq_temp = 1;
 			}
@@ -600,7 +687,9 @@ $(document).ready(function(){
 					level += frequency_array[i];
 				}
 
-				level = Math.floor(level / miniplayer.binCount);
+				level = Math.floor((level / miniplayer.binCount) * miniplayer.level_mult);
+
+				miniplayer.update_viz_meta(frequency_array, level);
 
 				var comp = miniplayer.getCompliment(miniplayer.curColor);
 				var lvl_temp = ~~(level / 2) / 255;
@@ -715,7 +804,9 @@ $(document).ready(function(){
 					level += frequency_array[i];
 				}
 
-				level = Math.floor(level / miniplayer.binCount);
+				level = Math.floor((level / miniplayer.binCount) * miniplayer.level_mult);
+
+				miniplayer.update_viz_meta(frequency_array, level);
 
 				var comp = miniplayer.getCompliment(miniplayer.curColor);
 				var lvl_temp = ~~(level / 2) / 255;
@@ -866,8 +957,11 @@ $(document).ready(function(){
 					}
 					level += frequency_array[i];
 				}
-				level = Math.floor(level / bars);
+
+				level = Math.floor((level / bars) * miniplayer.level_mult);
 				radius = Math.floor(level / 8);
+
+				miniplayer.update_viz_meta(frequency_array, level);
 				
 				var comp = miniplayer.getCompliment(miniplayer.curColor);
 				var lvl_temp = ~~(level / 2) / 255;
@@ -959,8 +1053,10 @@ $(document).ready(function(){
 					}
 					level += frequency_array[i];
 				}
-				level = Math.floor(level / bars);
+				level = Math.floor((level / bars) * miniplayer.level_mult);
 				radius = Math.floor(level / 8);
+
+				miniplayer.update_viz_meta(frequency_array, level);
 				
 				var comp = miniplayer.getCompliment(miniplayer.curColor);
 				var lvl_temp = ~~(level / 2) / 255;
@@ -1044,8 +1140,10 @@ $(document).ready(function(){
 					}
 					level += frequency_array[i];
 				}
-				level = Math.floor(level / bars);
+				level = Math.floor((level / bars) * miniplayer.level_mult);
 				radius = Math.floor(level / 8);
+
+				miniplayer.update_viz_meta(frequency_array, level);
 				
 				var comp = miniplayer.getCompliment(miniplayer.curColor);
 				var lvl_temp = ~~(level / 2) / 255;
@@ -1129,9 +1227,11 @@ $(document).ready(function(){
 					}
 					level += frequency_array[i];
 				}
-				level = Math.floor(level / bars);
+				level = Math.floor((level / bars) * miniplayer.level_mult);
 				radius = Math.floor(level / 8);
 				
+				miniplayer.update_viz_meta(frequency_array, level);
+
 				var comp = miniplayer.getCompliment(miniplayer.curColor);
 				var lvl_temp = ~~(level / 2) / 255;
 				
@@ -1213,8 +1313,10 @@ $(document).ready(function(){
 					}
 					level += frequency_array[i];
 				}
-				level = Math.floor(level / bars);
+				level = Math.floor((level / bars) * miniplayer.level_mult);
 				radius = Math.floor(level / 8);
+
+				miniplayer.update_viz_meta(frequency_array, level);
 				
 				var comp = miniplayer.getCompliment(miniplayer.curColor);
 				var lvl_temp = ~~(level / 2) / 255;
@@ -1306,7 +1408,9 @@ $(document).ready(function(){
 					}
 					level += frequency_array[i];
 				}
-				level = Math.floor((level / bars) / 2);
+				level = Math.floor(((level / bars) * miniplayer.level_mult) / 2);
+
+				miniplayer.update_viz_meta(frequency_array, level);
 				
 				radius = level;
 				var comp = miniplayer.getCompliment(miniplayer.curColor);
@@ -1393,7 +1497,9 @@ $(document).ready(function(){
 					}
 					level += frequency_array[i];
 				}
-				level = Math.floor((level / bars) / 2);
+				level = Math.floor(((level / bars) * miniplayer.level_mult) / 2);
+
+				miniplayer.update_viz_meta(frequency_array, level);
 				
 				radius = level;
 				var comp = miniplayer.getCompliment(miniplayer.curColor);
@@ -1480,7 +1586,9 @@ $(document).ready(function(){
 					}
 					level += frequency_array[i];
 				}
-				level = Math.floor((level / bars) / 2);
+				level = Math.floor(((level / bars) * miniplayer.level_mult) / 2);
+
+				miniplayer.update_viz_meta(frequency_array, level);
 				
 				radius = level;
 				var comp = miniplayer.getCompliment(miniplayer.curColor);
@@ -1567,7 +1675,9 @@ $(document).ready(function(){
 					}
 					level += frequency_array[i];
 				}
-				level = Math.floor((level / bars) / 2);
+				level = Math.floor(((level / bars) * miniplayer.level_mult) / 2);
+
+				miniplayer.update_viz_meta(frequency_array, level);
 				
 				radius = level;
 				
@@ -1668,6 +1778,8 @@ $(document).ready(function(){
 					level += frequency_array[i];
 				}
 				level = Math.floor((level / bars) / 4);
+
+				miniplayer.update_viz_meta(frequency_array, level);
 				
 				var number_lines = 100;
 				
@@ -1837,6 +1949,12 @@ $(document).ready(function(){
 				}
 			});
 			miniplayer.audio[0].onended = function(){
+				if(miniplayer.viz_analysis == true){
+					miniplayer.simplify_level_graph();
+					var data = miniplayer.viz_meta;
+					data.id = miniplayer.cur_id;
+					$.post('<?php echo build_slug("ajax/ajax_audio_viz_meta/audio"); ?>', data);
+				}
 				if(playlist.playing == false){
 					$('.mini-player-audio-controls .mini-player-play').removeClass('fa-pause').addClass('fa-play');
 					miniplayer.audio[0].currentTime = 0.0;
