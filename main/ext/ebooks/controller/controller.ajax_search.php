@@ -24,7 +24,36 @@ if(!empty($_GET['format'])){
 }else{
 	$format = 'JSON';
 }
-$model_data = load_model('parsed_search', ['search' => $search, 'type' => $type, 'page' => $page, 'rpp' => $rpp], 'ebooks');
+if(!empty($_GET['series'])){
+	$series = $_GET['series'];
+}else{
+	$series = '';
+}
+if(!empty($_GET['sub_series'])){
+	$sub_series = $_GET['sub_series'];
+}else{
+	$sub_series = '';
+}
+if(!empty($_GET['not_series'])){
+	$not_series = $_GET['not_series'];
+}else{
+	$not_series = '';
+}
+if(!empty($_GET['not_sub_series'])){
+	$not_sub_series = $_GET['not_sub_series'];
+}else{
+	$not_sub_series = '';
+}
+$model_data = load_model('parsed_search', [
+	'search' => $search, 
+	'type' => $type,
+	'series' => $series,
+	'not_series' => $not_series,
+	'sub_series' => $sub_series,
+	'not_sub_series' => $not_sub_series,
+	'page' => $page, 
+	'rpp' => $rpp
+], 'ebooks');
 if($model_data['error'] == false){
 	
 	$page_data = load_model('page', [

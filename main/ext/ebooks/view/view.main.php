@@ -1,6 +1,8 @@
 <?php 
     if(!empty($_GET['t'])){
         $type = $_GET['t'];
+    }else{
+        $type = 'default';
     }
 ?><header><h1>E-Book Library</h1></header>
 <style>
@@ -31,6 +33,13 @@ span.result-one{
 <div>
 	<label for="search">Search</label>
 	<input type="text" id="search" placeholder="Search...">
+    <label for="type">Type</label>
+    <select id="type">
+        <option value="">All</option>
+        <option value="cbz">CBZ</option>
+        <option value="pdf">PDF</option>
+        <option value="epub">EPUB</option>
+    </select>
 	<button type="button" id="search-confirm">Search</button>
 </div>
 <div id="ajax-output">
@@ -40,10 +49,28 @@ span.result-one{
     var controller = {
         url: {
             'default': '<?php echo build_slug('ajax/ajax_search/ebooks'); ?>',
+            'epub': '<?php echo build_slug('ajax/ajax_search/ebooks', [
+                'type' => 'epub'
+            ]); ?>',
+            'pdf': '<?php echo build_slug('ajax/ajax_search/ebooks', [
+                'type' => 'pdf'
+            ]); ?>',
+            'cbz': '<?php echo build_slug('ajax/ajax_search/ebooks', [
+                'type' => 'cbz'
+            ]); ?>',
         },
         active_url: '<?php switch($type){
             default:
                 echo 'default';
+                break;
+            case 'epub':
+                echo 'epub';
+                break;
+            case 'pdf':
+                echo 'pdf';
+                break;
+            case 'cbz':
+                echo 'cbz';
                 break;
         } ?>',
         refresh_labels: function(id){
@@ -101,9 +128,18 @@ span.result-one{
 			var data = {
 				'format': 'HTML',
 				'page': page,
-				'type': controller.active_url
+				//'type': controller.active_url
 			};
 			var search = $('#search').val();
+            var type = $('#type').val();
+            if(
+                type != ''
+                && typeof controller.url[type] != 'undefined'
+            ){
+                controller.active_url = type;
+            }else{
+                controller.active_url = 'default';
+            }
 			var url = '?p=' + page;
 			if(search != ''){
 				data['search'] = search;
@@ -203,6 +239,9 @@ span.result-one{
                 var page = params['p'];
             }else{
                 var page = 1;
+            }
+            if(params['t'] != undefined){
+                $('#type').val(params['t']);
             }
             controller.page(page, false);
         }

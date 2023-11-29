@@ -8,6 +8,20 @@ $hwm = $hand->meta_link($meta, [
 	'meta_key_field' => 'data_meta_name',
 	'meta_value_field' => 'data_meta_content'
 ]);
+$types = [
+	'pdf',
+	'cbz',
+	'epub'
+];
+
+$search_type = $types;
+if(
+	!empty($type)
+	&& in_array($type, $types)
+){
+	$search_type = $type;
+}
+
 $search_options = [
 	'self_join' => [
 		'index_field' => 'data_parent',
@@ -22,11 +36,16 @@ $search_options = [
 		'sub_series',
 		'order'
 	],
-	'type' => ['pdf', 'cbz', 'epub'],
+	'type' => $search_type,
 	'orderby' => ['parent_data_name', 'meta_sub_series', 'meta_order + 0', 'name'],
 	'limit' => $rpp,
 	'offset' => (($page - 1) * $rpp)
 ];
+
+if($rpp == -1){
+	unset($search_options['limit']);
+	unset($search_options['offset']);
+}
 if(!empty($search)){
     $default_columns = [
         'parent_data_name',
@@ -49,6 +68,18 @@ if(!empty($search)){
     $tokenized_search = $parser->parse($search);
     $sub_queries = $parser->token_array_to_sub_queries($tokenized_search, $default_columns, $all_columns);
     $search_options['sub_query'] = $sub_queries;
+}
+if(!empty($series)){
+	$search_options['parent_data_name'] = $series;
+}
+if(!empty($not_series)){
+	$search_options['not_parent_data_name'] = $not_series;
+}
+if(!empty($sub_series)){
+	$search_options['meta_sub_series'] = $sub_series;
+}
+if(!empty($not_sub_series)){
+	$search_options['not_meta_sub_series'] = $not_sub_series;
 }
 $search_results = $hwm->getRecords($search_options);
 if(empty($hwm->db->error)){
