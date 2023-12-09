@@ -20,6 +20,7 @@
 				$slug = build_slug('album/'.$r['data_parent'], [], 'audio');
 				break;
 			case 'cbz':
+			case 'pdf':
 				$slug = build_slug('view/'.$r['data_id'], ['page' => $r['history_val']], 'ebooks');
 
 				break;

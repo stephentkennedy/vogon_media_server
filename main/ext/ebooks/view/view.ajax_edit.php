@@ -6,6 +6,8 @@
     <input id="data_name" name="data_name" type="text" value="<?php echo $item['data_name']; ?>">
     <label for="data_content">Location</label>
     <input id="data_content" type="text" readonly disabled value="<?php echo $item['data_content']; ?>">
+    <label for="filesize">File Size</label>
+    <input id="filesize" type="text" readonly disabled value="<?php echo human_filesize($item['data_content']); ?>">
     <label for="series">Series</label>
     <input id="series" name="series" type="text" value="<?php echo $item['parent_data_name']; ?>">
     <label for="sub_series">Sub Series</label>

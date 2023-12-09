@@ -93,7 +93,7 @@
         top: 0;
     }
     #cb-controls #zoom-out{
-        bottom: 0;$('#cb-page').html('<i class="fa fa-cog fa-spin"></i>');
+        bottom: 0;
     }
 </style>
 <script type="text/javascript">

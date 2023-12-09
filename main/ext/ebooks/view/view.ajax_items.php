@@ -68,7 +68,7 @@ switch($format){
             $table .= '<span class="result-four">'.$artist.'</span>';
             $table .= '<span class="result-five">';
             $link = build_slug('view/'.$r['data_id'], [], 'ebooks');
-            if($r['data_type'] == 'pdf'){
+            /*if($r['data_type'] == 'pdf'){
                 $link .= '?file=';
                 $replace = [
                     ROOT,
@@ -80,7 +80,7 @@ switch($format){
                 ];
                 //$link .= str_replace($replace, $with, urlencode($r['data_content']));
                 $link .= urlencode(load_model('file_to_url', ['item' => $r], 'ebooks')['url']);
-            }
+            }*/
             $table .= '<a class="button" href="'.$link.'" title="View"><i class="fa fa-eye"></i></a>';
             $link = build_slug('edit/'.$r['data_id'], [], 'ebooks');           
             $table .= '<a class="button ajax-form" data-href="'.$link.'" data-id="'.$r['data_id'].'" title="Edit"><i class="fa fa-pencil"></i></a>';

@@ -29,6 +29,42 @@ switch($action){
 		echo load_view('series_editor', [], 'ebooks');
 		load_controller('footer');
 		break;
+	case 'compat_view':
+		$supported = [
+			'pdf',
+		];
+		$id = get_slug_part(2);
+		
+		if(isset($_GET['test'])){
+			$item = false;
+			$type = 'epub';
+		}else{
+			if(!is_numeric($id)){
+				return  [
+					'error'=> true,
+					'message' => 'Data id is not valid.'
+				];
+			}
+			$item = load_model('get_item_by_id', ['id' => $id], 'ebooks');
+			$type = $item['data_type'];
+		}
+		
+		if(!in_array($type, $supported)){
+			return  [
+				'error'=> true,
+				'message' => 'Data type is not supported by this controller.'
+			];
+		}
+		
+		$view_data = [
+			'item' => $item,
+			'type' => $type
+		];
+
+		load_controller('header', ['title' => $item['data_name'], 'view' => 'nano']);
+		echo load_view('js_pdf_viewer', ['item'=> $item], 'ebooks');
+		load_controller('footer', ['view' => 'nano']);
+		break;
 	default:
 		if(isset($_GET['resume_search'])){
 			echo load_view('ls_redirect', [], 'ebooks');
