@@ -8,6 +8,12 @@
         bottom: 0;
         left: 0;
     }
+    #viewer{
+      width: 100%;
+      height: 100%;
+      max-width: 100%;
+      padding: 2rem;
+    }
 </style>
 <div id="back_to_search"><a href="<?php echo build_slug('', ['resume_search' => true], 'ebooks'); ?>">Back</a></div>
 <div id="sidebar">

@@ -24,6 +24,9 @@
 				$slug = build_slug('view/'.$r['data_id'], ['page' => $r['history_val']], 'ebooks');
 
 				break;
+			case 'epub':
+				$slug = build_slug('view/'.$r['data_id'], [], 'ebooks');
+				break;
 		}
 		echo $slug;
 		echo '" class="video-preview"><div class="img-contain">';
@@ -39,6 +42,12 @@
 				echo '<i class="fa fa-play-circle"></i>';
 		}
 		
+		if(empty($r['data_name'])){
+			$filename = $r['data_content'];
+			$filename = explode(DIRECTORY_SEPARATOR, $filename);
+			$r['data_name'] = array_pop($filename);
+		}
+
 		echo '</div><h4>'.$r['data_name'];
 		switch($r['data_type']){
 			case 'tv':
