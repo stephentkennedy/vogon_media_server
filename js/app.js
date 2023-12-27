@@ -77,3 +77,38 @@ app.simplify_num_array = function(array, max_members){
 	}
 	return array;
 }
+
+app.enhance_decodeURI = function(string){
+	var string = decodeURI(string);
+	var slash_pattern = /\%2F/g;
+	var comma_pattern = /\%2C/g;
+	var space_pattern = /\+/g;
+	var at_pattern = /\%40/g;
+	var patterns = {
+		slash: {
+			pattern: slash_pattern,
+			replace: '/'
+		},
+		comma: {
+			pattern: comma_pattern,
+			replace: ',',
+		},
+		space: {
+			pattern: space_pattern,
+			replace: ' '
+		},
+		at_pattern: {
+			pattern: at_pattern,
+			replace: '@'
+		},
+		amp: {
+			pattern: /\%26/g,
+			replace: '&'
+		}
+	};
+	for(var i in patterns){
+		var replace = patterns[i];
+		string = string.replace(replace.pattern, replace.replace);
+	}
+	return string;
+}

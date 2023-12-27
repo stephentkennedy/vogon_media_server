@@ -1,9 +1,9 @@
 <div class="dir-container dir-container-<?php echo $_SESSION['active_filebrowsers']; ?>">
-	<a class="file-link dir" data-loc="<?php echo $dir_up; ?>"><i class="fa fa-caret-up"></i> [Up a directory]</a>
+	<a class="file-link dir" data-loc="<?php echo urlencode($dir_up); ?>"><i class="fa fa-caret-up"></i> [Up a directory]</a>
 	<?php 
 		
 	foreach($dirs as $d){
-		echo '<a class="file-link dir" data-loc="'.$d['loc'].'"><i class="fa fa-folder"></i> '.$d['name'].'</a>';
+		echo '<a class="file-link dir" data-loc="'.urlencode($d['loc']).'"><i class="fa fa-folder"></i> '.$d['name'].'</a>';
 	}
 	foreach($files as $f){
 		$temp = explode('/', $f['mime']);
@@ -22,7 +22,12 @@
 				$icon = 'fa-file-o';
 				break;
 		}
-		echo '<a class="file-link file" data-loc="'.$f['loc'].'" data-mime="'.$f['mime'].'"><i class="fa '.$icon.'"></i> '.$f['name'].'</a>';
+		echo '<a class="file-link file" data-loc="'.urlencode($f['loc']).'" data-mime="'.$f['mime'].'"><i class="fa '.$icon.'"></i> '.$f['name'].'</a>';
 	}
 	?>
 </div>
+<style>
+	.dir-container{
+		min-height: 100%;
+	}
+</style>

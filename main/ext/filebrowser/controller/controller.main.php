@@ -1,6 +1,6 @@
 <?php
 	if(isset($_GET['dir'])){
-		$dir = $_GET['dir'];
+		$dir = urldecode($_GET['dir']);
 	}
 	if(empty($dir)){
 		$dir = ROOT;
