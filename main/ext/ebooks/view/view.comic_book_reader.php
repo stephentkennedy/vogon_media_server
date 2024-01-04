@@ -10,6 +10,7 @@
         <button id="next" title="Next Page"><i class="fa fa-chevron-right"></i></button>
     </div>
 </div>
+<script type="text/javascript" src="<?php echo build_slug('js/color_thief.min.js'); ?>"></script>
 <style>
     html{
         /*height: 100%;*/
@@ -95,6 +96,9 @@
     #cb-controls #zoom-out{
         bottom: 0;
     }
+	#cb-page{
+		transition: background 0.5s linear;
+	}
 </style>
 <script type="text/javascript">
     var cb_reader = {
@@ -186,6 +190,12 @@
         error_page: function(){
             $('#cb-page').html('<i style="color: red !important;" class="fa fa-times icon-center"></i>');
         },
+		adjust_background: function(){
+			var ct = new ColorThief();
+			var primary = ct.getColor($('#cb-page img')[0]);
+			$('#cb-page').css('background-color', 'rgb('+primary[0]+','+primary[1]+','+primary[2]+')');
+			console.log('moving to', primary);
+		},
         render_page: function(page_object){
             cb_reader.current_page = false;
             cb_reader.scale = Number(cb_reader.scale.toFixed(2));
@@ -193,6 +203,7 @@
             cb_reader.page.src = page_object.image_data;
             cb_reader.page.onload = function(){
                 $('#cb-page').html('<img src="'+page_object.image_data+'" />');
+				cb_reader.adjust_background();
                 /*var page_w = cb_reader.page.width;
                 var page_h = cb_reader.page.height;
                 var page_r = page_h / page_w;

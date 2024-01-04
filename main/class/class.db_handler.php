@@ -124,8 +124,14 @@ class db_handler {
 		$greater_command = 'greater_than_';
 		$greater_len = strlen($greater_command);
 		
+		$greater_cast_command = 'greater_than_cast_';
+		$greater_cast_len = strlen($greater_cast_command);
+		
 		$less_command = 'less_than_';
 		$less_len = strlen($less_command);
+		
+		$less_cast_command = 'less_than_cast_';
+		$less_cast_len = strlen($less_cast_command);
 		
 		foreach($options as $option_name => $value){
 			if(!empty($this->structure[$option_name])){
@@ -154,12 +160,24 @@ class db_handler {
 					continue;
 				}
 				$this->buildParam($value, $this->structure[$name]['machine_name'], $name, 'NOT IN');
+			}else if(substr($option_name, 0, $greater_cast_len) == $greater_cast_command){
+				$name = substr($option_name, $greater_cast_len);
+				if(empty($this->structure[$name])){
+					continue;
+				}
+				$this->buildParam($value, $this->structure[$name]['machine_name'], $name, '>#');
 			}else if(substr($option_name, 0, $greater_len) == $greater_command){
 				$name = substr($option_name, $greater_len);
 				if(empty($this->structure[$name])){
 					continue;
 				}
 				$this->buildParam($value, $this->structure[$name]['machine_name'], $name, '>');
+			}else if(substr($option_name, 0, $less_cast_len) == $less_cast_command){
+				$name = substr($option_name, $less_cast_len);
+				if(empty($this->structure[$name])){
+					continue;
+				}
+				$this->buildParam($value, $this->structure[$name]['machine_name'], $name, '<#');
 			}else if(substr($option_name, 0, $less_len) == $less_command){
 				$name = substr($option_name, $less_len);
 				if(empty($this->structure[$name])){
@@ -426,7 +444,13 @@ class db_handler {
 			if($this->depth > 0){
 				$friendly .= '__'.$this->depth;
 			}
-			if($option !== null && $compare != 'IN' && $compare != 'NOT IN'){
+			if(
+				$option !== null 
+				&& $compare != 'IN' 
+				&& $compare != 'NOT IN'
+				&& $compare != '>#'
+				&& $compare != '<#'
+			){
 				$this->where[] = '`'.$this->table.'`.`'.$field.'` '.$compare.' :'.$friendly;
 				$this->params[':'.$friendly] = $option;
 			}else if($option === null){
@@ -440,6 +464,12 @@ class db_handler {
 				$this->params[':'.$friendly] = $option;
 			}else if($compare == 'NOT IN'){
 				$this->where[] = '!FIND_IN_SET(`'.$this->table.'`.`'.$field.'`, :'.$friendly.')';
+				$this->params[':'.$friendly] = $option;
+			}else if($compare == '>#'){
+				$this->where[] = 'CAST(`'.$this->table.'`.`'.$field.'` AS UNSIGNED) > CAST(:'.$friendly.' AS UNSIGNED)';
+				$this->params[':'.$friendly] = $option;
+			}else if($compare == '<#'){
+				$this->where[] = 'CAST(`'.$this->table.'`.`'.$field.'` AS UNSIGNED) < CAST(:'.$friendly.' AS UNSIGNED)';
 				$this->params[':'.$friendly] = $option;
 			}
 		}
