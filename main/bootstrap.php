@@ -4,8 +4,8 @@ Name: Steph Kennedy
 Date: 12/4/2018
 Comment: Let's establish what we need for our bootstrap;
 */
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
+error_reporting(E_ERROR | E_WARNING | E_PARSE);
+ini_set('display_errors', 0);
 $directories = explode(DIRECTORY_SEPARATOR,__DIR__);
 array_pop($directories);
 $directories = implode(DIRECTORY_SEPARATOR,$directories);
