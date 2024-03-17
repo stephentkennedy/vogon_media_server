@@ -31,7 +31,7 @@ $search_2 = [
 		'order'
 	],
     'meta_sub_series' => $current_issue['sub_series'],
-    'greater_than_meta_order' => (int)$current_issue['order'],
+    'meta_order' => ((int)$current_issue['order'] + 1),
     'orderby' => 'meta_order'
 ];
 $next_issue = $dwm->getRecord($search_2);

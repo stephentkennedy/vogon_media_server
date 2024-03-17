@@ -65,6 +65,9 @@ switch($action){
 		echo load_view('js_pdf_viewer', ['item'=> $item], 'ebooks');
 		load_controller('footer', ['view' => 'nano']);
 		break;
+	case 'script':
+		load_model('script', [], 'ebooks');
+		break;
 	default:
 		if(isset($_GET['resume_search'])){
 			echo load_view('ls_redirect', [], 'ebooks');
