@@ -3,7 +3,30 @@ Date: 11/22/2019
 Name: Steph Kennedy
 Comment: This document powers the Almost Simple Popup system.
 */
-var aPopup = {};
+var aPopup = {
+	selector: '#popup',
+	placeholder_selector: '#popup-placeholder',
+	placeholder: '<div id="popup-placeholder"></div>',
+	moveParent: function(selector){
+		var $parent = $(aPopup.selector);
+		var $parent_clone = $parent.clone(true, true);
+		var $to = $(selector);
+		if($to.length == 1){
+			$parent.replaceWith($(aPopup.placeholder));
+			$parent_clone.prependTo($to);
+		}
+	},
+	returnParent: function(){
+		$placeholder = $(aPopup.placeholder_selector);
+		if($placeholder.length != 1){
+			return;
+		}
+		$parent = $(aPopup.selector);
+		$parent_clone = $parent.clone(true,true);
+		$parent.remove();
+		$placeholder.replaceWith($parent_clone);
+	}
+};
 aPopup.newWindow = function(content, options){
 		if(options == undefined){
 			options = false;
@@ -92,7 +115,7 @@ aPopup.newWindow = function(content, options){
 		//Initialize our draggable.
 		$( ".popup" ).draggable({
 			addClasses: false,
-			containment: '.page-content',
+			containment: aPopup.selector,
 			handle: ".handle"
 		}).resizable({
 			minHeight: 100,

@@ -1,8 +1,6 @@
 <?php
 set_time_limit(0);
 load_class('db_handler');
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
 $d = new db_handler('data');
 $dm = new db_handler('data_meta');
 $dwm = $d->meta_link($dm, [
@@ -11,45 +9,10 @@ $dwm = $d->meta_link($dm, [
 ]);
 $search = [
     'type' => 'cbz',
-    'search_content' => '%Dragon Ball%'
+    'meta' => [
+        'sub_series'
+    ]
 ];
-
-$records = $dwm->getRecords($search);
-
-//debug_d(count($records));
-
-$comic_key = [];
-foreach($records as $record){
-    $comic_key[$record['data_id']] = $record['data_content'];
-}
-
-natsort($comic_key);
-
-
-$i = 0;
-foreach($comic_key as $data_id => $name){
-    $check_search = [
-        'data_id' => $data_id,
-        'name' => 'order'
-    ];
-    $check = $dm->getRecord($check_search);
-    if($check){
-        $update = [
-            'content' => $i++
-        ];
-        $dm->updateRecord($update, $check['data_meta_id']);
-    }else{
-        $add = [
-            'data_id' => $data_id,
-            'name' => 'order',
-            'content' => $i++
-        ];
-        $dm->addRecord($add);
-    }
-}
-
-
-/*
 $pattern = '/\s0+/';
 
 $sql = 'SELECT * FROM `data_meta` WHERE `data_meta_name` = "sub_series" GROUP BY `data_meta_content`';
@@ -87,4 +50,3 @@ foreach($results as $row){
         }
     }
 }
-*/

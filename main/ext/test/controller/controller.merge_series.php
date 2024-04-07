@@ -1,5 +1,5 @@
 <?php
-$sql = 'SELECT data_id, count(data_id) as `count`, data_name FROM data WHERE data_type = "series" GROUP BY data_name ORDER BY data_id';
+$sql = 'SELECT data_id, count(data_id) as `count`, data_name FROM data WHERE data_type = "ebook_series" GROUP BY data_name ORDER BY data_id';
 $series = $db->t_query($sql, [])->fetchAll();
 
 foreach($series as $s){

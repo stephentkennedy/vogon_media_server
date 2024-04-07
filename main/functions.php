@@ -89,7 +89,7 @@ function debug_d($var){ //Compatibility shim, new calls should be to debug_dump(
 }
 
 function debug_dump($var){
-	echo '<pre>';
+	echo '<pre class="debug-dump">';
 	var_dump($var);
 	echo '</pre>';
 }
@@ -440,4 +440,37 @@ function human_filesize($filename){
 		$fileSize = $size . ' bytes';
 	}
 	return $fileSize;
+}
+
+function remove_breaks($string){
+	$break_pattern = '/[\n|\r]/';
+	return preg_replace($break_pattern, '', $string);
+}
+
+function clean_up_spaces($string){
+	$tab_pattern = '/[\t|\s{2,}]+/U';
+	return preg_replace($tab_pattern, ' ', $string);
+}
+
+function minify($string){
+	$tag_space_pattern = '/\>\s+\</U';
+	return preg_replace($tag_space_pattern, '><', $string);
+}
+
+function js_template_view($view, $data = [], $ext = '', $return = false){
+
+	//debug_d([$view, $data, $ext]);
+
+	$view_string = load_view($view, $data, $ext);
+	$view_string = remove_breaks($view_string);
+
+	$view_string = clean_up_spaces($view_string);
+	$view_string = minify($view_string);
+	//debug_d($view_string);
+	if(!$return){
+		//debug_d($view_string);
+		echo $view_string;
+		return;
+	}
+	return $view_string;
 }

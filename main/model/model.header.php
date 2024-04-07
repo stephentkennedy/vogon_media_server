@@ -37,10 +37,10 @@
 	$default_tags = [
 		'<script type="text/javascript" src="'.build_slug('/js/jquery.min.js').'"></script>',
 		'<script type="text/javascript" src="'.build_slug('/js/jquery-ui.min.js').'"></script>',
-		'<script type="text/javascript" src="'.build_slug('/js/aPopup.js').'"></script>',
+		'<script type="text/javascript" src="'.build_slug('/js/aPopup.js').'?ver='.time().'"></script>',
 		'<script type="text/javascript" src="'.build_slug('/js/lazy.js').'"></script>',
 		'<link rel="stylesheet" href="'.build_slug('/js/jquery-ui.min.css').'" type="text/css">',
-		'<link rel="stylesheet" href="'.build_slug('/css/layout.css').'" type="text/css">'
+		'<link rel="stylesheet" href="'.build_slug('/css/layout.css').'?ver='.time().'" type="text/css">'
 	];
 
 	$to_return = array_merge($default_tags, $header_tags);

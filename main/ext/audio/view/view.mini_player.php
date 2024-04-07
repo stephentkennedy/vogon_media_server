@@ -53,6 +53,7 @@ $(document).ready(function(){
 		h_loop: false,
 		h_freq: <?php if(!empty($_SESSION['audio_his_time'])){ echo $_SESSION['audio_his_time']; }else{ echo '10000'; } ?>,
 		sleep_timer: false,
+		display_sleep_timer_interval: false,
 		viz_analysis: false,
 		level_graph_points: 100,
 		level_mult: 1,
@@ -65,7 +66,33 @@ $(document).ready(function(){
 		},
 		viz_storage: {},
 		animation: miniplayer.<?php if(!empty($_SESSION['def_visual'])){ echo $_SESSION['def_visual']; }else{ echo 'noViz'; } ?>,
-		seed: '<div class="mini-player"><header class="mini-player-header"><span class="shadow"></span><span class="controls"><i class="fa fa-window-maximize toggle"></i><i class="fa fa-cog option"></i><i class="fa fa-expand fullscreen"></i><i class="fa fa-times close"></i></span></header><info><a target="_blank" data-target="popup" class="mini-player-label title"></a><a target="_blank" data-target="popup" class="mini-player-label album"></a><a target="_blank" data-target="popup" class="mini-player-label band"></a></info><canvas></canvas><audio class="current-track"><source class="current-source" onerror="miniplayer.error"></source></audio><div class="mini-player-audio-controls"><i class="fa fa-heart-o favorite"></i><input type="range" class="seek" value="0" max="" /><span class="mini-player-seek-counter hidden"></span> <span class="mini-player-counter">0:00 / 0:00</span> <br><i class="fa fa-random  fa-fw mini-player-shuffle disable"></i><i class="fa fa-step-backward fa-fw  mini-player-prev disable"></i><i class="fa fa-play fa-fw  mini-player-play"></i><i class="fa fa-step-forward fa-fw  mini-player-next disable"></i><i class="fa fa-retweet fa-fw  mini-player-loop disable"></i><span class="mini-one">1</span></div><i class="fa fa-clock-o sleep-timer"></i><div class="mini-player-playlist"></div></div>',
+		seed: '<?php js_template_view('miniplayer_template', [], 'audio'); ?>',
+		displaySleepTimer(){
+			var check = $('.current-sleep-time');
+			if(check.length == 0){
+				return clearInterval(miniplayer.display_sleep_timer_interval);
+			}
+			var time_left = getTimeout(miniplayer.sleep_timer);
+			check.html(miniplayer.milliFormat(time_left));
+		},
+		milliFormat: function(millis){
+			// Hours, minutes and seconds
+			var duration = ~~(millis / 1000);
+			var hrs = ~~(duration / 3600);
+			var mins = ~~((duration % 3600) / 60);
+			var secs = ~~duration % 60;
+
+			// Output like "1:01" or "4:03:59" or "123:03:59"
+			var ret = "";
+
+			if (hrs > 0) {
+				ret += "" + hrs + ":" + (mins < 10 ? "0" : "");
+			}
+
+			ret += "" + mins + ":" + (secs < 10 ? "0" : "");
+			ret += "" + secs;
+			return ret;
+		},
 		timeFormat : function(duration){
 			// Hours, minutes and seconds
 			var hrs = ~~(duration / 3600);
@@ -633,9 +660,11 @@ $(document).ready(function(){
 					var width = miniplayer.instance.width();
 					var canvas = miniplayer.instance.find('canvas')[0];
 					canvas.width = width;
+					aPopup.returnParent();
 				});
 			}else{
 				miniplayer.instance.addClass('fullscreen');
+				aPopup.moveParent('.mini-player');
 				//miniplayer.instance[0].requestFullscreen();
 				miniplayer.instance[0].requestFullscreen().then(function(){
 					//Adjust the canvas size for the next frame after fullscreening
@@ -1877,6 +1906,10 @@ $(document).ready(function(){
 				
 				var string = '<h3>Sleep Timer</h3>';
 				if(miniplayer.sleep_timer != false){
+					var time_left = getTimeout(miniplayer.sleep_timer);
+					string += '<label>Current Time Left: <span class="current-sleep-time">'+miniplayer.milliFormat(time_left)+'</span></label>';
+					
+					setInterval(miniplayer.displaySleepTimer, 1000);
 					string += '<button id="clear-current"><i class="fa fa-times"></i> Clear Current Timer</button><br><br>';
 				}
 				string += '<input class="auto" type="number" id="hours" value="0" min="0">:<input class="auto" type="number" id="minutes" value="0" min="0" max="59"><br><button id="start"><i class="fa fa-clock-o"></i> Start Timer</button>';
