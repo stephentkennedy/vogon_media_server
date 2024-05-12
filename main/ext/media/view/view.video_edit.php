@@ -33,13 +33,13 @@
 		$series = '';
 	}
 ?>
-<header><h1><?php echo $title; ?><?php if(isset($id)){ ?> <a title="Remove" class="open-popup fa fa-times" data-title="Remove <?php echo $title; ?>" data-src="<?php echo build_slug('ajax/delete_confirm/media', ['id' => $id]); ?>"></a><?php } ?></h1></header>
+<header><h1><?php echo $title; ?><?php if(isset($id)){ ?> <a title="Back" class="fa fa-arrow-left" href="<?php echo build_slug('view/'.$id, [], 'media'); ?>"></a> <a title="Remove" class="open-popup fa fa-times" data-title="Remove <?php echo $title; ?>" data-src="<?php echo build_slug('ajax/delete_confirm/media', ['id' => $id]); ?>"></a><?php } ?></h1></header>
 <form method="post">
 	<input type="hidden" name="action" value="save-film-meta">
 	<?php if(isset($id)){
 		echo '<input type="hidden" name="id" value="'.$id.'">';
 	} ?>
-	<label for="title">Title</label>
+	<label for="title">Title <button class="button" id="search_tmdb" type="button"><i class="fa fa-search" ></i> Search TMDB</button></label>
 	<input id="title" type="text" name="title" value="<?php echo $title; ?>">
 	<label for="series">Series</label>
 	<input id="series" name="series" type="text" value="<?php echo $series; ?>">
@@ -58,6 +58,21 @@
 	<?php load_controller('ajax_filebrowser', ['b_file' => $location, 'form' => 'file'], 'filebrowser'); ?>
 	<button type="submit" class="button"><i class="fa fa-floppy-o"></i> Save</button>
 </form>
+<style type="text/css">
+	.popup .result{
+		border: 1px solid #222222;
+		padding: 5px;
+		transition: background 0.2s linear;
+		background: rgba(0,0,0,0);
+	}
+	.popup .result:hover{
+		background: rgba(0,0,0,0.2);
+		cursor: pointer;
+	}
+	.popup .result + .result{
+		margin-top: 10px;
+	}
+</style>
 <script type="text/javascript">
 	$(document).ready(function(){
 		$('#series').autocomplete({
@@ -73,6 +88,33 @@
 					}));
 				});
 			}
+		});
+		$('#search_tmdb').click(function(){
+			var search = $('#title').val();
+			$.get(<?php echo "'".build_slug('ajax/ajax_tmdb_results/media')."'"; ?>, {
+				'search': search
+			}).done(function(data){
+				//console.log(data);
+				var string = '';
+				window.tmdb_results = {};
+				for(var i in data){
+					var entry = data[i];
+					window.tmdb_results[i] = entry;
+					string += '<div class="result" data-id="'+i+'"><h3>'+entry.title+' ('+entry.date+')</h3><p>'+entry.desc+'</p></div>';
+				}
+
+				var w = aPopup.newWindow(string, {title: 'Results'});
+
+				w.find('div.result').click(function(){
+					var $this = $(this);
+					var selected = $this.data('id');
+					selected = window.tmdb_results[selected];
+					$('#title').val(selected.title);
+					$('#release').val(selected.date);
+					$('#desc').val(selected.desc);
+					w.remove();
+				});
+			});
 		});
 	});
 </script>

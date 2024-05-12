@@ -28,6 +28,10 @@ if(empty($method)){ //Settings controllers should never be accessed directly, bu
 					load_model('save_minidlna', [], 'media');
 				
 					break;
+				case 'tmdb':
+					load_model('save_tmdb', [], 'media');
+
+					break;
 			}
 		
 			break;

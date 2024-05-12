@@ -48,3 +48,10 @@
 	?>">
 	<button type="submit"><i class="fa fa-floppy-o"></i> Save</button>
 </form>
+<h4>The Movie Database</h4>
+<form action="?ext={{ext_name}}&form=tmdb&force_reload=true" method="post">
+		<label>API Key</label>
+		<small>This API key is used to search for data about movies and TV Shows, to get one you must make an account at <a href="https://www.themoviedb.org" rel="noopener nofollow">https://www.themoviedb.org</a>
+		<input type="text" name="api_key" value="<?php echo $_SESSION['tmdb_api_key']; ?>">
+		<button type="submit"><i class="fa fa-floppy-o"></i> Save</button>
+</form>

@@ -154,7 +154,14 @@
             cb_reader.blank_page();
             $.ajaxSetup({timeout: 0, cache: false, dataType: 'json'});
             $.get(cb_reader.page_url, {page: page, id: cb_reader.c_id}, function(returned){
-                if((returned.error == undefined || returned.error == false) && returned != '' && returned.image_data != undefined){
+                if(
+                    (
+                        returned.error == undefined 
+                        || returned.error == false
+                    ) 
+                    && returned != '' 
+                    && returned.image_data != undefined
+                ){
                     cb_reader.render_page(returned);
                     var params = cb_reader.get_vars();
                     if(page != params[page]){
@@ -174,6 +181,10 @@
                     ){
                         var w = aPopup.newWindow(returned.message);
                         cb_reader.error_page();
+                    }
+                    if(returned.content.length > 0){
+                        //Then we likely got a text file, request the next page
+                        cb_reader.get_page(cb_reader.page_index + 1);
                     }
                     console.log(returned);
                 }

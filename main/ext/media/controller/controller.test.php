@@ -1,18 +1,19 @@
 <?php
-$clerk = new clerk;
 
-$metas = [
-	'length',
-	'poster'
-];
+debug_d('Here');
+error_reporting(E_ALL);
 
-$options = [
-	'metas' => $metas,
-	'type' => 'video',
-	'parent' => 11676,
-	'orderby' => 'length'
-];
+load_class('tmdb_wrapper');
 
-$records = $clerk->getRecords($options);
+$tmdb = new tmdb_wrapper;
+
+if($tmdb->api == false){
+	debug_d('No API Key');
+	die();
+}
+
+$records = $tmdb->api->searchMovie('The Matrix');
 
 debug_d($records);
+
+debug_d('Done');
