@@ -153,7 +153,14 @@
             cb_reader.page_index = Number(page);
             cb_reader.blank_page();
             $.ajaxSetup({timeout: 0, cache: false, dataType: 'json'});
-            $.get(cb_reader.page_url, {page: page, id: cb_reader.c_id}, function(returned){
+
+            var windowWidth = $(window).innerWidth();
+
+            $.get(cb_reader.page_url, {
+                page: page, 
+                id: cb_reader.c_id,
+                windowWidth: windowWidth
+            }, function(returned){
                 if(
                     (
                         returned.error == undefined 
@@ -292,11 +299,13 @@
             $(window).keydown(function(e){
                 switch(e.which){
                     case 39: //Right Arrow
-                    case 34: //Page Down
+                    case 34: //Page 
+					case 68: //D Key
                         $('#next').trigger('click');
                         break;
                     case 37: //Left Arrow
                     case 33: //Page Up
+					case 65: //A Key
                         $('#prev').trigger('click');
                         break;
                     case 36: //Home
@@ -316,6 +325,17 @@
                     case 70: //"f"
                         $('#toggle_fullscreen').trigger('click');
                         break;
+					case 83: //S key
+						window.scrollBy({
+							top: 50,
+							behavior: 'auto'
+						});
+						break;
+					case 87: //W key
+						window.scrollBy({
+							top: -50,
+							behavior: 'auto'
+						});
                     default:
                         console.log('Keycode: ' + e.which);
                         break;

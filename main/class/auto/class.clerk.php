@@ -20,7 +20,7 @@ class clerk {
 	
 	public function updateRecord($values, $id = false){
 		if($id == false){
-			return addRecord($values);
+			return $this->addRecord($values);
 		}
 		if(empty($values) || gettype($values) != 'array'){
 			return false;

@@ -71,6 +71,7 @@ if(!empty($search)){
 }
 if(!empty($series)){
 	$search_options['parent_data_name'] = $series;
+
 }
 if(!empty($not_series)){
 	$search_options['not_parent_data_name'] = $not_series;

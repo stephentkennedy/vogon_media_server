@@ -32,7 +32,7 @@ if($zip->open($item['data_content'])){
         ];
     }
     //If our first entry is a folder, skip it.
-    if(@substr($array[0], -1) == '/' ){
+    if(@substr($array[0], -1) == '/'){
         $page += 1;
         $count += -1;
     }
@@ -49,6 +49,25 @@ if($zip->open($item['data_content'])){
         $mime = $file_info->buffer($image_data);
         $mime = explode(';', $mime)[0];
         $mime_array = explode('/', $mime);
+
+        if(
+            $_SESSION['resize_cbz'] == true
+            && !empty($_GET['windowWidth'])
+            && $mime_array[0] == 'image'
+        ){
+            //$file_handle = fopen('php://memory', 'w+');
+            //fwrite($file_handle, $image_data);
+            //fseek($file_handle, 0); 
+            //fclose($file_handle);
+            $im = new \Imagick();
+            $im->readImageBlob($image_data);
+            $width = $im->getImageWidth();
+            if($width > $_GET['windowWidth']){
+                $im->scaleImage($_GET['windowWidth'], 0);
+                $image_data = $im->getImageBlob();
+            }
+        }
+
         if($mime_array[0] == 'image'){
             $image_data = base64_encode($image_data);
             $to_return = [

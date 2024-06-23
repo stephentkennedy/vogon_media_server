@@ -1,1 +1,2 @@
-Added TMDB api integration. Must provide own API key.
+-Added optional image rescaling to cbz reader
+-Added series editor

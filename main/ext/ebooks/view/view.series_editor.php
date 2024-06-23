@@ -1,5 +1,11 @@
 <header><h1>Series Editor</h1></header>
-<div class="row wide">
+<div class="row wide" style="display: flex">
+    <div class="col col-ten"><p><strong>Intructions:</strong><br>
+    Find an existing series or create one in the left most pane. Series members will appear in the middle pane. Search for items to add in the left most pane.<br>
+    Arrow Keys to select. CTRL + Arrow Keys to move item (up/down to change order, right/left to move between panes.)<br>
+    <strong>Warning:</strong> Long series may not load correctly in this editor.</p></div>
+</div>
+<div class="row wide" style="display: flex">
     <fieldset id="series_meta" class="col col-two">
         <legend>Series</legend>
         <label for="series">Series Name</label>
@@ -152,10 +158,10 @@
 				url += '&s=' + encodeURI(search);
 			}
             if(not_series != ''){
-                data['not_series'] = not_series;
+                //data['not_series'] = not_series;
             }
             if(not_sub_series != ''){
-                data['not_sub_series'] = not_sub_series;
+                //data['not_sub_series'] = not_sub_series;
             }
 			url += '&t=' + encodeURI(controller.active_url);
 			controller.load('<i class="fa fa-cog fa-spin"></i>');
@@ -319,6 +325,7 @@
             return false;
         },
         scroll_to_active: function(){
+            return;
             if(editor.active_id == 0){
                 return;
             }
@@ -326,6 +333,26 @@
             $(document.body).animate({
                 scrollTop: $this.offset().top
             }, 500);
+        },
+        get_series_data: function(){
+            var $selected = jQuery('#series_results').find('.result-row');
+
+            var data = [];
+
+            $selected.each(function(){
+                //console.log(this);
+                var $this = jQuery(this);
+                data.push($this.data('id'));
+            });
+
+            var series = jQuery('#series').val();
+            var sub_series = jQuery('#sub_series').val();
+
+            return {
+                'series': series,
+                'sub_series': sub_series,
+                'members': data
+            };
         },
         bind: function(){
             jQuery('.result-row').off('click').click(function(){
@@ -335,11 +362,23 @@
             if($result.length > 0){
                 editor.select($result[0]);
             }
+            jQuery('#save_data').off().click(function(e){
+                e.preventDefault();
+                jQuery('#save_data').append('<i class="fa fa-fw fa-cog fa-spin"></i>');
+
+                var to_post = editor.get_series_data();
+
+
+                jQuery.post('<?php echo build_slug('ajax/ajax_save_series/ebooks'); ?>', to_post).done(function(returned){
+                    jQuery('#save_data').find('.fa-cog').remove();
+                });
+            });
         },
         init: function(){
             $(window).keydown(function(e){
                 switch(e.which){
                     case 38: // Arrow Up
+                        e.preventDefault();
                         if(!e.ctrlKey){
                             editor.select_previous();
                         }else{
@@ -347,6 +386,7 @@
                         }
                         break;
                     case 40: // Arrow Down
+                        e.preventDefault();
                         if(!e.ctrlKey){
                             editor.select_next();
                         }else{
@@ -355,6 +395,7 @@
                         break;
                     case 37: //Left Arrow
                     case 39: //Right Arrow
+                        e.preventDefault();
                         if(
                             editor.check_series()
                             && e.ctrlKey

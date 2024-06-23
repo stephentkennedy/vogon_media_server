@@ -16,7 +16,7 @@ $check = $query->fetch();
 if(empty($check)){
 	$album_id = $clerk->addRecord([
 		'name' => $series,
-		'type' => 'series'
+		'type' => 'ebook_series'
 	]);
 }else{
 	$album_id = $check['data_id'];
