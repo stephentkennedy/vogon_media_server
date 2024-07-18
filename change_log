@@ -1,2 +1,2 @@
--Added optional image rescaling to cbz reader
--Added series editor
+Added logic to upscale very small cbz pages.
+Fixed dashboard logic to include more than one items with a parent of 0 (items not in a series)

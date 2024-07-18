@@ -39,8 +39,9 @@ $view_size = 'mini';
 switch($type){
     case 'pdf':
         $view = 'pdf_viewer.v2';
+        //$view = 'pdf_viewer';
         $view_size = 'mini';
-        //$item['url'] = load_model('file_to_url', ['item' => $item], 'ebooks');
+        $item['url'] = load_model('file_to_url', ['item' => $item], 'ebooks');
         break;
     case 'cbz':
     case 'cbr':

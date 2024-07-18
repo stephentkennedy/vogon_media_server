@@ -62,8 +62,16 @@ if($zip->open($item['data_content'])){
             $im = new \Imagick();
             $im->readImageBlob($image_data);
             $width = $im->getImageWidth();
-            if($width > $_GET['windowWidth']){
-                $im->scaleImage($_GET['windowWidth'], 0);
+            if(
+                $width > $_GET['windowWidth']
+            ){
+                $im->resizeImage($_GET['windowWidth'], 0, imagick::FILTER_LANCZOS, 1);
+                $image_data = $im->getImageBlob();
+            }else if($width <= ($_GET['windowWidth'] / 2)){
+
+                
+
+                $im->resizeImage(($width * 2), 0, imagick::FILTER_LANCZOS, 1);
                 $image_data = $im->getImageBlob();
             }
         }

@@ -42,13 +42,16 @@ if(!empty($results)){
 	$ordered = [];
 	foreach($results as $r){
 		if(
-			empty($ordered[$r['data_parent']]) 
+			!empty($r['data_parent'])
+			&& empty($ordered[$r['data_parent']]) 
 			&& $r['data_type'] != 'video'
 		){
 			$r['parent'] = $clerk->getRecord($r['data_parent']);
 			$ordered[$r['data_parent']] = $r;
 			
 		}else if ($r['data_type'] == 'video'){
+			$ordered[] = $r;
+		}else if ($r['data_parent'] == 0){
 			$ordered[] = $r;
 		}
 	}
