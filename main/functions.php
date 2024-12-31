@@ -102,7 +102,7 @@ function dir_contents($dir, $extension_filter = false){
 	$directory_contents = scandir($dir);
 	$to_return = array_diff($directory_contents, $remove_from_results);
 	if($extension_filter != false){
-		filter_array_of_filenames_by_extension($to_return, $extension_filter);
+		$to_return = filter_array_of_filenames_by_extension($to_return, $extension_filter);
 	}
 	sort($to_return);
 	return $to_return;

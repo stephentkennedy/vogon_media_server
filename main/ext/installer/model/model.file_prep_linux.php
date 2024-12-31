@@ -2,6 +2,8 @@
 	$directories = [
 		'main',
 		'js',
+		'dist',
+		'scss',
 		'css',
 		'upload'
 	];
@@ -15,7 +17,9 @@
 		'index.php',
 		'.htaccess',
 		'installer.php',
-		'change_log'
+		'change_log',
+		'webpack.config.js',
+		'package.json',
 	];
 	if(file_exists(ROOT . DIRECTORY_SEPARATOR . 'composer.json')){
 		$files[] = 'composer.json';

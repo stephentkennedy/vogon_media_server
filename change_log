@@ -1,4 +1,2 @@
-Minor adjustments to ajax loop interface timeouts
-Adjustment to number of dashboard items that can show.
-Fix for some memory issues with scaling of images.
-Added pop-out button to open video at 1x resolution (useful for scaling programs. Recommend cropping the top 48px of the image if using firefox.)
+Reworked server to utilize build process.
+Cleaned up some styles for the video player and material dashboard.

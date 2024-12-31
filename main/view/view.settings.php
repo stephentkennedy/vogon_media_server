@@ -103,10 +103,14 @@
 <form action="?ext=&form=theme&force_reload=true" method="post">
 	<select name="theme">
 		<?php
+			$filter = [
+				'layout.min.css'
+			];
 			foreach($themes as $t){
-				if($t == 'layout.css'
-				|| $t == 'pdf_viewer.css'
-				|| $t == 'images'){
+				if(
+					in_array($t, $filter)
+					|| stristr($t, '.module.')
+				){
 					//Skip our layout rules, as they are alway loaded.
 					continue;
 				}
@@ -114,7 +118,7 @@
 				if($t == $active_theme){
 					$selected = ' selected';
 				}
-				echo '<option value="'.$t.'"'.$selected.'>'.ucwords(str_replace(['_', '.css'], [' ', ''], $t)).'</option>';
+				echo '<option value="'.$t.'"'.$selected.'>'.ucwords(str_replace(['_', '.css', '.min'], [' ', '', ''], $t)).'</option>';
 			}
 		?>
 	</select>

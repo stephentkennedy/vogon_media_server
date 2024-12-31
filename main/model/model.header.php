@@ -40,7 +40,7 @@
 		'<script type="text/javascript" src="'.build_slug('/js/aPopup.js').'?ver='.time().'"></script>',
 		'<script type="text/javascript" src="'.build_slug('/js/lazy.js').'"></script>',
 		'<link rel="stylesheet" href="'.build_slug('/js/jquery-ui.min.css').'" type="text/css">',
-		'<link rel="stylesheet" href="'.build_slug('/css/layout.css').'?ver='.time().'" type="text/css">'
+		'<link rel="stylesheet" href="'.build_slug('/dist/css/layout.min.css').'?ver='.time().'" type="text/css">'
 	];
 
 	$to_return = array_merge($default_tags, $header_tags);

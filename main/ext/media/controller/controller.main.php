@@ -63,7 +63,10 @@ switch($location){
 		load_controller('footer');
 		break;
 	case 'watch':
-		load_controller('header', ['view' => 'mini']); //We control the title inside the view because it's manipulated with JavaScript
+		load_controller('header', ['view' => 'nano', 'head_tags' => [
+			build_style_tag('/fonts/font-awesome.min.css'),
+			build_style_tag('/dist/css/video_player_module.min.css')
+		]]); //We control the title inside the view because it's manipulated with JavaScript
 		$id = get_slug_part(2);
 		if(empty($id) || !is_numeric($id)){
 			header('Location: '.URI);

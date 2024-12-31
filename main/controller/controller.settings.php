@@ -17,8 +17,8 @@
 						'links' => []
 					]);
 				}
-				$themes = dir_contents(ROOT . DIRECTORY_SEPARATOR . 'css');
-				$active_theme = str_replace('css/', '' , $_SESSION['css']);
+				$themes = dir_contents(ROOT . DIRECTORY_SEPARATOR . 'dist/css', 'css');
+				$active_theme = str_replace(['dist/css', 'css/', '.min'], '' , $_SESSION['css']);
 			
 				return load_view('settings', [
 					'routes' => $routes,

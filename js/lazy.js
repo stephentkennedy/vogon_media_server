@@ -32,3 +32,5 @@ var lazy = {
 		lazy.loop();
 	},
 };
+
+window.lazy = lazy;

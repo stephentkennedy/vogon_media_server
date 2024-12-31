@@ -128,3 +128,6 @@ let getTimeout = (() => { // IIFE
         return map[id] ? Math.max(map[id] - Date.now(), 0) : NaN;
     }
 })();
+
+window.app = app;
+window.getTimeout = getTimeout;

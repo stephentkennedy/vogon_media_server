@@ -94,7 +94,7 @@
 				});
 			});
 		</script>
-		<script type="text/javascript" src="<?php echo URI; ?>/js/app.js?ver=<?php echo time(); ?>"></script>
-		<script type="text/javascript" src="<?php echo URI; ?>/js/trays.js"></script>
+		<script type="text/javascript" src="<?php echo URI; ?>/dist/js/app.min.js?ver=<?php echo time(); ?>"></script>
+		<script type="text/javascript" src="<?php echo URI; ?>/dist/js/trays.min.js"></script>
 	</body>
 </html>
