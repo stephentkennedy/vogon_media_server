@@ -10,7 +10,7 @@ if(empty($user) || empty($user['user_key'])){
 }
 
 if(empty($limit)){
-	$limit = 10;
+	$limit = 12;
 }
 
 /*

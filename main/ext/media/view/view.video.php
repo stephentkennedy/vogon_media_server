@@ -13,6 +13,7 @@
 		<title class="title-bar"><?php echo $title; ?></title>
 		<h1><button class="fa fa-arrow-circle-left back-to-view"></button> <span class="title-text"><?php echo $title; ?></span></h1>
 		<button class="fa fa-picture-o update-thumbnail"></button>
+		<button class="fa fa-window-restore popout-1x" title="Pop out video at 1x resolution. This is useful for scaling applications."></button>
 	</div>
 	<div id="sub-controls" class="<?php if(empty($subtitles)){
 		 echo 'none';
@@ -414,6 +415,9 @@
 					player.video[0].textTracks[0].mode = 'hidden';
 				}
 			});
+			$("#title button.popout-1x").click(function(){
+				player.popout();
+			});
 			$('#title button.update-thumbnail').click(function(){
 				$(this).removeClass('fa-picture-o');
 				$(this).addClass('fa-cog').addClass('fa-spin');
@@ -465,6 +469,32 @@
 				$('.seek-counter').addClass('hidden');
 			});
 			
+		},
+		popout: function(){
+			var screenHeight = window.screen.availHeight;
+			var screenWidth = window.screen.availWidth;
+			var height = window.outerHeight;
+			var width = window.outerWidth;
+			var heightDiff = screenHeight - height;
+			var widthDiff = screenWidth - width;
+			var video = player.video[0];
+			if(video.videoHeight > 0){
+				var vidWidth = video.videoWidth;
+				var vidHeight = video.videoHeight;
+				var newWinWidth = vidWidth + widthDiff;
+				var newWinHeight = vidHeight + heightDiff;
+				if(
+					newWinHeight >= screenHeight
+					|| newWinWidth >= screenWidth
+				){
+					//Exit if we're bigger than the screen we're playing on.
+					return;
+				}
+				if(player.playing == true){
+					player.video.trigger('pause');
+				}
+				var newWindow = window.open(window.location, "", "width="+newWinWidth+", height="+newWinHeight);
+			}
 		},
 		timeFormat : function(duration){
 			// Hours, minutes and seconds

@@ -60,17 +60,32 @@ if($zip->open($item['data_content'])){
             //fseek($file_handle, 0); 
             //fclose($file_handle);
             $im = new \Imagick();
-            $im->readImageBlob($image_data);
-            $width = $im->getImageWidth();
+
+            $area_limit = \Imagick::getResourceLimit(\Imagick::RESOURCETYPE_AREA);
+
+            list($width, $height, $type, $attr) = getimagesizefromstring($image_data);
+
+            $area = $width * $height;
+
+            
+            //$width = $im->getImageWidth();
+            //$height = $im->getImageHeight();
+            
+            
             if(
                 $width > $_GET['windowWidth']
+                && $area < $area_limit
             ){
+                $im->readImageBlob($image_data);
                 $im->resizeImage($_GET['windowWidth'], 0, imagick::FILTER_LANCZOS, 1);
                 $image_data = $im->getImageBlob();
-            }else if($width <= ($_GET['windowWidth'] / 2)){
+            }else if(
+                $width <= ($_GET['windowWidth'] / 2)
+                && $area < $area_limit
+            ){
 
                 
-
+                $im->readImageBlob($image_data);
                 $im->resizeImage(($width * 2), 0, imagick::FILTER_LANCZOS, 1);
                 $image_data = $im->getImageBlob();
             }
