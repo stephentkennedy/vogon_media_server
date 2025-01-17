@@ -16,7 +16,17 @@
 		<title><?php echo $title; ?></title>
 		<?php } ?>
 	</head>
-	<body>
+	<body <?php 
+			if(!empty($_ENV['controller'])){
+				echo 'class="';
+				$class = slugify($_ENV['controller']);
+				if(!empty($_ENV['ext'])){
+					$class .= '_'. slugify($_ENV['ext']);
+				}
+				echo $class;
+				echo '"';
+			}
+	?>>
 		<?php if(!isset($_SESSION['bg_vid_bool']) || $_SESSION['bg_vid_bool'] == 1){ 
 		if(isset($_SESSION['bg_vid'])){
 			$mime = mime_content_type($_SESSION['bg_vid']);

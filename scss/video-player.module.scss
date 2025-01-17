@@ -274,11 +274,11 @@ video.animorphic{
 #sub-controls{
     width: 25vw;
     position: absolute;
-    top: 0;
-    right: 0;
-    opacity: 0;
+    top: 57px;
+    right: 20px;
+    opacity: 1;
     transition: opacity 0.2s linear;
-    pointer-events: none;
+    pointer-events: all;
     font-size: 1.5rem;
     color: #fff;
     text-shadow: 2px 2px 2px #000;
@@ -286,6 +286,53 @@ video.animorphic{
     display: block;
     margin: 0;
     text-align: right;
+    button{
+        border: none !important;
+        vertical-align: middle !important;
+        color: white;
+        vertical-align: middle;
+        font-size: 18px;
+        opacity: 0;
+        transition: opacity 0.2s linear;
+        &.active{
+            color: rgba(0,250,150, 1);
+        }
+    }
+   
+    .subtitles-container{
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: 100;
+        padding-bottom: 10px;
+        display: flex;
+        align-items: flex-end;
+        justify-content: center;
+        span{
+            display: block;
+            line-height: 1.33;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(4px);
+            color: #fff;
+            font-size: 5vh;
+            padding: 5px;
+            pointer-events: all;
+            &:empty{
+                display: none;
+            }
+        }
+    }
+    &.active{ 
+        button{
+            opacity: 1;
+        }
+        .subtitles-container{
+            padding-bottom: 100px;
+        }
+    }
 }
 #sub-controls.active{
     opacity: 1;

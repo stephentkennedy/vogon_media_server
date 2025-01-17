@@ -18,8 +18,12 @@ if($db->error == false){
 	}
 	if(empty($_GET['route']) && !empty($route)){
 		if(empty($route['route_ext']) && !empty($route['route_controller'])){
+			$_ENV['controller'] = $route['route_controller'];
+			$_ENV['ext'] = '';
 			load_controller($route['route_controller'], ['method' => 'route']);
 		}else if(!empty($route['route_controller'])){
+			$_ENV['controller'] = $route['route_controller'];
+			$_ENV['ext'] = $route['route_ext'];
 			load_controller($route['route_controller'], ['method' => 'route'], $route['route_ext']);
 		}else{
 			load_controller('404');

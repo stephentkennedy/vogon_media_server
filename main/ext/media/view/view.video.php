@@ -15,10 +15,13 @@
 		<button class="fa fa-picture-o update-thumbnail"></button>
 		<button class="fa fa-window-restore popout-1x" title="Pop out video at 1x resolution. This is useful for scaling applications."></button>
 	</div>
-	<div id="sub-controls" class="<?php if(empty($subtitles)){
+	<div id="sub-controls" class="active <?php if(empty($subtitles)){
 		 echo 'none';
 	} ?>">
-		<button class="fa fa-comment subtitles"></button>
+		<button class="subtitles">CC</button>
+		<?php if(!empty($subtitles)){
+		 echo '<div class="subtitles-container"><span class="holder"></span></div>';
+	} ?>
 	</div>
 	<div id="video_preview">
 		<h3 id="video_title">Next:</h3>
@@ -45,6 +48,13 @@
 	</div>
 	</div>
 </div>
+<style>
+	::cue {
+	color: transparent;
+	background: transparent;
+	}
+
+</style>
 <script type="text/javascript">
 	var player = {
 		video: false,
@@ -159,6 +169,7 @@
 				player.duration = player.timeFormat(player.video[0].duration);
 				var display_time = player.timeFormat(player.video[0].currentTime);
 				player.controls.find('#time').html(display_time + ' / ' + player.duration);
+				//player.video[0].testTracks[0]
 			});
 			player.video.on('timeupdate', function(){
 				var seek = player.controls.find('.seek');
@@ -170,15 +181,35 @@
 				seek.val(curTime);
 				player.controls.find('#time').html(player.timeFormat(curTime)+' / '+player.duration);
 			});
-			$('#sub-controls .subtitles').click(function(){
-				if(player.subtitles == false){
-					player.subtitles = true;
-					player.video[0].textTracks[0].mode = 'showing';
-				}else{
-					player.subtitles = false;
-					player.video[0].textTracks[0].mode = 'hidden';
-				}
-			});
+			player.sub_controls = $('#sub-controls');
+			if(player.video.find('track')){
+				player.track = player.video.find('track').prop('track');
+				player.track_display = $('.subtitles-container .holder');
+				$(player.track).on('cuechange', function(){
+					var cue = $.prop(this, 'activeCues')[0];
+					if(!cue || player.subtitles == false){
+						var prev_text = player.track_display.html();
+						if(prev_text != ''){
+							player.track_display.html('');
+						}
+						return;
+					}
+					var text = cue.text;
+					//console.log('Subtitle: '+ text);
+					player.track_display.html(text);
+				});
+				$('#sub-controls .subtitles').click(function(){
+					if(player.subtitles == false){
+						player.subtitles = true;
+						$(this).addClass('active');
+						//player.video[0].textTracks[0].mode = 'showing';
+					}else{
+						player.subtitles = false;
+						$(this).removeClass('active');
+						//player.video[0].textTracks[0].mode = 'hidden';
+					}
+				});
+			}
 			$("#title button.popout-1x").click(function(){
 				player.popout();
 			});
@@ -282,16 +313,19 @@
 				if(!player.controls.hasClass('active')){
 					player.controls.addClass('active');
 					player.title.addClass('active');
+					player.sub_controls.addClass('active');
 				}
 				clearTimeout(player.inactive_timeout);
 				player.inactive_timeout = setTimeout(function(){
 					player.controls.removeClass('active');
 					player.title.removeClass('active');
+					player.sub_controls.removeClass('active');
 				}, 5000);
 			});
 			player.inactive_timeout = setTimeout(function(){
 					player.controls.removeClass('active');
 					player.title.removeClass('active');
+					player.sub_controls.removeClass('active');
 				}, 5000);
 		},
 		updateHistory: function(){

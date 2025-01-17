@@ -1,0 +1,31 @@
+header.main{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: center;
+    padding-left: 30px;
+    padding-right: 30px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    background: #444;
+    color: #fff;
+    margin-bottom: 20px;
+    column-gap: 20px;
+    #logo{
+        img{
+            max-width: 50px;
+        }
+        display: flex;
+        flex-direction: row;
+        flex-wrap: nowrap;
+        align-items: center;
+        column-gap: 10px;
+    }
+    #main-nav{
+        display: flex;
+        column-gap: 20px;
+        flex-wrap: wrap;
+        row-gap: 20px;
+        align-items: center;
+    }
+}

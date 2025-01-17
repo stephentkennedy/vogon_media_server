@@ -68,8 +68,19 @@ if(empty($meta['desc'])){
 if(empty($meta['length'])){
 	$meta['length'] = 0;
 }
-if(empty($meta['subtitles'])){
-	$meta['subtitles'] = false;
+if(empty($meta['subtitles']) || substr($meta['subtitles'], -4) == '.srt'){
+	//If we haven't set a file manually, look if a vtt file exists in the same directory with the same name.
+
+	$filename_check = $data_content;
+	$filename_check = explode('.', $filename_check);
+	array_pop($filename_check);
+	$filename_check = implode('.', $filename_check);
+	$filename_check .= '.vtt';
+	if(file_exists($filename_check)){
+		$meta['subtitles'] = str_replace(ROOT, '', $filename_check);
+	}else{
+		$meta['subtitles'] = false;
+	}
 }
 $meta['poster'] = str_replace(ROOT, '', $meta['poster']);
 if(empty($meta['animorphic'])){

@@ -1,2 +1,1 @@
-Reworked server to utilize build process.
-Cleaned up some styles for the video player and material dashboard.
+-Added support for .vtt subtitles in the video player.
