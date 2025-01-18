@@ -436,9 +436,13 @@ if($series != ''){
 				var id = autoplay.list[autoplay.index].id;
 				var poster = autoplay.list[autoplay.index].poster;
 				var animorphic = autoplay.list[autoplay.index].animorphic;
+				var subtitles = autoplay.list[autoplay.index].subtitles;
 				player.video.removeClass('animorphic');
 				if(animorphic == 1){
 					player.video.addClass('animorphic');
+				}
+				if(typeof subtitles != 'undefined' && subtitles != '' && subtitles != false){
+					player.video.find('track').prop('src', subtitles);
 				}
 				player.title.find('.title-bar').html(title);
 				player.title.find('.title-text').html(title);

@@ -1,1 +1,1 @@
--Added support for .vtt subtitles in the video player.
+Ensured subtitles are loaded for autoplay system and swapped out with the video content.

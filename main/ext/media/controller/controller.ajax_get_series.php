@@ -25,12 +25,27 @@ if(!empty($record['meta']['season'])){
 			if(empty($meta['animorphic'])){
 				$meta['animorphic'] = 0;
 			}
+			if(empty($meta['subtitles']) || substr($meta['subtitles'], -4) == '.srt'){
+				//If we haven't set a file manually, look if a vtt file exists in the same directory with the same name.
+			
+				$filename_check = $v['data_content'];
+				$filename_check = explode('.', $filename_check);
+				array_pop($filename_check);
+				$filename_check = implode('.', $filename_check);
+				$filename_check .= '.vtt';
+				if(file_exists($filename_check)){
+					$meta['subtitles'] = str_replace(ROOT, '', $filename_check);
+				}else{
+					$meta['subtitles'] = false;
+				}
+			}
 			$list[] = [
 				'loc' => str_replace(ROOT, '', $v['data_content']),
 				'id' => $v['data_id'],
 				'name' => $v['data_name'],
 				'poster' => str_replace(ROOT, '', $meta['poster']),
-				'animorphic' => $meta['animorphic']
+				'animorphic' => $meta['animorphic'],
+				'subtitles' => $meta['subtitles']
 			];
 		}
 	}
@@ -56,12 +71,27 @@ if(!empty($record['meta']['season'])){
 			if($query != false){
 				$next_episode = $query->fetch();
 				$meta = $clerk->getMetas($next_episode['data_id']);
+				if(empty($meta['subtitles']) || substr($meta['subtitles'], -4) == '.srt'){
+					//If we haven't set a file manually, look if a vtt file exists in the same directory with the same name.
+				
+					$filename_check = $v['data_content'];
+					$filename_check = explode('.', $filename_check);
+					array_pop($filename_check);
+					$filename_check = implode('.', $filename_check);
+					$filename_check .= '.vtt';
+					if(file_exists($filename_check)){
+						$meta['subtitles'] = str_replace(ROOT, '', $filename_check);
+					}else{
+						$meta['subtitles'] = false;
+					}
+				}
 				$output['next_season'] = [
 					'season_name' => $next_season['data_name'],
 					'episode_name' => $next_episode['data_name'],
 					'first_episode' => $next_episode['data_content'],
 					'episode_id' => $next_episode['data_id'],
-					'poster' => str_replace(ROOT, '', $meta['poster'])
+					'poster' => str_replace(ROOT, '', $meta['poster']),
+					'subtitles' => $meta['subtitles']
 				];
 			}
 		}
