@@ -81,7 +81,13 @@ if(empty($meta['subtitles']) || substr($meta['subtitles'], -4) == '.srt'){
 	}else{
 		$meta['subtitles'] = false;
 	}
+
 }
+
+if(!empty($meta['subtitles']) && stristr($meta['subtitles'], ROOT) !== false){
+	$meta['subtitles'] = str_replace(ROOT, '', $meta['subtitles']);
+}
+
 $meta['poster'] = str_replace(ROOT, '', $meta['poster']);
 if(empty($meta['animorphic'])){
 	$meta['animorphic'] = 0;

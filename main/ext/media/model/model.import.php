@@ -1,7 +1,7 @@
 <?php
 //Setup
 set_time_limit(0);
-error_reporting(0);
+error_reporting(E_ALL);
 ini_set('display_errors', false);
 
 require ROOT . '/vendor/autoload.php';
@@ -91,9 +91,14 @@ $thumb_name = $thumbDir.$name.'.jpg';
 
 //Thumbnail Generation
 try{
-	$vid->frame(FFMpeg\Coordinate\TimeCode::fromSeconds(120))->save($thumb_name);
-} catch(Exception $e){
-	$message .= 'Exception when generating thumbnail<br>'.$e->getMessage().'<br>Continuing without thumbnail.<br>';
+	try{
+		@$vid->frame(@FFMpeg\Coordinate\TimeCode::fromSeconds(120))->save($thumb_name);
+	} catch(Exception $e){
+		$message .= 'Exception when generating thumbnail<br>'.$e->getMessage().'<br>Continuing without thumbnail.<br>';
+		$thumb_name = '';
+	}
+}catch(Alchemy\BinaryDriver\Exception\ExecutionFailureException $e){
+	$message .= 'Exception from Alchemy Driver';
 	$thumb_name = '';
 }
 unset($vid);

@@ -320,6 +320,7 @@ video.animorphic{
             font-size: 5vh;
             padding: 5px;
             pointer-events: all;
+            text-align: center;
             &:empty{
                 display: none;
             }

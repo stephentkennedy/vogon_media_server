@@ -18,6 +18,11 @@
     body{
         background-color: #222222;
     }
+    @media (prefers-color-scheme: dark) {
+        body{
+            filter: invert(1);
+        }
+    }
     #cb-page{
         background: #ffffff;
     }

@@ -106,7 +106,7 @@ HERE;
 
 	foreach($table_data as $table => $data){
 		$sql = $data['create'];
-		$query = $db->query($sql);
+		$query = $db->t_query($sql);
 		if($query == false){
 			die('Unable to build '. $table .' table. Check database user permissions and run installer again.');
 		}
@@ -135,7 +135,7 @@ HERE;
 			echo '<pre>';
 			var_dump($params);
 			echo '</pre>';
-			$query = $db->query($sql, $params);
+			$query = $db->t_query($sql, $params);
 			var_dump($query);
 			if($query == false){
 				echo $db->error.'<br>';

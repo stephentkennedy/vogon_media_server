@@ -195,6 +195,7 @@
 						return;
 					}
 					var text = cue.text;
+					text = text.replace(/\n/g, '<br>');
 					//console.log('Subtitle: '+ text);
 					player.track_display.html(text);
 				});

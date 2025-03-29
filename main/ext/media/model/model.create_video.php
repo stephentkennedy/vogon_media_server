@@ -32,8 +32,13 @@ $name = array_pop($name);
 $name = explode('.', $name);
 $thumb_name = $thumbDir.'DB_'.$name[0].'.jpg';
 
-$vid->frame(FFMpeg\Coordinate\TimeCode::fromSeconds(10))->save($thumb_name);
-$vid = null;
+try{
+	@$vid->frame(@FFMpeg\Coordinate\TimeCode::fromSeconds(120))->save($thumb_name);
+} catch(Exception $e){
+	$message .= 'Exception when generating thumbnail<br>'.$e->getMessage().'<br>Continuing without thumbnail.<br>';
+	$thumb_name = '';
+}
+unset($vid);
 
 $file_info = $getID3->analyze($location);
 

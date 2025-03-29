@@ -65,7 +65,7 @@ switch($location){
 	case 'watch':
 		load_controller('header', ['view' => 'nano', 'head_tags' => [
 			build_style_tag('/fonts/font-awesome.min.css'),
-			build_style_tag('/dist/css/video_player_module.min.css?v=4')
+			build_style_tag('/dist/css/video_player_module.min.css?v=5')
 		]]); //We control the title inside the view because it's manipulated with JavaScript
 		$id = get_slug_part(2);
 		if(empty($id) || !is_numeric($id)){

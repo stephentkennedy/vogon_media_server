@@ -41,6 +41,7 @@ foreach($feeds as $feed){
 					$channel_link = $channel->link->__toString();
 					$channel_desc = $channel->description->__toString();
 					$channel_items = [];
+
 					foreach($channel->item as $item){
 						$channel_item = [
 							'title' => $item->title->__toString(),
