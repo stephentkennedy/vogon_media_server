@@ -27,10 +27,14 @@ class thumb extends PDO{
 		try{
 			$trans->execute($params);
 			$this->last = $this->lastInsertId();
-			$this->commit();
+			if(PDO::inTransaction()){
+				$this->commit();
+			}
 			return $trans;
 		}catch(PDOException $e){
-			$this->rollBack();
+			if(PDO::inTransaction()){
+				$this->rollBack();
+			}
 			$this->error = $e;
 			return false;
 		}

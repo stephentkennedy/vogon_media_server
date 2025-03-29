@@ -1,1 +1,1 @@
-Misc Fixes. Fix to Install Script.
+Made DB driver more transaction aware
