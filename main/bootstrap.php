@@ -32,11 +32,7 @@ foreach($settings as $const => $val){
 unset($settings);
 
 //A little more constants
-if(!empty($_SERVER['HTTP_HOST'])){
-	$host = $_SERVER['HTTP_HOST'];
-}else{
-	$host = '';
-}
+$host = $_SERVER['HTTP_HOST'];
 $protocol=$_SERVER['PROTOCOL'] = isset($_SERVER['HTTPS']) && !empty($_SERVER['HTTPS']) ? 'https' : 'http';
 define('URL', $protocol.'://'.$host);
 
@@ -70,11 +66,6 @@ if(phpversion() < 8){
 //Load our installed extensions as a session variable
 $exts = dir_contents(__DIR__ . DIRECTORY_SEPARATOR . 'ext');
 $_SESSION['loaded_extensions'] = $exts;
-
-if(defined('SKIP_ROUTER') && SKIP_ROUTER == true){
-	run_filters('cli_init');
-	return;
-}
 
 //Comment this out if you don't want vogon to be password protected
 global $user,

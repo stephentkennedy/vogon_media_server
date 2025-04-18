@@ -22,13 +22,7 @@ $thumbDir .= DIRECTORY_SEPARATOR;
 $item = $clerk->getRecord($id, true);
 
 $old_file = $item['meta']['poster'];
-if(
-	!empty($old_file)
-	&& file_exists($old_file)
-	&& !(
-		isset($skip_if_exists) && $skip_if_exists == true
-	)
-){
+if(!empty($old_file)){
 	unlink($old_file);
 }
 
@@ -48,19 +42,6 @@ array_pop($name);
 $name = implode('.', $name);
 $name = slugify($name);
 $thumb_name = $thumbDir.$name.'.jpg';
-
-$check = file_exists($thumb_name);
-if(isset($skip_if_exists) && $skip_if_exists == true){
-	if($check){
-		$thumb_url = build_slug(str_replace(ROOT, '', $thumb_name));
-		$message = 'Thumbnail already exists';
-		return [
-			'message' => $message,
-			'thumbnail' => $thumb_url
-		];
-	}
-}
-
 try{
 	$vid->frame(FFMpeg\Coordinate\TimeCode::fromSeconds($timestamp))->save($thumb_name);
 	$clerk->updateMetas($id, [

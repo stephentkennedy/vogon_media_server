@@ -1,5 +1,1 @@
-<<<<<<< HEAD
-Made DB driver more transaction aware
-=======
 Added base CLI import with some initial commands for managing video libraries
->>>>>>> 38ff543 (Added base CLI support)
