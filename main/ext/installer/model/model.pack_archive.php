@@ -18,6 +18,7 @@
 	$zip->deleteName('main' . '/' . 'config.ini');
 	$files = [
 		'index.php',
+		'cli.php',
 		'.htaccess',
 		'installer.php',
 		'change_log'
