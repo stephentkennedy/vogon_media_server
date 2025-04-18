@@ -83,6 +83,47 @@ function load_controller($controller, $data = [], $ext = false){
 	}
 }
 
+function load_cli($cli_file, $data = [], $ext = false){
+	if($cli_file === 'null'){
+		return null;
+	}
+	if($ext == false){
+		$cli_file = ROOT . DIRECTORY_SEPARATOR . 'main' . DIRECTORY_SEPARATOR . 'cli' . DIRECTORY_SEPARATOR . 'cli.' . $cli_file;
+	}else{
+		$cli_file = ROOT . DIRECTORY_SEPARATOR . 'main' . DIRECTORY_SEPARATOR . 'ext' . DIRECTORY_SEPARATOR . $ext . DIRECTORY_SEPARATOR . 'cli' . DIRECTORY_SEPARATOR . 'cli.' . $cli_file ;
+	}
+
+	global $argv, $argc;
+
+	$data['argv'] = $argv;
+	$data['arcg'] = $argc;
+
+	return load_file($cli_file.'.php', $data);
+}
+
+function register_cli_commands(){
+	$ds = data_store::get_instance();
+	$registered_commands = $ds->get('cli_commands', []);
+
+	$starting_commands = load_cli('register_commands');
+
+	if(!empty($starting_commands)){
+		$registered_commands = array_merge($registered_commands, $starting_commands);
+	}
+
+	$extensions = $_SESSION['loaded_extensions'];
+	foreach($extensions as $ext){
+		$new_commands = load_cli('register_commands', [], $ext);
+		if(!empty($new_commands)){
+			$registered_commands = array_merge($registered_commands, $new_commands);
+		}
+	}
+
+	if(!empty($registered_commands)){
+		$ds->set('cli_commands', $registered_commands);
+	}
+}
+
 //General Functions
 function debug_d($var){ //Compatibility shim, new calls should be to debug_dump();
 	debug_dump($var);
