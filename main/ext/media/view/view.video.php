@@ -14,6 +14,21 @@
 		<h1><button class="fa fa-arrow-circle-left back-to-view"></button> <span class="title-text"><?php echo $title; ?></span></h1>
 		<button class="fa fa-picture-o update-thumbnail"></button>
 		<button class="fa fa-window-restore popout-1x" title="Pop out video at 1x resolution. This is useful for scaling applications."></button>
+		<?php if(!empty($children)){
+		?><div id="edition-controls">
+			<label>Edition:</label> 
+			<select id="edition_select">
+				<?php	foreach($children as $child){
+					echo '<option value="'.$child['data_id'].'"';
+					if($child['data_id'] == $id){
+						echo ' selected';
+					}
+					echo '>'.$child['data_name'].'</option>';
+			}?>
+		
+			</select>
+		</div>
+	<?php } ?>
 	</div>
 	<div id="sub-controls" class="active <?php if(empty($subtitles)){
 		 echo 'none';
@@ -53,7 +68,19 @@
 	color: transparent;
 	background: transparent;
 	}
-
+	#edition-controls label{
+		color: #fff;
+		background: rgba(0,0,0,0.5);
+		padding: 2px;
+		display: inline-block;
+	}
+	#edition-controls select{
+		max-width: max-content;
+		border: none;
+		background: #fcfcfc;
+		color: #222222;
+		padding: 5px;
+	}
 </style>
 <script type="text/javascript">
 	var player = {
@@ -263,6 +290,17 @@
 			});
 			$('.seek').mouseleave(function(){
 				$('.seek-counter').addClass('hidden');
+			});
+
+			$('#edition-controls #edition_select').on('change', function(){
+				var $this = $(this);
+				var id = $this.val();
+				var current_url = window.location.toString();
+				console.log(current_url);
+				var url_array = current_url.split('/');
+				url_array[url_array.length - 1] = id;
+				new_url = url_array.join('/');
+				window.location = new_url;
 			});
 			
 		},

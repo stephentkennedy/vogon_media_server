@@ -42,7 +42,11 @@
 		<h2>Unsorted</h2>
 		<div class="sortable">
 		<?php foreach($members['loose'] as $r){
-			echo '<a class="episode" data-id="'.$r['data_id'].'">'.$r['data_name'].'</a>';
+			echo '<a class="episode" data-id="'.$r['data_id'].'">'.$r['data_name'];
+			if(!empty($r['release'])){
+				echo ' ('.$r['release'].')';
+			}
+			echo '</a>';
 		} ?>
 		</div>
 	</div>

@@ -94,8 +94,14 @@ class meta_link_db_handler extends db_handler{
 			}
 		}
 		if(isset($cql)){
-			$count = $this->db->t_query($cql, $this->params)->fetch()['count'];
-			$this->total_count = $count;
+			//$count = $this->db->t_query($cql, $this->params)->fetch()['count'];
+			$query = $this->db->t_query($cql, $this->params);
+			if(!$query){
+				$this->total_count = 0;
+			}else{
+				$count = $query->fetch()['count'];
+				$this->total_count = $count;
+			}
 		}
 		if(isset($options['groupby']) && !empty($this->structure[$options['groupby']])){
 			$sql .= ' GROUP BY '.$this->structure[$options['groupby']]['machine_name'];

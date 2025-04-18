@@ -15,7 +15,10 @@ function load_file($file, $parameters = []){
 }
 
 function load_class($class, $ext = false){
-	if(!class_exists($class)){
+	if(
+		!class_exists($class)
+		&& !class_exists('\vogon\\'.$class)
+	){
 		if($ext == false){
 			$class_file = ROOT . DIRECTORY_SEPARATOR . 'main' .DIRECTORY_SEPARATOR . 'class' . DIRECTORY_SEPARATOR . 'class.' . $class . '.php';
 		}else{
@@ -23,8 +26,10 @@ function load_class($class, $ext = false){
 		}
 		if(file_exists($class_file)){
 			load_file($class_file);
+			return true;
 		}
 	}
+	return false;
 }
 
 function load_view($view, $parameters = [], $ext = false){
@@ -426,6 +431,13 @@ function url2dir($url){
 	$parts = parse_url($url);
 	$path = str_replace(URI, ROOT, $parts['path']);
 	return $path;
+}
+
+function dir2url($dir){
+	if(file_exists($dir)){
+		return str_replace(ROOT, URI, $dir);
+	}
+	return '';
 }
 
 /*

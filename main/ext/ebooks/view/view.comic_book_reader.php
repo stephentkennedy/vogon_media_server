@@ -6,6 +6,18 @@
             echo build_slug('', ['resume_search' => true], 'ebooks');
 ?>" title="Exit Viewer"><i class="fa fa-reply"></i></a>
         <button id="prev" title="Previous Page"><i class="fa fa-chevron-left"></i></button>
+        <div class="page-container">
+            <button id="first"><i class="fa fa-fast-backward"></i></button>
+            <input id="page_num" value="<?php
+                if(isset($_GET['page'])){
+                    echo $_GET['page'];
+                }else{
+                    echo '1';
+                }
+            ?>" type="number" min="1">
+            /
+            <span class="page_count">0</span>
+        </div>
         <a id="toggle_fullscreen" class="button"><i class="fa fa-expand"></i></a>
         <button id="next" title="Next Page"><i class="fa fa-chevron-right"></i></button>
     </div>
@@ -96,6 +108,33 @@
     #cb-controls #zoom-out{
         bottom: 0;
     }
+    #cb-controls .page-container{
+        position: absolute;
+        text-align: center;
+        top: auto;
+        bottom: 15px;
+        left: 50%;
+        opacity: 0.25;
+        transform: translateX(-50%);
+        transition: opacity 0.4s ease;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: 5px;
+        background: rgba(0,0,0,0.4);
+        color: #fff;
+        padding-right: 5px;
+    }
+    #cb-controls .page-container:hover,
+    #cb-controls .page-container:focus,
+    #cb-controls .page-container:focus-within{
+        opacity: 0.9;
+    }
+    #cb-controls .page-container #page_num{
+        width: 4rem;
+        margin-bottom: 0;
+        margin-left: 10px;
+    }
 	#cb-page{
 		transition: background 0.5s linear;
 	}
@@ -110,7 +149,11 @@
         save_history_url: '<?php echo build_slug('ajax/ajax_save_history/ebooks'); ?>',
         get_history_url: '<?php echo build_slug('ajax/ajax_get_history/ebooks'); ?>',
         next_issue: false,
+        prev_page_num: null,
+        next_page_num: null,
         page: new Image(),
+        prev_page: new Image(),
+        next_page: new Image(),
         scale: 1,
         original_orientation: false,
         fullscreen: false,
@@ -146,9 +189,159 @@
             }
             return params;
         },
+        cache_prev_page: function(page){
+            console.log('caching prev page');
+            $.ajaxSetup({timeout: 0, cache: false, dataType: 'json'});
+
+            var windowWidth = $(window).innerWidth();
+
+            $.get(cb_reader.page_url, {
+                page: page, 
+                id: cb_reader.c_id,
+                windowWidth: windowWidth
+            }, function(returned){
+                if(
+                    (
+                        returned.error == undefined 
+                        || returned.error == false
+                    ) 
+                    && returned != '' 
+                    && returned.image_data != undefined
+                ){
+                    cb_reader.prev_page_num = page;
+                    cb_reader.prev_page.src = returned.image_data;
+                    //cb_reader.prev_page.count  = returned.count
+                }else{
+                    if(
+                        returned.message == 'No data at that index'
+                        && typeof returned.array != undefined
+                        && page < returned.array.length
+                    ){
+                        return cb_reader.cache_prev_page(page + 1);
+                    }
+                    if(
+                        returned.error == true
+                    ){
+                        var w = aPopup.newWindow(returned.message);
+                        cb_reader.error_page();
+                    }
+                    if(returned.content.length > 0){
+                        //Then we likely got a text file, request the next page
+                        cb_reader.cache_prev_page(cb_reader.page_index + 1);
+                    }
+                    console.log(returned);
+                }
+            });
+        },
+        cache_next_page: function(page){
+            console.log('caching next page');
+            $.ajaxSetup({timeout: 0, cache: false, dataType: 'json'});
+
+            var windowWidth = $(window).innerWidth();
+
+            $.get(cb_reader.page_url, {
+                page: page, 
+                id: cb_reader.c_id,
+                windowWidth: windowWidth
+            }, function(returned){
+                if(
+                    (
+                        returned.error == undefined 
+                        || returned.error == false
+                    ) 
+                    && returned != '' 
+                    && returned.image_data != undefined
+                ){
+                    cb_reader.next_page_num = page;
+                    cb_reader.next_page.src = returned.image_data;
+                    //cb_reader.next_page.count = returned.count;
+                }else{
+                    if(
+                        returned.message == 'No data at that index'
+                        && typeof returned.array != undefined
+                        && page < returned.array.length
+                    ){
+                        return cb_reader.cache_next_page(page + 1);
+                    }
+                    if(
+                        returned.error == true
+                    ){
+                        var w = aPopup.newWindow(returned.message);
+                        cb_reader.error_page();
+                    }
+                    if(returned.content.length > 0){
+                        //Then we likely got a text file, request the next page
+                        cb_reader.cache_next_page(cb_reader.page_index + 1);
+                    }
+                    console.log(returned);
+                }
+            });
+        },
+        load_cached_page: function(prev_or_next){
+            console.log('loading cached page');
+            if(prev_or_next == 'prev'){
+                cb_reader.next_page_num = cb_reader.page_index;
+                cb_reader.next_page = $(cb_reader.page).clone()[0];
+                cb_reader.page_index = cb_reader.prev_page_num;
+                cb_reader.page = $(cb_reader.prev_page).clone()[0];
+                $('#page_num').val(cb_reader.page_index);
+                
+                if(cb_reader.page_index > 0){
+                    cb_reader.cache_prev_page(cb_reader.page_index - 1);
+                }
+            }else{
+                cb_reader.prev_page_number = cb_reader.page_index;
+                cb_reader.prev_page = $(cb_reader.page).clone()[0];
+                cb_reader.page_index = cb_reader.next_page_num;
+                cb_reader.page = $(cb_reader.next_page).clone()[0];
+                $('#page_num').val(cb_reader.next_page_num);
+
+                if(cb_reader.page_index < (cb_reader.current_page.count - 1)){
+                    cb_reader.cache_next_page(cb_reader.page_index + 1);
+                }
+            }
+            //console.log('prev:',cb_reader.prev_page.src, 'current:', cb_reader.current_page.src, 'next:', cb_reader.next_page.src);
+            $clone = $(cb_reader.page).clone();
+            new_image = $clone[0];
+            $('#cb-page')[0].innerHTML = '';
+            $('#cb-page')[0].appendChild(new_image);
+            cb_reader.push_history(cb_reader.page_index);
+            cb_reader.save_history();
+            cb_reader.adjust_background();
+        },
         get_page: function(page){
             if(page == undefined){
                 page = 0;
+            }else{
+                page = Number(page);
+            }
+            //console.log('page', page);
+            if(page == (cb_reader.page_index + 1)){
+                //Cache the old page
+                cb_reader.prev_page = { ... cb_reader.page};
+                cb_reader.prev_page_num = cb_reader.page_index;
+
+                if(
+                    cb_reader.next_page.src != ''
+                    && cb_reader.next_page_num !== null
+                    && cb_reader.next_page_num == (cb_reader.page_index + 1)
+                ){
+                    return cb_reader.load_cached_page('next');
+                }
+            }else if(
+                page > 0
+                && page == (cb_reader.page_index - 1)
+                && cb_reader.prev_page.src != ''
+                && cb_reader.prev_page_num !== null
+                && cb_reader.prev_page_num == (cb_reader.page_index - 1)
+            ){
+                //load cached page
+                return cb_reader.load_cached_page('prev');
+            }else{
+                cb_reader.prev_page.src = '';
+                cb_reader.prev_page_num = null;
+                cb_reader.next_page.src = '';
+                cb_reader.next_page_num = null;
             }
             cb_reader.page_index = Number(page);
             cb_reader.blank_page();
@@ -170,11 +363,16 @@
                     && returned.image_data != undefined
                 ){
                     cb_reader.render_page(returned);
+                    $('#page_num').val(page);
                     var params = cb_reader.get_vars();
                     if(page != params[page]){
                         cb_reader.push_history(page);
                         cb_reader.save_history();
+                        if((page + 1) < cb_reader.current_page.count - 1){
+                            cb_reader.cache_next_page(page + 1);
+                        }
                     }
+                    
                 }else{
                     if(
                         returned.message == 'No data at that index'
@@ -217,11 +415,15 @@
         render_page: function(page_object){
             cb_reader.current_page = false;
             cb_reader.scale = Number(cb_reader.scale.toFixed(2));
+            if(cb_reader.current_page == false){
+                $('.page-container .page_count').text(page_object.count);
+            }
             cb_reader.current_page = page_object;
             cb_reader.page.src = page_object.image_data;
             cb_reader.page.onload = function(){
                 $('#cb-page').html('<img src="'+page_object.image_data+'" />');
 				cb_reader.adjust_background();
+               // cb_reader.cache_next_page(cb_reader.page_index + 1);
                 /*var page_w = cb_reader.page.width;
                 var page_h = cb_reader.page.height;
                 var page_r = page_h / page_w;
@@ -282,7 +484,19 @@
                     $(window).scrollTop(0);
                 }else if(cb_reader.page_index >= (cb_reader.current_page.count - 1) && cb_reader.next_issue != false){
                     window.location = cb_reader.next_issue;
+                }else{
+                    alert('End of file');
                 }
+            });
+            $('#page_num').on('change', function(){
+                var $this = $(this);
+                var num = Number($this.val());
+                if(num < cb_reader.current_page.count - 1 && num >= 1){
+                    cb_reader.get_page(num);
+                } 
+            })
+            $('#first').on('click', function(){
+                cb_reader.get_page(1);
             });
             $('#zoom-in').click(function(){
                 cb_reader.scale += 0.05;
@@ -364,7 +578,7 @@
         },
         get_next_issue: function(){
             $.get(cb_reader.next_issue_url, {id: cb_reader.c_id}, function(returned){
-                if(returned.error != false){
+                if(returned.error != false && typeof returned['data_id'] != 'undefined'){
                     cb_reader.next_issue = cb_reader.root_url + '/' + returned['data_id'];
                 }
             });

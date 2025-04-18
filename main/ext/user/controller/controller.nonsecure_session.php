@@ -1,5 +1,6 @@
 <?php
 	global $user;
+
 	if(isset($_POST['user_email']) && isset($_POST['first_user'])){
 		load_model('add', [
 			'email' => $_POST['user_email'],

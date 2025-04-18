@@ -5,7 +5,7 @@ Date: 12/4/2018
 Comment: Let's establish what we need for our bootstrap;
 */
 error_reporting(E_ERROR | E_WARNING | E_PARSE);
-ini_set('display_errors', 1);
+ini_set('display_errors', 0);
 $directories = explode(DIRECTORY_SEPARATOR,__DIR__);
 array_pop($directories);
 $directories = implode(DIRECTORY_SEPARATOR,$directories);
@@ -76,35 +76,59 @@ if(defined('SKIP_ROUTER') && SKIP_ROUTER == true){
 	return;
 }
 
-//Comment this out if you don't want vogon to be password protected
-global $user,
-	$user_model;
-load_class('user_model');
-$user_model = new user_model([
-	'secure' => false,
-	'session_timeout' => 'twelve hours ago'
-]);
-$user_model->manage_session();
-$user = [
-	'user_key' => $user_model->user_key
+$unauthenticated_routes = [ //Should be read only operations since no auth is done
+	'dlna' 
 ];
-//load_controller('session', [], 'user');
 
-//Comment this out if you don't want local_storage based user management
-load_controller('nonsecure_session', [], 'user');
+$ext = get_slug_part('ext');
+if(!in_array($ext, $unauthenticated_routes)){
+	//Comment this out if you don't want vogon to be password protected
+	global $user,
+		$user_model;
+	load_class('user_model');
+	$user_model = new user_model([
+		'secure' => false,
+		'session_timeout' => 'twelve hours ago'
+	]);
 
-//Default logic for search system
-if(empty($_REQUEST['search'])){
-	$_REQUEST['search'] = '';
+	//Check if an API Key Auth header was sent
+	if(!empty($_SERVER['HTTP_API_KEY']) && !empty($_SERVER['HTTP_API_USER'])){
+		$api_key = $_SERVER['HTTP_API_KEY'];
+		$api_user = $_SERVER['HTTP_API_USER'];
+		$user_key = $user_model->get_user_by_email($api_user);
+		if(!empty($user_key)){
+			$check = $user_model->api_login($api_key, $user_key);
+			if($check){
+				//If we authenticated with an API key, route everything through the API.
+				return include __DIR__ . DIRECTORY_SEPARATOR . 'api_router.php';
+			}
+		}
+	}
+
+	$user_model->manage_session();
+	$user = [
+		'user_key' => $user_model->user_key
+	];
+	//load_controller('session', [], 'user');
+
+	//Comment this out if you don't want local_storage based user management
+	//load_controller('nonsecure_session', [], 'user');
+
+	//Default logic for search system
+	if(empty($_REQUEST['search'])){
+		$_REQUEST['search'] = '';
+	}
+	if(empty($_REQUEST['orderby'])){
+		$_REQUEST['orderby'] = '';
+	}
+
+	//Used by the Filebrowser Ext, comment out if you're not using that ext
+	$_SESSION['active_filebrowsers'] = 0;
+
+	run_filters('vogon_init');
 }
-if(empty($_REQUEST['orderby'])){
-	$_REQUEST['orderby'] = '';
-}
 
-//Used by the Filebrowser Ext, comment out if you're not using that ext
-$_SESSION['active_filebrowsers'] = 0;
 
-run_filters('vogon_init');
 
 /*
 Developer: Steph Kennedy

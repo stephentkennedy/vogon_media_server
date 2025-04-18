@@ -78,7 +78,9 @@
 				}
 			}
 			$.get(url, []).done(function(returned){
-				ajax_loop_interface.loop(returned);
+				setTimeout(function(){
+					ajax_loop_interface.loop(returned);
+				}, 200); //Delay
 			}).fail(function(returned){
 				ajax_loop_interface.output('Unable to make request.');
 				console.log(returned);

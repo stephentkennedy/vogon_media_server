@@ -1,5 +1,9 @@
 <?php
 	global $user;
+
+	if($user['user_key'] == 0){
+		return ['session' => ''];
+	}
 	
 	$session_key = session_id();
 	

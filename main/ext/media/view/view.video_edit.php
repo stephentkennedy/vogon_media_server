@@ -32,6 +32,15 @@
 	if(!isset($series)){
 		$series = '';
 	}
+	if(!isset($type)){
+		$type = '';
+	}
+	if(!isset($parent)){
+		$parent = '';
+	}
+	if(!isset($parent_label)){
+		$parent_label = '';
+	}
 ?>
 <header><h1><?php echo $title; ?><?php if(isset($id)){ ?> <a title="Back" class="fa fa-arrow-left" href="<?php echo build_slug('view/'.$id, [], 'media'); ?>"></a> <a title="Remove" class="open-popup fa fa-times" data-title="Remove <?php echo $title; ?>" data-src="<?php echo build_slug('ajax/delete_confirm/media', ['id' => $id]); ?>"></a><?php } ?></h1></header>
 <form method="post">
@@ -51,6 +60,27 @@
 	<input type="text" id="starring" name="starring" value="<?php echo $starring; ?>">
 	<label for="desc">Description</label>
 	<textarea id="desc" name="desc"><?php echo $desc; ?></textarea>
+	<label for="type">Type</label>
+	<select id="type" name="type">
+		<?php 
+			$options = [
+				'' => 'Select Type...',
+				'video' => 'Film',
+				'tv' => 'Television Episode',
+				'edition' => 'Edition of Existing Film'
+			];
+			foreach($options as $value => $label){
+				echo '<option value="'.$value.'"';
+				if($value == $type){
+					echo ' selected';
+				}
+				echo '>'.$label.'</option>';
+			}
+		?>
+	</select>
+	<label for="edition_parent">Base Film</label>
+	<input type="hidden" id="edition_parent_id" name="edition_parent" value="<?php echo $parent; ?>">
+	<input type="text" id="edition_parent" value="<?php echo $parent_label; ?>">
 	<input type="checkbox" value="1" id="animorphic" name="animorphic" <?php if(!empty($animorphic)){ echo 'checked'; } ?>> <label class="inline" for="animorphic">Vertical Stretch (Animorphic Widescreen Fix)?</label>
 	<label for="runtime">Runtime (In Minutes)</label>
 	<small>On files smaller than 2GB the server will attempt to calculate a runtime from the file&#39;s meta data. If that fails, the server will then attempt to get the data using FFMPEG, but if that also fails, this number will be used.</small><br><br>
@@ -87,6 +117,27 @@
 						}
 					}));
 				});
+			},
+		});
+		$('#edition_parent').autocomplete({
+			source: function(request, response){
+				$.get(<?php echo "'".build_slug('ajax/ajax_search_media_items/media')."'"; ?>, {
+					'search' : request.term
+				}).done(function(data){
+					response($.map(data.items, function(item){
+						return{
+							label: item.name,
+							value: item.name,
+							id: item.id
+						}
+					}));
+				});
+			},
+			select: function(e, ui){
+				var item = ui.item;
+				var id = item.id;
+				$('#edition_parent_id').val(id);
+				$('#edition_parent').val(item.label);
 			}
 		});
 		$('#search_tmdb').click(function(){

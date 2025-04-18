@@ -2,6 +2,8 @@
 
 $sql = 'SELECT * FROM `data` WHERE `data_type` = "genre" ORDER BY `data_name` ASC';
 $genres = $db->t_query($sql, [])->fetchAll();
+load_class('db_handler');
+$d = new db_handler('data');
 
 if(empty($meta['poster'])){
 	$meta['poster'] = '';
@@ -15,6 +17,15 @@ $params = [
 	':id' => $data_parent
 ];
 $series = $db->t_query($sql, $params)->fetch();
+$parent = false;
+if(!empty($data_parent) && empty($series)){
+	$sql = 'SELECT * FROM `data` WHERE `data_id` = :id';
+	$params = [
+		':id' => $data_parent
+	];
+	$parent = $db->t_query($sql, $params)->fetch();
+}
+
 if($series != false && count($series) > 0){
 	$series_id = $series['data_id'];
 	$series = $series['data_name'];	
@@ -95,9 +106,32 @@ if(empty($meta['animorphic'])){
 if(empty($data_content)){
 	$data_content = '';
 }
-return [
+
+$search_id = $data_id;
+if($data_type == 'edition'){
+	$search_id = $data_parent;
+}
+$search = [
+	'parent' => $search_id,
+	//'not_id' => $data_id,
+	'orderby' => 'name'
+];
+
+$children = $d->getRecords($search);
+
+if($data_type == 'edition'){
+	$new_item = $d->getRecord(['id' => $data_parent]);
+	array_unshift($children, $new_item);
+}else{
+	array_unshift($children, [
+		'data_id' => $data_id,
+		'data_name' => $data_name
+	]);
+}
+
+$to_return = [
 	'title' => $data_name,
-	'genre' => $data_parent,
+	//'genre' => $data_parent,
 	'genres' => $genres,
 	'id' => $data_id,
 	'director' => $meta['director'],
@@ -112,5 +146,17 @@ return [
 	'time' => $time,
 	'length' => $meta['length'],
 	'subtitles' => $meta['subtitles'],
-	'animorphic' => $meta['animorphic']
+	'animorphic' => $meta['animorphic'],
+	'type' => $data_type,
+	'parent' => $data_parent
 ];
+
+if(!empty($children)){
+	$to_return['children'] = $children;
+}
+
+if(!empty($parent)){
+	$to_return['parent_label'] = $parent['data_name'];
+}
+
+return $to_return;

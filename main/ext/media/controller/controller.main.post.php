@@ -14,12 +14,16 @@ if(isset($_POST['action'])){
 					'starring' => $_POST['starring'],
 					'desc' => $_POST['desc'],
 					'series' => $_POST['series'],
-					'id' => $_POST['id']
+					'id' => $_POST['id'],
+					'type' => $_POST['type']
 				];
 				if(!empty($_POST['animorphic'])){
 					$model_data['animorphic'] = 1;
 				}else{
 					$model_data['animorphic'] = 0;
+				}
+				if(!empty($_POST['edition_parent'])){
+					$model_data['edition_parent'] = $_POST['edition_parent'];
 				}
 				load_model('update_video', $model_data, 'media');
 				$id = $_POST['id'];

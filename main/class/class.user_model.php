@@ -28,6 +28,23 @@ class user_model {
         $this->secure = $options['secure'];
     }
 
+    public function api_login($api_key, $user_key){
+        $clerk = new clerk;
+        $result = $clerk->getRecord([
+            'type' => 'api_key',
+            'content' => $api_key,
+            'user_key' => $user_name
+        ]);
+
+        if(empty($result)){
+            return false;
+        }
+
+        $this->user_key = $result['user_key'];
+        $this->start_session();
+        return true;
+    }
+
     public function manage_session(){
         if(isset($_POST['user_key'])
             || isset($_POST['user_email'])
@@ -75,7 +92,7 @@ class user_model {
 
     private function insecure_login(){
         if(isset($_POST['user_key'])){
-            $this->load_user($user_key);
+            $this->load_user($_POST['user_key']);
             $this->start_session();
         }
     }
@@ -96,7 +113,7 @@ class user_model {
         }
     }
 
-    private function get_user_by_email($email){
+    public function get_user_by_email($email){
         $sql = 'SELECT * FROM `user` WHERE `user_email` = :email';
         $params = [
             ':email' => $email
