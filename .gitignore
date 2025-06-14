@@ -1,3 +1,4 @@
 *.zip
 .gitignore
 *.ver
+*.lock
