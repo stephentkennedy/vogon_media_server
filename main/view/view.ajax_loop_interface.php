@@ -2,6 +2,7 @@
 	if(empty($ext)){
 		$ext = false;
 	}
+	$url_to_include = $route;
 ?>
 <div id="progress_bar_container">
 	<div id="progress_message"></div>
@@ -39,7 +40,7 @@
 <script type="text/javascript">
 	var ajax_loop_interface = {
 		debug: false,
-		base_url: <?php echo "'".build_slug($route, [], $ext)."'"; ?>,
+		base_url: <?php echo "'".build_slug($route, [], $ext, true)."'"; ?>,
 		i: 0,
 		total: 0,
 		progress: function(){

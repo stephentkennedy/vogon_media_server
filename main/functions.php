@@ -207,7 +207,7 @@ function get_slug_part($requested = 'ext', $slug = false){
 	}
 }
 
-function build_slug($uri, $params = [], $ext = false){
+function build_slug($uri, $params = [], $ext = false, $skip_raw_url_encode = false){
 	$slug_to_return = URI;
 	if($ext != false){
 		$ext_slug = get_ext_slug($ext);
@@ -216,6 +216,13 @@ function build_slug($uri, $params = [], $ext = false){
 		}
 	}
 	$slug_to_return .= '/'.ltrim($uri, '/');
+	$final_item = basename($slug_to_return);
+	if($skip_raw_url_encode !== true){
+		$sanitized_item = rawurlencode($final_item);
+		if($final_item != $sanitized_item){
+			$slug_to_return = str_replace($final_item, $sanitized_item, $slug_to_return);
+		}
+	}
 	if(count($params) > 0){
 		$slug_to_return .= urlencode_get_values($params);
 	}

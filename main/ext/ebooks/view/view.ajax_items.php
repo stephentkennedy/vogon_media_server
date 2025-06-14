@@ -13,10 +13,11 @@ switch($format){
         $table = '<article id="ebook-library-main" class="flex results">
         <div class="result-row result-header flex-row">
             <span class="result-one">Title</span>
-            <span class="result-two">Series</span>
-            <span class="result-three">Sub Series</span>
-            <span class="result-four">Author</span>
-            <span class="result-five"></span>
+            <span class="result-two">Cover</span>
+            <span class="result-three">Series</span>
+            <span class="result-four">Sub Series</span>
+            <span class="result-five">Author</span>
+            <span class="result-six"></span>
         </div>';
         foreach($search_results as $r){
             if(empty($r['parent_data_name'])){
@@ -57,16 +58,24 @@ switch($format){
             }else{
                 $history = '';
             }
+            if(!empty($r['poster'])){
+                $poster = $r['poster'];
+                $poster_url = build_slug(str_replace(ROOT, '', $poster));
+                $poster = '<img src="'.$poster_url.'" loading="lazy" />';
+            }else{
+                $poster = '[No Image]';
+            }
             $table .= '<div class="result-row flex-row" data-id="'.$r['data_id'].'">';
             $table .= '<span class="result-one"><i class="fa fa-'.$icon.'"></i>&nbsp;'.$r['data_name'].$history.'</span>';
+            $table .= '<span class="result-two">'.$poster.'</span>';
             if(!empty($r['parent_data_name'])){
-                $table .= '<span class="result-two"><a href="">'.$r['parent_data_name'].'</a></span>';
+                $table .= '<span class="result-three"><a href="">'.$r['parent_data_name'].'</a></span>';
             }else{
-                $table .= '<span class="result-two">[Unknown]</span>';
+                $table .= '<span class="result-three">[Unknown]</span>';
             }
-            $table .= '<span class="result-three">'.$sub_series.'</span>';
-            $table .= '<span class="result-four">'.$artist.'</span>';
-            $table .= '<span class="result-five">';
+            $table .= '<span class="result-four">'.$sub_series.'</span>';
+            $table .= '<span class="result-five">'.$artist.'</span>';
+            $table .= '<span class="result-six">';
             $link = build_slug('view/'.$r['data_id'], [], 'ebooks');
             /*if($r['data_type'] == 'pdf'){
                 $link .= '?file=';

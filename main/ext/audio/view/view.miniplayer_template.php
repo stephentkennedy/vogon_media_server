@@ -4,8 +4,9 @@
         <span class="controls">
             <i class="fa fa-window-maximize toggle"></i>
             <i class="fa fa-cog option"></i>
+            <i class="fa fa-plus exclusive-fullscreen"></i>
             <i class="fa fa-expand fullscreen"></i>
-            <i class="fa fa-times close"></i>
+            <!--i class="fa fa-times close"></i-->
         </span>
     </header>
     <info>

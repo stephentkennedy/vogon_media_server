@@ -1,6 +1,6 @@
 <?php 
 $zip = new ZipArchive;
-if($zip->open($item['data_content'])){
+if($zip->open($item['data_content']) === true){
     $count = $zip->count();
     if($count == 0){
         return [
@@ -91,7 +91,13 @@ if($zip->open($item['data_content'])){
             }
         }
 
-        if($mime_array[0] == 'image'){
+        if(
+            $mime_array[0] == 'image'
+            && (
+                !isset($return_blob) //This was added so that we can use the same model for thumbnail generation
+                || $return_blob !== true
+            )
+        ){
             $image_data = base64_encode($image_data);
             $to_return = [
                 'image_data' => 'data:'.$mime.';base64,'.$image_data,

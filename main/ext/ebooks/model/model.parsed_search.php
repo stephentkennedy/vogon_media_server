@@ -34,7 +34,8 @@ $search_options = [
 		'genre',
 		'author',
 		'sub_series',
-		'order'
+		'order',
+		'poster'
 	],
 	'type' => $search_type,
 	'orderby' => ['parent_data_name', 'meta_sub_series', 'meta_order + 0', 'name'],

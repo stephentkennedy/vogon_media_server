@@ -1,5 +1,7 @@
 <?php
-
+/**
+ * This class provides simple process persistent storage. It does not carry over between sessions or save to the database, but it's a safe place to put variables without cluttering the global scope
+ */
 class data_store{
     private $data = [];
 

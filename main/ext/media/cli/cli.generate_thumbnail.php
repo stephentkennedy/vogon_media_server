@@ -7,8 +7,6 @@ $dir = $cli->get_flag('dir', './');
 $dir = $cli->dir_string_to_path($dir);
 $dir = rtrim($dir, '/');
 
-$f = $cli->get_flag('file', null);
-
 $skip_if_exists = true;
 
 $replace = $cli->get_flag('replace', false);

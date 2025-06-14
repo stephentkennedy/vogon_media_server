@@ -649,23 +649,27 @@ $(document).ready(function(){
 				win.remove();
 			});
 		},
-		fullscreen: function(){
+		exclusive_fullscreen: function(){
 			var canvas = miniplayer.instance.find('canvas')[0];
-			if(miniplayer.instance.hasClass('fullscreen')){
-				miniplayer.instance.removeClass('fullscreen');
-				var width = miniplayer.instance.width();
-				canvas.width = width;
-				canvas.height = 150;
+			if(miniplayer.instance.hasClass('exclusive-fullscreen')){
+				miniplayer.instance.removeClass('exclusive-fullscreen');
+				miniplayer.instance.find('.controls .exclusive-fullscreen').removeClass('fa-minus').addClass('fa-plus');
 				document.exitFullscreen().then(function(){
 					var width = miniplayer.instance.width();
 					var canvas = miniplayer.instance.find('canvas')[0];
 					canvas.width = width;
 					aPopup.returnParent();
 				});
+				var width = miniplayer.instance.width();
+				var height = miniplayer.instance.height();
+				canvas.width = width;
+				canvas.height = height;
+				clearTimeout(miniplayer.active_timeout);
+				miniplayer.active_timeout = setTimeout(miniplayer.fade, 5000);
 			}else{
-				miniplayer.instance.addClass('fullscreen');
 				aPopup.moveParent('.mini-player');
-				//miniplayer.instance[0].requestFullscreen();
+				miniplayer.instance.addClass('exclusive-fullscreen');
+				miniplayer.instance.find('.controls .exclusive-fullscreen').removeClass('fa-plus').addClass('fa-minus');
 				miniplayer.instance[0].requestFullscreen().then(function(){
 					//Adjust the canvas size for the next frame after fullscreening
 					var canvas = miniplayer.instance.find('canvas')[0];
@@ -674,6 +678,24 @@ $(document).ready(function(){
 					canvas.width = width;
 					canvas.height = height;
 				});
+				var width = miniplayer.instance.width();
+				var height = miniplayer.instance.height();
+				canvas.width = width;
+				canvas.height = height;
+				clearTimeout(miniplayer.active_timeout);
+				miniplayer.active_timeout = setTimeout(miniplayer.fade, 5000);
+			}
+		},
+		fullscreen: function(){
+			var canvas = miniplayer.instance.find('canvas')[0];
+			if(miniplayer.instance.hasClass('fullscreen')){
+				miniplayer.instance.removeClass('fullscreen');
+				var width = miniplayer.instance.width();
+				canvas.width = width;
+				canvas.height = 150;
+			}else{
+				miniplayer.instance.addClass('fullscreen');
+				//miniplayer.instance[0].requestFullscreen();
 				//screen.orientation.lock('landscape');
 				var width = miniplayer.instance.width();
 				var height = miniplayer.instance.height();
@@ -683,8 +705,63 @@ $(document).ready(function(){
 				miniplayer.active_timeout = setTimeout(miniplayer.fade, 5000);
 			}
 		},
+		now: false,
+		prev: false,
+		then: false,
+		clamp: true,
+		min_frame_time: 1000 / 60,
+		max_fps: 60,
+		ideal_fps: 60,
+		should_animate: function(){
+			miniplayer.prev = miniplayer.now;
+			miniplayer.now = Date.now();
+			if(
+				miniplayer.then != false
+			){
+				miniplayer.elapsed = miniplayer.now - miniplayer.then;
+			}else{
+				miniplayer.elapsed = miniplayer.min_frame_time + 1;
+				miniplayer.then = Date.now();
+			}
+
+			if(
+				miniplayer.elapsed > miniplayer.min_frame_time
+				|| miniplayer.clamp == false
+			){
+				miniplayer.then = miniplayer.now - (miniplayer.elapsed % miniplayer.min_frame_time);
+				miniplayer.calc_fps();
+				return true;
+			}
+			return false;
+		},
+		calc_fps: function(){
+			var diff = miniplayer.now - miniplayer.prev;
+			var fps = diff / 1000;
+			fps = 1 / fps;
+			if(miniplayer.clamp){
+				if(fps > miniplayer.max_fps){
+					fps = miniplayer.max_fps;
+				}
+			}
+			miniplayer.current_fps = fps;
+			miniplayer.adjust = miniplayer.ideal_fps / fps;
+		},
+		set_fps: function(fps){
+			var resume = false;
+			if(typeof fps == 'undefined' || fps == '' || fps == 0){
+				miniplayer.clamp = false;
+				miniplayer.max_fps = 60;
+			}else{
+				miniplayer.clamp = true;
+				miniplayer.max_fps = fps;
+			}
+			miniplayer.min_frame_time = 1000 / miniplayer.max_fps;
+		},
 		noViz: function(){
-			if(miniplayer.instance.hasClass('open')){
+			if(
+				miniplayer.instance.hasClass('open')
+				&& miniplayer.should_animate()
+			){
 				canvas = miniplayer.instance.find('canvas')[0];
 				ctx = canvas.getContext("2d");
 				ctx.globalCompositeOperation = 'source-over';
@@ -694,7 +771,10 @@ $(document).ready(function(){
 			window.requestAnimationFrame(miniplayer.animation);
 		},
 		rain: function(){
-			if(miniplayer.instance.hasClass('open')){
+			if(
+				miniplayer.instance.hasClass('open')
+				&& miniplayer.should_animate()
+			){
 				miniplayer.colorControl();
 				// set to the size of device
 				canvas = miniplayer.instance.find('canvas')[0];
@@ -810,7 +890,10 @@ $(document).ready(function(){
 			window.requestAnimationFrame(miniplayer.animation);
 		},
 		snow: function(){
-			if(miniplayer.instance.hasClass('open')){
+			if(
+				miniplayer.instance.hasClass('open')
+				&& miniplayer.should_animate()
+			){
 				//Gradient and setup
 				miniplayer.colorControl();
 				// set to the size of device
@@ -907,8 +990,8 @@ $(document).ready(function(){
 					var x = drop.x;
 					var y = drop.y;
 					var x2 = x + x_speed;
-					/*if(weather_fx.wind_var != 0){
-						x2 = x + (x_speed + weather_fx.wind_var);
+					/*if(miniplayer.wind_var != 0){
+						x2 = x + (x_speed + miniplayer.wind_var);
 					}*/
 					var y2 = y + y_speed;
 
@@ -948,7 +1031,10 @@ $(document).ready(function(){
 			window.requestAnimationFrame(miniplayer.animation);
 		},
 		orchid:  function (){
-			if(miniplayer.instance.hasClass('open')){
+			if(
+				miniplayer.instance.hasClass('open')
+				&& miniplayer.should_animate()
+			){
 				miniplayer.colorControl();
 				// set to the size of device
 				canvas = miniplayer.instance.find('canvas')[0];
@@ -1044,7 +1130,10 @@ $(document).ready(function(){
 			window.requestAnimationFrame(miniplayer.animation);
 		},
 		cleanCircle: function (){
-			if(miniplayer.instance.hasClass('open')){
+			if(
+				miniplayer.instance.hasClass('open')
+				&& miniplayer.should_animate()
+			){
 				miniplayer.colorControl();
 				// set to the size of device
 				canvas = miniplayer.instance.find('canvas')[0];
@@ -1131,7 +1220,10 @@ $(document).ready(function(){
 			window.requestAnimationFrame(miniplayer.animation);
 		},
 		solidCircle: function (){
-			if(miniplayer.instance.hasClass('open')){
+			if(
+				miniplayer.instance.hasClass('open')
+				&& miniplayer.should_animate()
+			){
 				miniplayer.colorControl();
 				// set to the size of device
 				canvas = miniplayer.instance.find('canvas')[0];
@@ -1218,7 +1310,10 @@ $(document).ready(function(){
 			window.requestAnimationFrame(miniplayer.animation);
 		},
 		pipCircle: function (){
-			if(miniplayer.instance.hasClass('open')){
+			if(
+				miniplayer.instance.hasClass('open')
+				&& miniplayer.should_animate()
+			){
 				miniplayer.colorControl();
 				// set to the size of device
 				canvas = miniplayer.instance.find('canvas')[0];
@@ -1304,7 +1399,10 @@ $(document).ready(function(){
 			window.requestAnimationFrame(miniplayer.animation);
 		},
 		burnout: function(){
-			if(miniplayer.instance.hasClass('open')){
+			if(
+				miniplayer.instance.hasClass('open')
+				&& miniplayer.should_animate()
+			){
 				miniplayer.colorControl();
 				// set to the size of device
 				canvas = miniplayer.instance.find('canvas')[0];
@@ -1390,7 +1488,10 @@ $(document).ready(function(){
 			window.requestAnimationFrame(miniplayer.animation);
 		},
 		bars: function(){
-			if(miniplayer.instance.hasClass('open')){
+			if(
+				miniplayer.instance.hasClass('open')
+				&& miniplayer.should_animate()
+			){
 				miniplayer.colorControl();
 				// set to the size of device
 				canvas = miniplayer.instance.find('canvas')[0];
@@ -1479,7 +1580,10 @@ $(document).ready(function(){
 			window.requestAnimationFrame(miniplayer.animation);
 		},
 		solidBars: function(){
-			if(miniplayer.instance.hasClass('open')){
+			if(
+				miniplayer.instance.hasClass('open')
+				&& miniplayer.should_animate()
+			){
 				miniplayer.colorControl();
 				// set to the size of device
 				canvas = miniplayer.instance.find('canvas')[0];
@@ -1568,7 +1672,10 @@ $(document).ready(function(){
 			window.requestAnimationFrame(miniplayer.animation);
 		},
 		pipBars: function(){
-			if(miniplayer.instance.hasClass('open')){
+			if(
+				miniplayer.instance.hasClass('open')
+				&& miniplayer.should_animate()
+			){
 				miniplayer.colorControl();
 				// set to the size of device
 				canvas = miniplayer.instance.find('canvas')[0];
@@ -1656,7 +1763,10 @@ $(document).ready(function(){
 			window.requestAnimationFrame(miniplayer.animation);
 		},
 		spectro: function(){
-			if(miniplayer.instance.hasClass('open')){
+			if(
+				miniplayer.instance.hasClass('open')
+				&& miniplayer.should_animate()
+			){
 				miniplayer.colorControl();
 				// set to the size of device
 				canvas = miniplayer.instance.find('canvas')[0];
@@ -1747,7 +1857,10 @@ $(document).ready(function(){
 			window.requestAnimationFrame(miniplayer.animation);
 		},
 		driving: function(){
-			if(miniplayer.instance.hasClass('open')){
+			if(
+				miniplayer.instance.hasClass('open')
+				&& miniplayer.should_animate()
+			){
 				//Color shortcuts
 				var sunset_orange = {
 					r: 253,
@@ -1938,6 +2051,7 @@ $(document).ready(function(){
 			$('.mini-player .fa.close').click(function(){ miniplayer.remove()});
 			$('.mini-player .fa.option').click(function(){ miniplayer.options()});
 			$('.mini-player .fa.fullscreen').click(function(){ miniplayer.fullscreen()});
+			$('.mini-player .fa.exclusive-fullscreen').click(function(){ miniplayer.exclusive_fullscreen()});
 			$('.mini-player .playlist-toggle').click(function(){
 				if($('.mini-player .mini-player-playlist').hasClass('open')){
 					$('.mini-player .mini-player-playlist').removeClass('open');

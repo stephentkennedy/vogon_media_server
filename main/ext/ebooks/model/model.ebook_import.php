@@ -18,8 +18,12 @@ switch(strtolower(substr($f, -4))){
 		];
 		$check = $hand->getRecord($search);
 		if(empty($check)){
-			$hand->addRecord($search);
+			$id = $hand->addRecord($search);
 			$message .= 'Adding to database.';
+			$message .= '<br>Generating Thumbnail.';
+			load_model('create_pdf_thumbnail', [
+				'id' => $id
+			], 'ebooks');
 		}else{
 			$message .= 'File already exists in database.<br>Skipping.';
 		}
@@ -32,8 +36,12 @@ switch(strtolower(substr($f, -4))){
 		];
 		$check = $hand->getRecord($search);
 		if(empty($check)){
-			$hand->addRecord($search);
+			$id = $hand->addRecord($search);
 			$message .= 'Adding to database.';
+			$message .= '<br>Generating Thumbnail.';
+			load_model('create_cbz_thumbnail', [
+				'id' => $id
+			], 'ebooks');
 		}else{
 			$message .= 'File already exists in database.<br>Skipping.';
 		}
