@@ -26,9 +26,12 @@ sudo a2enmod rewrite
 echo -e "Adding Apache user to Group 'vogon'."
 sudo usermod -a -G vogon www-data
 
+echo -e "Installing ImageMagick"
+sudo apt-get install libpng-dev libjpeg-dev libtiff-dev -y
+sudo apt-get install imagemagick -y
 
 echo -e "Installing PHP"
-sudo apt-get install php libapache2-mod-php php-mbstring php-xmlrpc php-soap php-gd php-xml php-cli php-zip -y
+sudo apt-get install php libapache2-mod-php php-mbstring php-xmlrpc php-soap php-gd php-xml php-cli php-zip php-common gcc php-imagick -y
 
 echo -e "Installing MySQL"
 sudo apt-get install mariadb-server php-mysql -y
